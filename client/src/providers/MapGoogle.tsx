@@ -212,7 +212,7 @@ const MapProvider = (props:typeProps) => {
   return (
     <>
       <Script
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&v=3.59&libraries=marker`}
+        // src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&v=3.59&libraries=marker`}
         strategy="afterInteractive"
         onLoad={() => {
           console.log('✅ Google Maps API loaded');
