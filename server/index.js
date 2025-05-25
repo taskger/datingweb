@@ -7,6 +7,7 @@ const User = require('./models/user')
 const cors = require('cors');
 
 const uri = process.env.MONGODB_URI
+const PORT = process.env.PORT || 5000;
 
 mongoose.connect(uri, {
   useNewUrlParser: true,
@@ -95,6 +96,6 @@ app.delete('/delete/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 })
-app.listen(5000, () => {
+app.listen(PORT, () => {
   console.log('Application is running on port 5000')
 })
