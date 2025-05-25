@@ -1,0 +1,79 @@
+require('dotenv').config();
+
+const express = require('express')
+const app = express()
+const mongoose = require('mongoose')
+const User = require('./models/user')
+const cors = require('cors');
+
+const uri = process.env.MONGODB_URI
+
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB connected'))
+.catch((err) => console.error('MongoDB connection error:', err));
+
+app.use(express.json())
+app.use(cors());
+
+app.get('/user', async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+app.get('/user/:email', async (req, res) => {
+  try {
+    const {params} = req
+    const users = await User.findOne({email: params.email});
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/update/:id', async (req, res) => {
+  try {
+    const payload = req.body
+    const { id } = req.params
+    const userRequestUpdate = await User.findOne({ _id: id });
+    const userToUpdate = await User.findOne({ _id: payload._id });
+    if (!userRequestUpdate) return res.status(401).json({ error: 'Unauthorized user' });
+    if (userRequestUpdate.id == userToUpdate.id || userRequestUpdate.role == 'admin'){
+      console.log('update sucess')
+      await User.updateOne({_id: payload._id}, {$set: payload});
+      console.log(userToUpdate)
+      res.status(200).json({ status : 200});    
+    }else{
+      return res.status(401).json({ status : 401});
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+app.delete('/delete/:id', async (req, res) => {
+  try{
+    const { id } = req.params
+    const  payload  = req.body
+    const userRequestDelete = await User.findOne({ _id: id });
+    const isAdmin = userRequestDelete.role == 'admin'
+    if (isAdmin && id != payload._id) {
+      await User.deleteOne({_id: payload._id})
+      res.status(200).json({status:200})
+    }else if(id == payload._id){
+      res.status(403).json({status:403})
+    }else{
+      console.log(payload._id)
+      res.status(401).json({status:401})
+    }
+  }catch{
+    res.status(500).json({ error: error.message });
+  }
+})
+app.listen(5000, () => {
+  console.log('Application is running on port 5000')
+})

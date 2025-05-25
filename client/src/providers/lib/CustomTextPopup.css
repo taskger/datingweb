@@ -1,0 +1,183 @@
+.react-datepicker-popper{
+  z-index: 20 !important;
+}
+.selected {
+  background-color: #e0e0e0;
+  border: #b9b9b9;
+  border-style: solid;
+  border-width: 1px;
+}
+.insetshadow{
+  box-shadow: 0px 0px 10px rgba(0, 0, 0,0.2) inset;
+}
+.bg{
+  width:500px;
+  height: max-content;
+  font-size: 15px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 5px;
+}
+@keyframes filterbannerfemalehover {
+  0% {background-color: #EA596E ;}
+  100% {background-color: #f72444 ;}
+}
+.filterbannerfemale{
+  background-color: #EA596E ;
+}
+.filterbannerfemale:hover{
+  background-color: #f72444 ;
+  animation-name: filterbannerfemalehover;
+  animation-fill-mode: forwards;
+  animation-duration: 0.4s;
+
+}
+
+.filterbannermale{
+  background-color: #348CED ;
+}
+@keyframes filterbannermalehover {
+  0% {background-color: #348CED ;}
+  100% {background-color: #1871cf ;}
+}
+.filterbannermale:hover{
+  background-color: #1871cf ;
+  animation-name: filterbannermalehover;
+  animation-fill-mode: forwards;
+  animation-duration: 0.4s;
+
+}
+.filterbannerother{
+  background-color: #fa53e4 ;
+}
+@keyframes filterbannerotherhover {
+  0% {background-color: #fa53e4 ;}
+  100% {background-color: #d60dbc ;}
+}
+.filterbannerother:hover{
+  background-color: #fa53e4 ;
+  animation-name: filterbannerotherhover;
+  animation-fill-mode: forwards;
+  animation-duration: 0.4s;
+
+}
+.gm-style-iw-c[aria-label="Female"] {
+  background-color: #EA596E !important;
+  padding: 7px !important;
+}
+.gm-style-iw-c[aria-label="Male"] {
+  background-color: #348CED !important;
+  padding: 7px !important;
+}
+.gm-style-iw-c .gm-style-iw-d{
+  overflow: auto !important;
+  scrollbar-color: rgb(0, 0, 0) rgba(186, 218, 85,0);
+  padding-right: 5px;
+  border-radius: 10px;
+}
+
+@keyframes example {
+  100% {background-color:rgb(224, 224, 224);}
+}
+.scopeProfile{
+  display: inline-flex;
+}
+.profile{
+  width: 60px;
+}
+.texthead{
+  padding: 5px;
+  display: inline-flex;
+
+}
+.hobbys{
+  background-color: white;
+  filter: drop-shadow(0px 0px 3px  rgba(0, 0, 0,0.4));
+  padding: 7px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin:5px;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.hobbys:hover{
+  border-color: rgba(0, 0, 0,0.2);
+  border-style: solid;
+  border-width: 1px;
+  animation-name: example;
+  animation-fill-mode: forwards;
+  animation-duration: 1s;
+
+}
+.hobbys img{
+  padding-right: 5px;
+}
+@keyframes iconMySelf {
+  0% {box-shadow: 0px 0px 0px 0px rgba(247, 179, 91, 0.3);}
+  100% {box-shadow: 0px 0px 0px 10px rgba(247, 179, 91, 0.3);}
+}
+.iconcurrent{
+  height: 20px;
+  width: 20px;
+  border-radius:50%;
+  border-style: solid;
+  border-color: #ffffff;
+  border-width: 2px;
+  background-color: rgb(255, 208, 0);
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+  z-index: 20;
+}
+.iconcurrentshadow{
+  position: absolute;
+  top:2px;
+  left: 2px;
+  border-radius:50%;
+  background-color: rgba(247, 179, 91, 0.3);
+  height: 15px;
+  width: 15px;
+  animation-name: iconMySelf;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+/* @keyframes iconmale {
+  0% {box-shadow: 0px 0px 0px 0px rgba(0, 153, 255, 0.3);}
+  100% {box-shadow: 0px 0px 0px 10px rgba(0, 153, 255, 0.3);}
+} */
+.iconmale{
+  height: 20px;
+  width: 20px;
+  border-radius:50%;
+  border-style: solid;
+  border-color: #ffffff;
+  border-width: 2px;
+  background-color: #0099ff;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+}
+
+.iconfemale{
+  height: 20px;
+  width: 20px;
+  border-radius:50%;
+  border-style: solid;
+  border-color: #ffffff;
+  border-width: 2px;
+  background-color: #EA596E;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+}
+
+.iconother{
+  height: 20px;
+  width: 20px;
+  border-radius:50%;
+  border-style: solid;
+  border-color: #ffffff;
+  border-width: 2px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+}
+
+.bg-gray-900\/50{
+    z-index: 35;
+    background-color: rgba(0, 0, 0, 0.2);
+}

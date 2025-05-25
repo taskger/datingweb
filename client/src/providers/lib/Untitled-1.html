@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="CustomTextPopup.css">
+  
+</head>
+<body>
+    <div id="popup-container"></div>
+    <script>      
+      const data = {
+        name:'Mos',
+        birthday:'2002-03-03',
+        status:'prefer_not_to_say',
+        gender:'',
+        ethnicity:'asia',
+        height:180,
+        religion:'buddhist',
+        chinese_zodiac:'rabbit',
+        western_zodiac:'aquarius',
+        group:'b',
+        degree:'bachelors',
+        university:'Kasetsart University',
+        lifestyle:{
+          animal:'dog',
+          cocktail:'',
+          cigarettes:'',
+          weed:'',
+          excercise:'',
+          eat:'',
+          routine:''
+        },
+        hobbys:{
+          adventure:[
+            'dive',
+            'mountain climbing'
+          ],
+          song:[
+            'rock',
+            'indy',
+            'jazz'
+          ],
+          sport:[],
+          movie:[],
+          content:[],
+          travel:[],
+          game:[],
+          selfcare:[]
+        },
+        contact:{
+          facebook:'',
+          ig:'',
+          telephone:''
+        },
+        like:[],
+        location: {
+          'lat': 13.793,
+          'lng': 100.548
+        }
+      }
+      const TranslateToThai = (data) => {
+        const display = structuredClone(data)
+        display.status = checkStatus(data.status)
+        display.gender = checkGender(data.gender)
+        display.age = Math.trunc(((((((new Date().getTime() - new Date(data.birthday).getTime()) /1000 )/60)/60)/24)/30)/12)
+        display.chinese_zodiac = checkChineseZodiac(data.chinese_zodiac)
+        display.western_zodiac = checkWesternZodiac(data.western_zodiac)
+        display.group = (data.group).toUpperCase()
+        display.degree = checkDegree(data.degree)
+        display.hobbys.adventure = checkAdventure(data.hobbys.adventure)
+        display.hobbys.song = checkSong(data.hobbys.song)
+        return display
+      }
+      // const checkAge = (data) => {
+      //   const value = 
+      //   return value
+      // }
+      const checkStatus = (data) => {
+        const Map = {
+          single: 'โสด',
+          separated: 'แยกกันอยู่',
+          divorced: 'หย่าร้างแล้ว',
+          widowed: 'หม้าย',
+          open_relationship: 'ความสัมพันธ์แบบเปิด',
+          prefer_not_to_say: 'ไม่ต้องการระบุ'
+        };
+        return Map[data]
+      }
+      const checkGender = (data) => {
+        const Map = {
+          female: 'หญิง',
+          male: 'ชาย',
+          lesbian: 'เลสเบี้ยน',
+          gay: 'เกย์',
+          bisexual: 'ไบเซ็กชวล',
+          transgender: 'คนข้ามเพศ',
+          queer: 'เควียร์',
+          intersex: 'อินเตอร์เซ็กซ์',
+        };
+        return Map[data]
+      }
+      const checkChineseZodiac = (data) => {
+        const Map = {
+          rat: 'ชวด',
+          ox: 'ฉลู',
+          tiger: 'ขาล',
+          rabbit: 'เถาะ',
+          dragon: 'มะโรง',
+          snake: 'มะเส็ง',
+          horse: 'มะเมีย',
+          goat: 'มะแม',
+          monket: 'วอก',
+          rooster: 'ระกา',
+          dog: 'จอ',
+          pig: 'กุน',
+        };
+        return Map[data]
+      }
+      const checkWesternZodiac = (data) => {
+        const Map = {
+          aries: 'เมษ',
+          taurus: 'พฤษภ',
+          gemini: 'เมถุน',
+          cancer: 'กรกฏ',
+          leo: 'สิงห์',
+          virgo: 'กันย์',
+          libra: 'ตุลย์',
+          scorpio: 'พิจิก',
+          sagittarius: 'ธนู',
+          capricorn: 'มังกร',
+          aquarius: 'กุมภ์',
+          pisces: 'มีน',
+        };
+        return Map[data]
+      }
+      const checkDegree = (data) => {
+        const Map = {
+          middle_school: 'มัธยมศึกษาตอนต้น',
+          high_school: 'มัธยมศึกษาตอนปลาย',
+          vocational : 'วิชาชีพ',
+          high_vocational: 'วิชาชีพชั้นสูง',
+          diploma: 'อนุปริญญา',
+          bachelors: 'ปริญญาตรี',
+          masters: 'ปริญญาโท',
+          doctorate: 'ปริญญาเอก',
+        };
+        return Map[data]
+      }
+      const checkAdventure = (data) => {
+        const save = []
+        const map = {
+            'dive' : 'ดำน้ำ',
+            'mountain climbing' : 'ปีนเขา'
+          }
+        data.map((value) => {
+          save.push(map[value])
+        })
+        return save
+      }
+      const checkSong = (data) => {
+        const save = []
+        const map = {
+            'rock' : 'ร็อค',
+            'indy' : 'อินดี้',
+            'jazz' : 'แจ๊ส',
+            'rap' : 'แร็ป'
+          }
+        data.map((value) => {
+          save.push(map[value])
+        })
+        return save
+      }
+      const display = TranslateToThai(data);
+      const popup = document.createElement('div');
+      popup.innerHTML = `
+      <div class="bg">
+        <div class="scopeProfile">
+          <img class="profile" src="https://i0.wp.com/whateverbrightthings.com/wp-content/uploads/2020/05/Dot-Icon-Orange.png?ssl=1"/>
+          <div>
+            <span class="texthead">ชื่อ ${display.name}</span>
+            <span class="texthead">อายุ ${display.age}</span>
+            <span class="texthead">สถานะ ${display.status}</span>
+            <span class="texthead">เพศ ${display.gender}</span>
+            <span class="texthead">เชื้อชาติ ${display.ethnicity}</span>
+            <span class="texthead">ศาสนา ${display.religion}</span>
+            ${display.chinese_zodiac ?
+            `<span class="texthead">นักษัตร ${display.chinese_zodiac}</span>`: ''}
+            ${display.western_zodiac ?
+            `<span class="texthead">ราศี ${display.western_zodiac}</span>` : ''}
+            ${display.group ? 
+            `<span class="texthead">กรุ๊ปเลือด ${display.group}</span>`: ''}
+            ${display.degree ? 
+            `<span class="texthead">การศึกษา ${display.degree}</span>` : ''}
+            ${display.university ? 
+            `<span class="texthead">มหาวิทยาลัย ${display.university}</span>` : ''}
+          </div>
+        </div>
+        
+        <div>
+          <div>
+            <span class="head">ไลฟ์สไตล์</span>
+          </div>
+          <div>
+            <span class="hobbys">ดำน้ำ</span>
+            <span class="hobbys">ดำน้ำ</span>
+            <span class="hobbys">ดำน้ำ</span>
+            <span class="hobbys">ดำน้ำ</span>
+            <span class="hobbys">ดำน้ำ</span>
+            <span class="hobbys">ดำน้ำ</span>
+            <span class="hobbys">ดำน้ำ</span>
+            <span class="hobbys">ดำน้ำ</span>
+          </div>
+        </div>
+        <div>
+          <div>
+            <span class="head">งานอดิเรก</span>
+          </div>
+          <div>
+            ${display.hobbys.adventure.map((value) => (`
+            <span class="hobbys">
+              <img src="/public/adventure-game.png" alt="image ${value}" width="25" height="25">
+              ${value}
+            </span>`
+          )).join('')}  
+            ${display.hobbys.song.map((value) => (`
+            <span class="hobbys">
+              <img src="/public/musical-note.png" alt="image ${value}" width="25" height="25">
+              ${value}
+            </span>`
+          )).join('')}  
+          </div>
+        </div>
+      </div>
+      `
+      document.getElementById('popup-container').appendChild(popup);
+    </script>
+</body>
+</html>
