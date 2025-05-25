@@ -44,7 +44,19 @@ app.get('/user/:email', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
+app.put('/setting/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    if (id){
+      await User.updateOne({_id: id}, {$set: id});
+      res.status(200).json({ status : 200});    
+    }else{
+      return res.status(401).json({ status : 401});
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 app.put('/update/:id', async (req, res) => {
   try {
     const payload = req.body
