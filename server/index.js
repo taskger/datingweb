@@ -18,6 +18,15 @@ mongoose.connect(uri, {
 app.use(express.json())
 app.use(cors());
 
+app.get('/', async (req, res) => {
+  try {
+    const token = req.headers.authorization
+    console.log(token)
+    res.json('Server Work!!');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 app.get('/user', async (req, res) => {
   try {
     const users = await User.find();
