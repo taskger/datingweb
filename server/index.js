@@ -48,7 +48,7 @@ app.get('/user/:email', async (req, res) => {
 app.put('/setting/:id', async (req, res) => {
   try {
     const { id } = req.params
-    const { payload } = req.body
+    const  payload  = req.body
     if (id){
       await User.updateOne({_id: id}, {$set: payload});
       res.status(200).json({ status : 200});    
