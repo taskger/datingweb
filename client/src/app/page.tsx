@@ -60,7 +60,7 @@ const Page = () => {
         };
       });
       try {
-        await alovaInstance.Put(`/update/${_id}`, { language: updatedLang });
+        await alovaInstance.Put(`/setting/${_id}`, { language: updatedLang });
       } catch (error) {
         console.error("Update language failed:", error);
       }
