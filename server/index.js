@@ -97,6 +97,25 @@ app.delete('/delete/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 })
+app.post('/create/:id', async (req, res) => {
+  try{
+    const { id } = req.params
+    const payload = req.body
+    const userRequestCreate = await User.findOne({ _id: id });
+    const checkEmail = await User.findOne({email:payload.email})
+    const isAdmin = userRequestCreate.role == 'admin'
+    if (checkEmail?.email) return res.status(400).json({status:400})
+    if (isAdmin) {
+      await User.create(payload)
+      res.status(200).json({status:200})
+    }else{
+      console.log('error')
+      res.status(401).json({status:401})
+    }
+  }catch{
+    res.status(500).json({ error: error.message });
+  }
+})
 app.listen(PORT, () => {
   console.log('Application is running on port 5000')
 })
