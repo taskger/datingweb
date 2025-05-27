@@ -45,6 +45,7 @@
   font-family: var(--font-mitr);
   font-weight: 400;
   position: relative;
+  color: black;
 }
 .textinfo{
   font-weight: 200;

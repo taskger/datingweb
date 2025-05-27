@@ -233,7 +233,6 @@ const MapProvider = (props:typeProps) => {
     navigator.geolocation.getCurrentPosition((position) => {
       const {latitude,longitude} = position.coords
       const LatLng = {lat:latitude,lng:longitude}
-      clickUserMove(LatLng,dataMyself?.email)
       map?.panTo(LatLng)
       map?.setZoom(15)
       
