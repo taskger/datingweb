@@ -103,7 +103,7 @@ export const settings : Settings = {
   university: { en: 'University', th: 'มหาวิทยาลัย' },
   hobby: { en: 'Hobby', th: 'งานอดิเรก' },
   adventure: { en: 'Adventure', th: 'ผจญภัย' },
-  song: { en: 'Music', th: 'ร้องเพลง' }, 
+  song: { en: 'Song', th: 'ฟังเพลง' }, 
   content: { en: 'Content Creation', th: 'สร้างคอนเทนต์' },
   game: { en: 'Games', th: 'เกม' }, 
   movie: { en: 'Movies', th: 'หนัง' }, 

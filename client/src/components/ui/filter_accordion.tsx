@@ -24,7 +24,7 @@ export default function Filter_accordion(props:FilterAccordionProps) {
     };
     const statusMapName: SettingHobbyCategory = {
       adventure: {en:'Adventure',th:'ผจญภัย'},
-      song: {en:'Song',th:'ร้องเพลง'},
+      song: {en:'Song',th:'ฟังเพลง'},
       content: {en:'Content',th:'สร้างคอนเทนต์'},
       game: {en:'Game',th:'เกม'},
       movie: {en:'Movie',th:'หนัง'},
