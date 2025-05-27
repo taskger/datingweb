@@ -19,7 +19,7 @@ interface Button_dropdown_Props {
     
     <div >
         <a  className="titlebutton border-t-1 border-b-1 border-zinc-300 hover:cursor-pointer hover:animate-pulse border-solid h-15 w-auto  flex items-center p-2 text-gray-900  
-            dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 group" 
+             hover:bg-gray-300  group" 
             data-collapse-toggle={idtoggle}
             >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-4">
@@ -39,7 +39,7 @@ interface Button_dropdown_Props {
                             {...(label == 'ตั้งค่า' ? { 'data-modal-target': idmodal } : {})}
                             {...(label == 'ตั้งค่า' ? { 'data-modal-toggle': idmodal } : {})}
                             data-drawer-hide="sidebar"
-                            className="border-t-1 border-b-1 border-zinc-400 border-solid w-full flex items-center p-1 bg-zinc-300 text-black dark:text-white hover:bg-zinc-400 dark:hover:bg-gray-700 group"
+                            className="border-t-1 border-b-1 border-zinc-400 border-solid w-full flex items-center p-1 bg-zinc-300 text-black  hover:bg-zinc-400  group"
                             ><span className="flex-1 ms-3 ">{label}</span></a>
                     </li>
                     

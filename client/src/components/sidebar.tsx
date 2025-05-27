@@ -353,7 +353,7 @@ function Sidebar(props:typeProps) {
   return (
     <div>
       <div className="btnthreeline fixed z-5 left-0 top-15 text-center absolute">
-         <button className="threeline inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button" data-drawer-target="sidebar" data-drawer-show="sidebar" aria-controls="sidebar">
+         <button className="threeline inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200   " type="button" data-drawer-target="sidebar" data-drawer-show="sidebar" aria-controls="sidebar">
          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
          </svg>
@@ -362,9 +362,9 @@ function Sidebar(props:typeProps) {
       <div>
          
       </div>
-      <div id="sidebar" className="fixed top-0 left-0 z-40 w-100 h-full p-2 overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-gray-800" tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-label">
+      <div id="sidebar" className="fixed top-0 left-0 z-40 w-100 h-full p-2 overflow-y-auto transition-transform -translate-x-full bg-white " tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-label">
          <button type="button" data-drawer-hide="sidebar" aria-controls="sidebar" 
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" >
+            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center  " >
             <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
             <span className="sr-only">Close menu</span>
          </button>
@@ -373,7 +373,7 @@ function Sidebar(props:typeProps) {
                <span>
                   {countSelect} {props.defaultLanguage.select[props.language]}
                </span>
-               <button className=" text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-normal rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button" data-drawer-target="sidebar-filter" data-drawer-show="sidebar-filter" aria-controls="sidebar-filter">
+               <button className=" text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-normal rounded-full text-sm px-5 py-2.5 me-2 mb-2  " type="button" data-drawer-target="sidebar-filter" data-drawer-show="sidebar-filter" aria-controls="sidebar-filter">
                   {props.defaultLanguage.filter[props.language]}
                </button>
          </div>
@@ -415,7 +415,7 @@ function Sidebar(props:typeProps) {
          </div>
       </div> 
 
-      <div id="sidebar-filter" className="fixed top-0 left-0 z-40 w-100 h-screen p-2 overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-gray-800" tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-label-filter">
+      <div id="sidebar-filter" className="fixed top-0 left-0 z-40 w-100 h-screen p-2 overflow-y-auto transition-transform -translate-x-full bg-white " tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-label-filter">
          <div className='flex justify-end items-end'>
          <button onClick={() => updateDataSet('reset','')}type="button" data-drawer-hide="sidebar-filter" aria-controls="sidebar-filter" className='absolute left-2 top-2 p-2 z-15 border border-gray-300 rounded-lg hover:bg-gray-300'>
          {props.defaultLanguage?.reset_filter[props.language]}         
@@ -442,7 +442,7 @@ function Sidebar(props:typeProps) {
                      max={100}
                      value={minAge}
                      onChange={(e) =>getAge(e,'min')}
-                     className="w-full h-5 bg-gray-200  rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                     className="w-full h-5 bg-gray-200  rounded-lg appearance-none cursor-pointer "
                   />
                </div>
                <div className="flex-1">
@@ -452,7 +452,7 @@ function Sidebar(props:typeProps) {
                      max={100}
                      value={maxAge}
                      onChange={(e) => getAge(e,'max')}
-                     className="w-full h-5 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                     className="w-full h-5 bg-gray-200 rounded-lg appearance-none cursor-pointer "
                   />
                </div>
                </div>
@@ -473,7 +473,7 @@ function Sidebar(props:typeProps) {
                      step={1000}
                      value={minSalary}
                      onChange={(e) =>getSalary(e,'min')}
-                     className="w-full h-5 bg-gray-200  rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                     className="w-full h-5 bg-gray-200  rounded-lg appearance-none cursor-pointer "
                   />
                </div>
                <div className="flex-1">
@@ -484,7 +484,7 @@ function Sidebar(props:typeProps) {
                      step={1000}
                      value={maxSalary}
                      onChange={(e) => getSalary(e,'max')}
-                     className="w-full h-5 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                     className="w-full h-5 bg-gray-200 rounded-lg appearance-none cursor-pointer "
                   />
                </div>
                </div>
@@ -549,7 +549,7 @@ function Sidebar(props:typeProps) {
             <ul className="font-normal mt-5">
                <div id="accordion-collapse-hobbys" data-accordion="collapse" className='font-normal mt-5'>
                   <h2 id="accordion-collapse-heading-hobbys">
-                     <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-hobbys" aria-expanded="false" aria-controls="accordion-collapse-body-hobbys">
+                     <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200    hover:bg-gray-100  gap-3" data-accordion-target="#accordion-collapse-body-hobbys" aria-expanded="false" aria-controls="accordion-collapse-body-hobbys">
                         <span>{props.defaultLanguage?.hobby[props.language]}</span>
                         <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
@@ -557,7 +557,7 @@ function Sidebar(props:typeProps) {
                      </button>
                   </h2>
                   <div id="accordion-collapse-body-hobbys" className="hidden" aria-labelledby="accordion-collapse-heading-hobbys">
-                     <div className=" border border-t-0 border-gray-200 dark:border-gray-700">
+                     <div className=" border border-t-0 border-gray-200 ">
                      <div id="accordion-collapse-inside-hobbys" data-accordion="collapse" className='font-normal'>
                      {hobbyCategories?.map((value) => {
                         return(
@@ -576,7 +576,7 @@ function Sidebar(props:typeProps) {
             <ul className="font-normal mt-5">
                <div id="accordion-collapse-liftstyle" data-accordion="collapse" className='font-normal mt-5'>
                   <h2 id="accordion-collapse-heading-liftstyle">
-                     <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-liftstyle" aria-expanded="false" aria-controls="accordion-collapse-body-liftstyle">
+                     <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200    hover:bg-gray-100  gap-3" data-accordion-target="#accordion-collapse-body-liftstyle" aria-expanded="false" aria-controls="accordion-collapse-body-liftstyle">
                         <span>{props.defaultLanguage?.lifestyle[props.language]}</span>
                         <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
@@ -584,11 +584,11 @@ function Sidebar(props:typeProps) {
                      </button>
                   </h2>
                   <div id="accordion-collapse-body-liftstyle" className="hidden" aria-labelledby="accordion-collapse-heading-liftstyle">
-                     <div className=" border border-t-0 border-gray-200 dark:border-gray-700">
+                     <div className=" border border-t-0 border-gray-200 ">
                         {questionLifestyle.map((value) => 
                            <div key={value.key} className="flex items-center ml-2 mb-2 mt-2">
-                              <input id={`${value.key}sidebar`} onChange={() => updateDataSet('lifestyle',value.key)} type="checkbox" checked={dataLifestyle.has(value.key)} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                              <label htmlFor={`${value.key}sidebar`} className="ms-2 text-sm font-normal text-gray-900 dark:text-gray-300">{value.question}</label>
+                              <input id={`${value.key}sidebar`} onChange={() => updateDataSet('lifestyle',value.key)} type="checkbox" checked={dataLifestyle.has(value.key)} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500   focus:ring-2  "/>
+                              <label htmlFor={`${value.key}sidebar`} className="ms-2 text-sm font-normal text-gray-900 ">{value.question}</label>
                            </div>
                         )}
                      </div>

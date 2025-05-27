@@ -639,7 +639,7 @@ function SideProfile(props:typeProp) {
     <div >
       {loading ?
        <div role="status" className='absolute flex justify-center h-full w-full z-50 backdrop-blur-xs'>
-          <svg aria-hidden="true" className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 w-10 h-10 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg aria-hidden="true" className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 w-10 h-10 text-gray-200 animate-spin  fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
               <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
           </svg>
@@ -651,14 +651,14 @@ function SideProfile(props:typeProp) {
          </div> 
       : ''}
       <div className="btnthreeline fixed z-5 left-0 top-0 text-center absolute">
-         <button className="threeline inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button" data-drawer-target="sidebar-profile" data-drawer-show="sidebar-profile" data-drawer-placement="left" aria-controls="sidebar-profile">
+         <button className="threeline inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200   " type="button" data-drawer-target="sidebar-profile" data-drawer-show="sidebar-profile" data-drawer-placement="left" aria-controls="sidebar-profile">
          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
          </svg>
          </button>
       </div>
       
-         <div id="sidebar-profile" className="fixed top-0 left-0 z-40 w-100 h-full p-2 overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-gray-800" tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-profile-label">
+         <div id="sidebar-profile" className="fixed top-0 left-0 z-40 w-100 h-full p-2 overflow-y-auto transition-transform -translate-x-full bg-white " tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-profile-label">
             {data?.role == 'admin' ?
                <>
                   {toggleCreate ? 
@@ -685,7 +685,7 @@ function SideProfile(props:typeProp) {
                </>
              :  ''}
             <button type="button" data-drawer-hide="sidebar-profile" aria-controls="sidebar-profile" 
-               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" >
+               className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center  " >
                <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
                <span className="sr-only">Close menu</span>
             </button>
@@ -705,9 +705,7 @@ function SideProfile(props:typeProp) {
                      [&::-webkit-scrollbar]:w-2
                      [&::-webkit-scrollbar-track]:bg-gray-100
                      [&::-webkit-scrollbar-thumb]:rounded-full
-                     [&::-webkit-scrollbar-thumb]:bg-gray-300
-                     dark:[&::-webkit-scrollbar-track]:bg-neutral-700
-                     dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500'>
+                     [&::-webkit-scrollbar-thumb]:bg-gray-300'>
                   {userData && booleanInputUser ? userDataSelect?.filter((value) => value.profile?.name?.toLowerCase().match(inputUser.toLowerCase()) || value.email.toLowerCase().match(inputUser.toLowerCase())).map(value => 
                      <div key={value.email} onMouseDown={(e) => e.preventDefault()} className='pb-1'>
                         <button onClick={() => {setSelectUser(value);props.setGetLatLng(value.profile?.location,value.email);setBooleanInputUser(false)}} className="text-left rounded-lg border-1  border-gray-300 text-gray-800 w-full py-3 px-4 inline-flex items-center gap-x-2 text-sm font-normal  border-b-1 border-gray-300 bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none " onMouseDown={(e) => e.preventDefault()} >{value.profile?.name} ({value.email}) </button>
@@ -738,9 +736,7 @@ function SideProfile(props:typeProp) {
                      [&::-webkit-scrollbar]:w-2
                      [&::-webkit-scrollbar-track]:bg-gray-100
                      [&::-webkit-scrollbar-thumb]:rounded-full
-                     [&::-webkit-scrollbar-thumb]:bg-gray-300
-                     dark:[&::-webkit-scrollbar-track]:bg-neutral-700
-                     dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500'>
+                     [&::-webkit-scrollbar-thumb]:bg-gray-300'>
                   {userData && booleanInputLocation ? searchLocation?.map((value : any) => {
                      const location = {
                         lat: value.location.latitude,
@@ -808,10 +804,10 @@ function SideProfile(props:typeProp) {
                   id='filter_form_birthday'
                   selected={selectedDate}
                   onChange={(date) => setSelectedDate(date)}
-                  className=" h-12 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-2 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                  className=" h-12 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-2 p-2.5    "
                   placeholderText=""
                   />
-                  <label htmlFor={`filter_form_birthday`} className={`cursor-pointer absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.birthday[props.data?.language as Lang ?? 'th']}</label>
+                  <label htmlFor={`filter_form_birthday`} className={`cursor-pointer absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.birthday[props.data?.language as Lang ?? 'th']}</label>
                </span>
                <span className='w-60 mr-2'>
                   <Filter_form onFocus={setBooleanInputEthnicity} readonly class='cursor-pointer' onBlur={setBooleanInputEthnicity} value={inputEthnicity} name={props.defaultLanguage?.ethnicity[props.data?.language as Lang ?? 'th']} id="ethnicity"/>            
@@ -866,28 +862,28 @@ function SideProfile(props:typeProp) {
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-50 mr-2'>
                   <div className='relative'>
-                        <input autoComplete='off' value={Number(inputSalary)} type="number" id={`filter_form_salary`} onChange={(e) => checkSalary(Number(e.target.value))} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
-                        <label htmlFor={`filter_form_salary`} className={` absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.salary[props.data?.language as Lang ?? 'th']}</label>
+                        <input autoComplete='off' value={Number(inputSalary)} type="number" id={`filter_form_salary`} onChange={(e) => checkSalary(Number(e.target.value))} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
+                        <label htmlFor={`filter_form_salary`} className={` absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.salary[props.data?.language as Lang ?? 'th']}</label>
                   </div>
                </span>
                <span className='w-full mr-2'>          
                   <div className='relative'>
-                        <input autoComplete='off' value={inputFacebook} type="text" id={`filter_form_facebook`} onChange={(e) => setInputFacebook(e.target.value)} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
-                        <label htmlFor={`filter_form_facebook`} className={`absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.facebook[props.data?.language as Lang ?? 'th']}</label>
+                        <input autoComplete='off' value={inputFacebook} type="text" id={`filter_form_facebook`} onChange={(e) => setInputFacebook(e.target.value)} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
+                        <label htmlFor={`filter_form_facebook`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.facebook[props.data?.language as Lang ?? 'th']}</label>
                   </div>               
                </span>
             </div>
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-full mr-2'>         
                   <div className='relative'>
-                     <input autoComplete='off' value={inputInstagram} type="text" id={`filter_form_instragram`} onChange={(e) => setInputInstagram(e.target.value)} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
-                     <label htmlFor={`filter_form_instragram`} className={`absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.instragram[props.data?.language as Lang ?? 'th']}</label>
+                     <input autoComplete='off' value={inputInstagram} type="text" id={`filter_form_instragram`} onChange={(e) => setInputInstagram(e.target.value)} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
+                     <label htmlFor={`filter_form_instragram`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.instragram[props.data?.language as Lang ?? 'th']}</label>
                   </div>   
                </span>
                <span className='w-full mr-2'>       
                   <div className='relative'>
-                     <input autoComplete='off' value={inputTelephone}inputMode="numeric" maxLength={10} pattern="[0-9]*" type="tel" id={`filter_form_telephone`} onChange={(e) => checkTel(e)} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
-                     <label htmlFor={`filter_form_telephone`} className={`absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.telephone[props.data?.language as Lang ?? 'th']}</label>
+                     <input autoComplete='off' value={inputTelephone}inputMode="numeric" maxLength={10} pattern="[0-9]*" type="tel" id={`filter_form_telephone`} onChange={(e) => checkTel(e)} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
+                     <label htmlFor={`filter_form_telephone`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.telephone[props.data?.language as Lang ?? 'th']}</label>
                   </div>     
                </span>
                {toggleCreate ? '' : 
@@ -906,8 +902,7 @@ function SideProfile(props:typeProp) {
                            [&::-webkit-scrollbar-track]:bg-gray-100
                            [&::-webkit-scrollbar-thumb]:rounded-full
                            [&::-webkit-scrollbar-thumb]:bg-gray-300
-                           dark:[&::-webkit-scrollbar-track]:bg-neutral-700
-                           dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
+
                         '>
                            {Datalike.map((value) => 
                            <button onClick={() => props.setGetLatLng(value.profile?.location,value.email)} className={`${value.profile?.gender == 'female' ? 'filterbannerfemale' : 'filterbannermale'} text-left text-white w-full py-3 px-4 inline-flex items-center gap-x-2 text-sm font-normal  border-b-1 border-gray-300 bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none `}key={value._id}>{value.profile?.name}</button>)}
@@ -918,7 +913,7 @@ function SideProfile(props:typeProp) {
             <ul className="font-normal mt-5">
                <div id="accordion-collapse-hobbys-userprofile" data-accordion="collapse" className='font-normal mt-5'>
                   <h2 id="accordion-collapse-heading-hobbys-userprofile">
-                     <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-hobbys-userprofile" aria-expanded="false" aria-controls="accordion-collapse-body-hobbys-userprofile">
+                     <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200    hover:bg-gray-100  gap-3" data-accordion-target="#accordion-collapse-body-hobbys-userprofile" aria-expanded="false" aria-controls="accordion-collapse-body-hobbys-userprofile">
                         <span>{props.defaultLanguage?.hobby[props.data?.language as Lang ?? 'th']}</span>
                         <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
@@ -926,7 +921,7 @@ function SideProfile(props:typeProp) {
                      </button>
                   </h2>
                   <div id="accordion-collapse-body-hobbys-userprofile" className="hidden" aria-labelledby="accordion-collapse-heading-hobbys-userprofile">
-                     <div className=" border border-t-0 border-gray-200 dark:border-gray-700">
+                     <div className=" border border-t-0 border-gray-200 ">
                      <div id="accordion-collapse-inside-hobbys-userprofile" data-accordion="collapse" className='font-normal'>
                      {hobbyCategories?.map((value) => {
                         return(
@@ -945,7 +940,7 @@ function SideProfile(props:typeProp) {
             <ul className="font-normal mt-5">
                <div id="accordion-collapse-liftstyle-userprofile" data-accordion="collapse" className='font-normal mt-5'>
                   <h2 id="accordion-collapse-heading-liftstyle-userprofile">
-                     <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-liftstyle-userprofile" aria-expanded="false" aria-controls="accordion-collapse-body-liftstyle-userprofile">
+                     <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200    hover:bg-gray-100  gap-3" data-accordion-target="#accordion-collapse-body-liftstyle-userprofile" aria-expanded="false" aria-controls="accordion-collapse-body-liftstyle-userprofile">
                         <span>{props.defaultLanguage?.lifestyle[props.data?.language as Lang ?? 'th']}</span>
                         <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
@@ -953,13 +948,13 @@ function SideProfile(props:typeProp) {
                      </button>
                   </h2>
                   <div id="accordion-collapse-body-liftstyle-userprofile" className="hidden" aria-labelledby="accordion-collapse-heading-liftstyle-userprofile">
-                     <div className=" border border-t-0 border-gray-200 dark:border-gray-700">
+                     <div className=" border border-t-0 border-gray-200 ">
                         {data ? questionLifestyle.map((value) => {
                            const isChecked = lifestyleSet.has(value.key); 
                            return(
                            <div key={value.key} className="flex items-center ml-2 mb-2 mt-2">
-                              <input id={`${value.key}profile`} onChange={() => updateLifestyle(value.key as LifestyleKey)} type="checkbox" checked={isChecked} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                              <label htmlFor={`${value.key}profile`} className="ms-2 text-sm font-normal text-gray-900 dark:text-gray-300">{value.question}</label>
+                              <input id={`${value.key}profile`} onChange={() => updateLifestyle(value.key as LifestyleKey)} type="checkbox" checked={isChecked} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500   focus:ring-2  "/>
+                              <label htmlFor={`${value.key}profile`} className="ms-2 text-sm font-normal text-gray-900 ">{value.question}</label>
                            </div>
                            )}
                         ) : ''}
@@ -967,13 +962,13 @@ function SideProfile(props:typeProp) {
                   </div>
                   {toggleCreate ? 
                   <div className='flex justify-center items-end pt-10'>
-                     <button type="button" onClick={()=> clickSubmitCreate()} className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">{props.defaultLanguage?.submit_button[props.data?.language as Lang ?? 'th']}</button>
-                     <button type="button" onClick={()=> setNull()} className="text-white bg-red-500 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">{props.defaultLanguage?.reset_button[props.data?.language as Lang ?? 'th']}</button>            
+                     <button type="button" onClick={()=> clickSubmitCreate()} className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.submit_button[props.data?.language as Lang ?? 'th']}</button>
+                     <button type="button" onClick={()=> setNull()} className="text-white bg-red-500 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.reset_button[props.data?.language as Lang ?? 'th']}</button>            
                   </div>
                   : 
                   <div className='flex justify-center items-end pt-10'>
-                     <button type="button" onClick={()=> clickSubmitEdit()} className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">{props.defaultLanguage?.submit_button[props.data?.language as Lang ?? 'th']}</button>
-                     <button type="button" onClick={()=> setSelectUser(defaultUserSelect as typeData)} className="text-white bg-red-500 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">{props.defaultLanguage?.reset_button[props.data?.language as Lang ?? 'th']}</button>            
+                     <button type="button" onClick={()=> clickSubmitEdit()} className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.submit_button[props.data?.language as Lang ?? 'th']}</button>
+                     <button type="button" onClick={()=> setSelectUser(defaultUserSelect as typeData)} className="text-white bg-red-500 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.reset_button[props.data?.language as Lang ?? 'th']}</button>            
                   </div>
                   }
                </div>
@@ -1004,22 +999,22 @@ export function Modal_Confirm_Delete(props:typePropModal_Confirm) {
      <div>
       <div id="popup-modal" className="z-50 justify-center items-center w-100 max-h-full">
          <div className="relative p-4 w-full max-w-md max-h-full">
-            <div className="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
-                  <button type="button" className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+            <div className="relative bg-white rounded-lg shadow-sm ">
+                  <button type="button" className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center  " data-modal-hide="popup-modal">
                      <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                      </svg>
                      <span className="sr-only">Close modal</span>
                   </button>
                   <div className="p-4 md:p-5 text-center">
-                     <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                     <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                      </svg>
-                     <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">{props.defaultLanguage?.text_confirm_delete[props.data?.language as Lang ?? 'th']}</h3>
-                     <button  onClick={() => {props.deleteUser();props.close(false)}} type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-normal rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                     <h3 className="mb-5 text-lg font-normal text-gray-500 ">{props.defaultLanguage?.text_confirm_delete[props.data?.language as Lang ?? 'th']}</h3>
+                     <button  onClick={() => {props.deleteUser();props.close(false)}} type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-normal rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
                         {props.defaultLanguage?.submit_delete[props.data?.language as Lang ?? 'th']}
                      </button>
-                     <button onClick={() => {props.close(false)}} type="button" className="py-2.5 px-5 ms-3 text-sm font-normal text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">{props.defaultLanguage?.cancel[props.data?.language as Lang ?? 'th']}</button>
+                     <button onClick={() => {props.close(false)}} type="button" className="py-2.5 px-5 ms-3 text-sm font-normal text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100      ">{props.defaultLanguage?.cancel[props.data?.language as Lang ?? 'th']}</button>
                   </div>
             </div>
          </div>

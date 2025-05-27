@@ -39,7 +39,7 @@ export default function Filter_accordion(props:FilterAccordionProps) {
   return (
     <>
       <h2 id={`accordion-collapse-heading-${props.name}${props.parent ?? ''}`}>
-        <button type="button" className="flex items-center justify-between w-full pl-4 pr-4 pt-2 pb-2  font-normal rtl:text-right text-gray-500 focus:ring-0 focus:border-blue-600 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target={`#accordion-collapse-body-${props.name}${props.parent ?? ''}`} aria-expanded="false" aria-controls={`accordion-collapse-body-${props.name}${props.parent ?? ''}`}>
+        <button type="button" className="flex items-center justify-between w-full pl-4 pr-4 pt-2 pb-2  font-normal rtl:text-right text-gray-500 focus:ring-0 focus:border-blue-600 focus:ring-gray-200    hover:bg-gray-100  gap-3" data-accordion-target={`#accordion-collapse-body-${props.name}${props.parent ?? ''}`} aria-expanded="false" aria-controls={`accordion-collapse-body-${props.name}${props.parent ?? ''}`}>
           <span> 
             { imageurl ?
               <Image src={imageurl} width={30} height={30} alt={`${props.name}${props.parent ?? ''} image`} className='p-1'/> : ''
@@ -52,7 +52,7 @@ export default function Filter_accordion(props:FilterAccordionProps) {
         </button>
     </h2>
     <div id={`accordion-collapse-body-${props.name}${props.parent ?? ''}`} className="hidden" aria-labelledby={`accordion-collapse-heading-${props.name}${props.parent ?? ''}`}>
-        <div className="p-1 border border-t-0 border-gray-200 dark:border-gray-700">
+        <div className="p-1 border border-t-0 border-gray-200 ">
           {props.data ? 
               Object.entries(props.data).map(([id,value]) => (
                     <button key={id} id={`${id}${props.parent ?? ''}`} onClick={() => props.updateDataSet(props.name,id)} className='border border-zinc-300 inline-flex items-center bg-white ml-2 mr-2 mt-2 p-1 rounded-lg hover:bg-gray-200'>

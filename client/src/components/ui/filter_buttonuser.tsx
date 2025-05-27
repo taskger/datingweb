@@ -26,7 +26,7 @@ export default function Filter_buttonuser(props:Props) {
     <>
     {props.data.map((value,index) => {
       return (
-      <button onClick={() => handleClick(value)} key={index} id={`${index}`} type="button" className={`flex ${genderClass(value.profile?.gender ?? '')} justify-start text-white w-full h-20 mt-2 focus:outline-none  font-normal rounded-full text-sm  text-center  dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800`}>
+      <button onClick={() => handleClick(value)} key={index} id={`${index}`} type="button" className={`flex ${genderClass(value.profile?.gender ?? '')} justify-start text-white w-full h-20 mt-2 focus:outline-none  font-normal rounded-full text-sm  text-center `}>
       <div className='relative w-22 h-20 rounded-full ring-3 ring-white'>
         <Image src={value.image && value.image !== '' ? value.image : '/user.png'} width={50} height={50} alt={`heart icon`} className='shadow-2xl w-full h-full rounded-full'/>
         <span className='absolute top-[-12px] left-[-12px] p-1 inline-flex items-center text-center justify-center rounded-lg'>

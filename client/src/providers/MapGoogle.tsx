@@ -277,12 +277,12 @@ const MapProvider = (props:typeProps) => {
         </div>:''}
         <div className='absolute bottom-6 right-50 z-10'>
           <button type="button" onClick={button_move_locationdata} 
-          className="text-black border-1 border-gray-300 ml-5 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800  focus:ring-4 focus:ring-purple-300 rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+          className="text-black border-1 border-gray-300 ml-5 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800  focus:ring-4 focus:ring-purple-300 rounded-lg text-sm px-5 py-2.5   "
           >
             {settings.location_in_system[dataMyself?.language as Lang ?? 'th']} 
           </button>
           <button type="button" onClick={button_move_current} 
-          className="text-black border-1 border-gray-300 ml-5 bg-purple-700 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800  focus:ring-4 focus:ring-purple-300 rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+          className="text-black border-1 border-gray-300 ml-5 bg-purple-700 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800  focus:ring-4 focus:ring-purple-300 rounded-lg text-sm px-5 py-2.5   "
           >
             {settings.location_current[dataMyself?.language as Lang ?? 'th']} 
           </button>

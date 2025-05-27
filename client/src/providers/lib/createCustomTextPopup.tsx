@@ -46,7 +46,9 @@ export const PopupUser = (data:typeData,lang:Lang,id:string) => {
                 ${display.age}
               </span>
             </span>
-            <span class="texthead">${settings.height[lang]} <span class="textinfo">${display.height}</span></span>
+            ${display.height != 0 ? 
+            `<span class="texthead">${settings.height[lang]} <span class="textinfo">${display.height}</span></span>`: ''}
+            
             <span class="texthead">${settings.status[lang]} <span class="textinfo"> ${display.status}</span></span>
             <span class="texthead">${settings.gender[lang]} <span class="textinfo">${display.gender}</span></span>
             ${display.ethnicity ? 
@@ -128,14 +130,14 @@ export const PopupUser = (data:typeData,lang:Lang,id:string) => {
           `<div>
                <span class="texthead">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" width="25" height="20" alt="heartsend"/>
-              ${data.profile.contact.ig} 
+                <a href="https://instagram.com/${data.profile.contact.ig} ">${data.profile.contact.ig} </a> 
               </span>
           </div>` : ''}
           ${data.profile?.contact?.telephone ? 
           `<div>
               <span class="texthead">
                 <img src="https://images.vexels.com/media/users/3/205069/isolated/preview/f207045d96c258fed664305f0ac2c5bd-telephone-handset-blue-icon.png?w=360" width="25" height="20" alt="heartsend"/>
-              ${data.profile.contact.telephone} 
+                <a href="tel:${data.profile.contact.telephone}">${data.profile.contact.telephone} </a>
               </span>
           </div>` : ''}
           <div>
