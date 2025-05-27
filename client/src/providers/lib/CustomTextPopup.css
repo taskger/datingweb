@@ -10,6 +10,31 @@
 .insetshadow{
   box-shadow: 0px 0px 10px rgba(0, 0, 0,0.2) inset;
 }
+@keyframes googleloginhover {
+  0% {width: 40px;}
+  100% {width: 200px;}
+}
+.googleloginhover{
+  width: 40px;
+}
+.googleloginhover:hover{
+  animation-name: googleloginhover;
+  animation-fill-mode: forwards;
+  animation-duration: 0.4s;
+}
+
+@keyframes googlelogouthover {
+  0% {width: 40px;}
+  100% {width: 120px;}
+}
+.googlelogouthover{
+  width: 40px;
+}
+.googlelogouthover:hover{
+  animation-name: googlelogouthover;
+  animation-fill-mode: forwards;
+  animation-duration: 0.4s;
+}
 .bg{
   width:500px;
   height: max-content;
@@ -17,6 +42,13 @@
   background-color: #ffffff;
   border-radius: 10px;
   padding: 5px;
+  font-family: var(--font-mitr);
+  font-weight: 400;
+  position: relative;
+}
+.textinfo{
+  font-weight: 200;
+  margin-left: 4px;
 }
 @keyframes filterbannerfemalehover {
   0% {background-color: #EA596E ;}
@@ -71,28 +103,41 @@
 }
 .gm-style-iw-c .gm-style-iw-d{
   overflow: auto !important;
-  scrollbar-color: rgb(0, 0, 0) rgba(186, 218, 85,0);
+  scrollbar-color: rgb(255, 255, 255) rgba(242, 242, 242, 0);
   padding-right: 5px;
   border-radius: 10px;
 }
 
+
 @keyframes example {
   100% {background-color:rgb(224, 224, 224);}
 }
+.description{
+  margin-top: 15px;
+}
 .scopeProfile{
-  display: inline-flex;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
 }
 .profile{
-  width: 60px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
 }
 .texthead{
   padding: 5px;
   display: inline-flex;
-
+  justify-content: center;
+  align-items: center;
+}
+.texthead img{
+  margin-left: 5px;
+  margin-right: 10px;
 }
 .hobbys{
-  background-color: white;
-  filter: drop-shadow(0px 0px 3px  rgba(0, 0, 0,0.4));
+  background-color: white ;
+  filter: drop-shadow(0px 0px 3px  rgba(0, 0, 0,0.2));
   padding: 7px;
   padding-left: 5px;
   padding-right: 5px;
@@ -101,6 +146,81 @@
   display: inline-flex;
   align-items: center;
 }
+.imagelifestyle{
+  position: absolute;
+  top:-10px;
+  left:-10px;
+  transform: rotate(10deg)
+}
+.lifestyle{
+  background-color: white ;
+  filter: drop-shadow(0px 0px 3px  rgba(0, 0, 0,0.2));
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin:8px;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  color: white;
+  text-shadow:  0px 0px 20px rgb(0, 0, 0,1);;
+
+}
+.lifestyle.alcohol img{
+ width: 28px;
+}
+.lifestyle.alcohol{
+  background-color: #fe4343;
+  border: solid;
+  border-width: 3px;
+  border-color: #ff7575;
+
+ }
+.lifestyle.pet{
+  background-color: #A44F11;
+  border: solid;
+  border-width: 3px;
+  border-color: #CE8856;
+}
+.lifestyle.exercise{
+  background-color: #1689FC;
+  border: solid;
+  border-width: 3px;
+  border-color: #17ACE8;
+}
+.lifestyle.book{
+  background-color: #ed4efb;
+  border: solid;
+  border-width: 3px;
+  border-color: #e58afc;
+}
+.lifestyle.healthy{
+  background-color: #42e478;
+  border: solid;
+  border-width: 3px;
+  border-color: #4bd779;
+}
+.lifestyle.smoke{
+  background-color: #a9a9a9;
+  border: solid;
+  border-width: 3px;
+  border-color: #bababa;
+}
+
+.lifestyle.weed{
+  background-color: #89F336;
+  border: solid;
+  border-width: 3px;
+  border-color: rgb(132, 245, 132);
+}
+
+.lifestyle.game{
+  background-color: #f5af35;
+  border: solid;
+  border-width: 3px;
+  border-color: #fed285;
+}
+
 
 .hobbys:hover{
   border-color: rgba(0, 0, 0,0.2);
@@ -180,4 +300,53 @@
 .bg-gray-900\/50{
     z-index: 35;
     background-color: rgba(0, 0, 0, 0.2);
+}
+.divheart{
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+.heartsendmale{
+  background-color: #448bef;
+  padding: 4px;           
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 0.5rem; 
+  cursor: pointer;
+}
+@keyframes heartsend {
+  0% {padding: 4px;}
+  100% {padding: 7px;}
+}
+.heartsendmale:hover{
+  animation-name: heartsend;
+  animation-fill-mode: forwards;
+  animation-duration: 0.5s;
+}
+.heartsend:hover{
+  animation-name: heartsend;
+  animation-fill-mode: forwards;
+  animation-duration: 0.5s;
+  
+}
+.heartsend{
+  background-color: #ef4444;
+  padding: 4px;           
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 0.5rem; 
+  cursor: pointer;
+}
+
+.heart-icon{
+  padding: 2px;
+}
+.number-heart{
+  margin-left: 8px;   /* ml-2 = 8px */
+  margin-right: 8px;  /* mr-2 = 8px */
+  color: #ffffff;        /* text-white */
 }

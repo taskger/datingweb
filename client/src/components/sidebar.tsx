@@ -8,7 +8,7 @@ import { degree,hobbys,questionLifestyle,gender,worldReligions,
    group_blood,chinese_zodiac,western_zodiac,status,worldEthnicities } from './data/FakeData'
 import { checkDegree } from '@/providers/lib/TranslateToThai'
 import { toast } from 'react-toastify';
-import { typeData,Profile,Settings,TranslatedString,CategoryNameHobby,LifestyleKey,CategoryProfile } from '@/providers/lib/typeData'
+import { typeData,Profile,Settings,TranslatedString,CategoryNameHobby,LifestyleKey,CategoryProfile, HobbyCategory } from '@/providers/lib/typeData'
 
 // import Modalsetting from '@/components/report/Modalsetting';
 
@@ -18,6 +18,7 @@ import { typeData,Profile,Settings,TranslatedString,CategoryNameHobby,LifestyleK
    setGetLatLng:(localtion?: Profile['location'],email?:string) => void
    defaultLanguage:Settings
    language:keyof TranslatedString
+   data:typeData
  }
  type CategoryName = 'adventure' | 'song' | 'content' | 'game' | 'movie'
   | 'selfcare' | 'sport' | 'travel'
@@ -107,7 +108,7 @@ function Sidebar(props:typeProps) {
         .catch((error) => {
           console.error("Error fetching universities:", error);
         });
-      
+
     }, []);
 
     const deleteAlert = (value:string) => {
@@ -206,7 +207,7 @@ function Sidebar(props:typeProps) {
          western_zodiac: { setter: setDataWesternZodiac },
          chinese_zodiac: { setter: setDataChineseZodiac },
          group: { setter: setDataGroupฺBlood },
-         degree: { setter: setDataDegree, translateTH: checkDegree },
+         degree: { setter: setDataDegree},
          university: { setter: setDataUniversity },
          lifestyle: { setter: setDataLifestyle },
          adventure: { setter: setDataAdventure},
@@ -290,6 +291,7 @@ function Sidebar(props:typeProps) {
 
       const { userFilter, userData } = props;
       useEffect(() => {
+
          let filtered = userData
          const collectionFilter: typeCollectionFilter[]  = [
             {user_data:'gender',data_select:dataGender},
@@ -313,8 +315,9 @@ function Sidebar(props:typeProps) {
             { user_data: 'travel', data_select: dataTravel },
          ]
          
-         filtered = filtered?.filter((user) => user.profile?.age != null && (user.profile?.age >= minAge && user.profile?.age <= maxAge))
+         filtered = filtered?.filter((user) => user.profile?.age != null && (user.profile?.age >= minAge && user.profile?.age <= maxAge))        
          filtered = filtered?.filter((user) => user.profile?.salary != null && (user.profile?.salary >= minSalary && user.profile?.salary <= maxSalary))
+         console.log(filtered)
          if(dataHeight) filtered = filtered?.filter((user) => {
                return user.profile?.height &&  user.profile?.height >= dataHeight
             })
@@ -338,7 +341,9 @@ function Sidebar(props:typeProps) {
             }
             );
          }
-         setDataFilter(new Set(filtered));
+         setDataFilter(new Set(filtered?.sort((a,b) => 
+            (b.profile?.like?.length ?? 0) - (a.profile?.like?.length ?? 0) 
+      )));
          userFilter(filtered ?? [])
        },[dataGender,minAge,maxAge,minSalary,maxSalary,dataHeight,dataStatus
          ,dataEthnicity,dataReligion,dataWesternZodiac,dataChineseZodiac,dataGroupฺBlood,
@@ -354,6 +359,9 @@ function Sidebar(props:typeProps) {
          </svg>
          </button>
       </div>
+      <div>
+         
+      </div>
       <div id="sidebar" className="fixed top-0 left-0 z-40 w-100 h-full p-2 overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-gray-800" tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-label">
          <button type="button" data-drawer-hide="sidebar" aria-controls="sidebar" 
             className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" >
@@ -365,13 +373,13 @@ function Sidebar(props:typeProps) {
                <span>
                   {countSelect} {props.defaultLanguage.select[props.language]}
                </span>
-               <button className=" text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button" data-drawer-target="sidebar-filter" data-drawer-show="sidebar-filter" aria-controls="sidebar-filter">
+               <button className=" text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-normal rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button" data-drawer-target="sidebar-filter" data-drawer-show="sidebar-filter" aria-controls="sidebar-filter">
                   {props.defaultLanguage.filter[props.language]}
                </button>
          </div>
          <div className="pt-2">
-            <ul className="font-medium">
-               <ul className="relative insetshadow font-medium border border-gray-300 rounded-xl overflow-y-auto h-40 pb-3">
+            <ul className="font-normal">
+               <ul className="relative insetshadow font-normal border border-gray-300 rounded-xl overflow-y-auto h-40 pb-3">
                   <div>
                      <span className='border border-zinc-300 inline-flex items-center bg-white ml-2 mr-2 mt-2 p-2 rounded-lg hover:bg-gray-200'>
                      {props.defaultLanguage?.age[props.language]} {minAge} - {maxAge}
@@ -387,7 +395,7 @@ function Sidebar(props:typeProps) {
                      {allCategories?.map((value) => {
                      return(
                         <span key={value.name}>
-                           <Filter_displaycatagory data={[...value.data]} updateDataSet={updateDataSet} name={value.name}/>
+                           <Filter_displaycatagory data={[...value.data]} updateDataSet={updateDataSet} name={value.name} lang={props.language}/>
                         </span>
                         )
                      })}
@@ -398,14 +406,12 @@ function Sidebar(props:typeProps) {
                   <button></button>
                   <span>{props.defaultLanguage?.found_filter_people[props.language]} {[...dataFilter].length}</span>
                </div>
-               <ul className="relative bg-gray-100 insetshadow font-medium border border-gray-300 rounded-xl overflow-y-auto h-80 max-h-full pb-3 pl-2 pr-2">
+               <ul className="relative bg-gray-100 insetshadow font-normal border border-gray-300 rounded-xl overflow-y-auto h-80 max-h-full pb-3 pl-2 pr-2">
                   <div data-drawer-hide="sidebar" aria-controls="sidebar" role="button" >
                         <Filter_buttonuser data={[...dataFilter]} defaultLanguage={props.defaultLanguage} language={props.language} setGetLatLng={props.setGetLatLng} />
                   </div>   
-               
                </ul>
             </ul>
-            
          </div>
       </div> 
 
@@ -421,7 +427,7 @@ function Sidebar(props:typeProps) {
          </button>
          </div>
          <div className="pt-5  overflow-y-auto">
-            <ul className="font-medium">
+            <ul className="font-normal">
                <div className='flex justify-between items-center'>
                      <span>
                         {props.defaultLanguage?.age[props.language]}
@@ -451,7 +457,7 @@ function Sidebar(props:typeProps) {
                </div>
                </div>
             </ul>
-            <ul className="font-medium mt-5">
+            <ul className="font-normal mt-5">
                <div className='flex justify-between items-center'>
                      <span>
                         {props.defaultLanguage?.salary[props.language]}
@@ -483,67 +489,67 @@ function Sidebar(props:typeProps) {
                </div>
                </div>
             </ul>
-            <ul className="font-medium mt-5">
+            <ul className="font-normal mt-5">
                <div className="grid grid-cols-4 gap-2 z-0">
                   <div className='relative'>
                      <Filter_form readonly value={[...dataGender].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.gender[props.language]} id="gender"/>
-                     <Filter_displayselect  data={gender} updateDataSet={updateDataSet} name="gender"/>
+                     <Filter_displayselect  data={gender} updateDataSet={updateDataSet} name="gender" lang={props.language}/>
                   </div>
                   <div className='relative'>
                      <Filter_form readonly value={`${dataHeight}cm+`} class="cursor-pointer" name={props.defaultLanguage?.height[props.language]} id="height"/>
-                     <Filter_displayselect data={[...Array(60)].map((x,i)=>`${i+140}cm`)} updateDataSet={updateDataSet} name="height"/>
+                     <Filter_displayselect data={[...Array(60)].map((x,i)=>`${i+140}cm`)} updateDataSet={updateDataSet} name="height" lang={''}/>
                   </div>
                   <div className='relative'>
                      <Filter_form readonly value={[...dataStatus].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.status[props.language]} id="status"/>
-                     <Filter_displayselect data={status} updateDataSet={updateDataSet} name="status"/>
+                     <Filter_displayselect data={status} updateDataSet={updateDataSet} name="status" lang={props.language}/>
                   </div> 
                   <div className='relative'>
                      <Filter_form readonly value={[...dataEthnicity].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.ethnicity[props.language]} id="ethnicity"/>
-                     <Filter_displayselect data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity"/>
+                     <Filter_displayselect data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={props.language}/>
                   </div>
                </div>
                <div className="grid grid-cols-4 gap-2 z-0 mt-2 ">
                   <div className='relative'>
                      <Filter_form readonly value={[...dataReligion].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.religion[props.language]} id="religion"/>
-                     <Filter_displayselect data={worldReligions} updateDataSet={updateDataSet} name="religion"/>
+                     <Filter_displayselect data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={props.language}/>
                   </div>
                   <div className='relative'>
                      <Filter_form readonly value={[...dataWesternZodiac].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.western_zodiac[props.language]} id="western_zodiac"/>
-                     <Filter_displayselect data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac"/>
+                     <Filter_displayselect data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={props.language}/>
                   </div>
                   <div className='relative'>
                      <Filter_form readonly value={[...dataChineseZodiac].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.chinese_zodiac[props.language]} id="chinese_zodiac"/>
-                     <Filter_displayselect data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac"/>
+                     <Filter_displayselect data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={props.language}/>
                   </div>
                   <div className='relative'>
                      <Filter_form readonly value={[...dataGroupฺBlood].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.group_blood[props.language]} id="group"/>
-                     <Filter_displayselect data={group_blood} updateDataSet={updateDataSet} name="group"/>
+                     <Filter_displayselect data={group_blood} updateDataSet={updateDataSet} name="group" lang={''}/>
                   </div>
                </div>
             </ul>
-            <ul className="font-medium mt-5">
+            <ul className="font-normal mt-5">
                <div className="z-0">
-                     <Filter_form  class="cursor-pointer" readonly name={props.defaultLanguage?.degree[props.language]} id="degree" value={[...dataDegree].map(value => checkDegree(value))} onFocus = {setToggleOpenDegree} onBlur = {setToggleOpenDegree}/>
+                     <Filter_form  class="cursor-pointer" readonly name={props.defaultLanguage?.degree[props.language]} id="degree" value={[...dataDegree].map(value => checkDegree(value,props.language))} onFocus = {setToggleOpenDegree} onBlur = {setToggleOpenDegree}/>
                   {toggleOpenDegree ? 
-                     <Filter_displayselect data={degree} updateDataSet = {updateDataSet} name="degree"/>
+                     <Filter_displayselect data={degree} updateDataSet = {updateDataSet} name="degree" lang={props.language}/>
                   :''}
                </div>
             </ul>
             {(dataDegree.has('vocational') || dataDegree.has('high_vocational') || dataDegree.has('diploma') 
                   || dataDegree.has('bachelors') || dataDegree.has('masters') || dataDegree.has('doctorate')) ?
-               <ul className="font-medium mt-5">
+               <ul className="font-normal mt-5">
                <div className=" z-0">
                      <Filter_form name={props.defaultLanguage?.university[props.language]} id="university" value={inputUniversity} onFocus = {setToggleOpenUniversity} onBlur = {setToggleOpenUniversity} onChange = {setInputUniversity}/>
                      {toggleOpenUniversity ? 
-                        <Filter_displayselect data={filteredUniversity} setInput = {setInputUniversity} updateDataSet = {updateDataSet} name="university"/>
+                        <Filter_displayselect data={filteredUniversity} setInput = {setInputUniversity} updateDataSet = {updateDataSet} name="university" lang={''}/>
                      :''}
                </div>
             </ul>: ''}
 
-            <ul className="font-medium mt-5">
-               <div id="accordion-collapse-hobbys" data-accordion="collapse" className='font-medium mt-5'>
+            <ul className="font-normal mt-5">
+               <div id="accordion-collapse-hobbys" data-accordion="collapse" className='font-normal mt-5'>
                   <h2 id="accordion-collapse-heading-hobbys">
-                     <button type="button" className="flex items-center justify-between w-full p-3  font-medium rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-hobbys" aria-expanded="false" aria-controls="accordion-collapse-body-hobbys">
+                     <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-hobbys" aria-expanded="false" aria-controls="accordion-collapse-body-hobbys">
                         <span>{props.defaultLanguage?.hobby[props.language]}</span>
                         <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
@@ -552,11 +558,11 @@ function Sidebar(props:typeProps) {
                   </h2>
                   <div id="accordion-collapse-body-hobbys" className="hidden" aria-labelledby="accordion-collapse-heading-hobbys">
                      <div className=" border border-t-0 border-gray-200 dark:border-gray-700">
-                     <div id="accordion-collapse-inside-hobbys" data-accordion="collapse" className='font-medium'>
+                     <div id="accordion-collapse-inside-hobbys" data-accordion="collapse" className='font-normal'>
                      {hobbyCategories?.map((value) => {
                         return(
                            <span key={value.name}>
-                              <Filter_accordion data={value.data} updateDataSet={updateDataSet} name={value.name} parent={''}/>
+                              <Filter_accordion data={value.data} updateDataSet={updateDataSet} name={value.name as HobbyCategory} parent={''} lang={props.language}/>
                            </span>
                         )
                      })}
@@ -567,10 +573,10 @@ function Sidebar(props:typeProps) {
                </div>
             </ul>
 
-            <ul className="font-medium mt-5">
-               <div id="accordion-collapse-liftstyle" data-accordion="collapse" className='font-medium mt-5'>
+            <ul className="font-normal mt-5">
+               <div id="accordion-collapse-liftstyle" data-accordion="collapse" className='font-normal mt-5'>
                   <h2 id="accordion-collapse-heading-liftstyle">
-                     <button type="button" className="flex items-center justify-between w-full p-3  font-medium rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-liftstyle" aria-expanded="false" aria-controls="accordion-collapse-body-liftstyle">
+                     <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-liftstyle" aria-expanded="false" aria-controls="accordion-collapse-body-liftstyle">
                         <span>{props.defaultLanguage?.lifestyle[props.language]}</span>
                         <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
@@ -582,7 +588,7 @@ function Sidebar(props:typeProps) {
                         {questionLifestyle.map((value) => 
                            <div key={value.key} className="flex items-center ml-2 mb-2 mt-2">
                               <input id={`${value.key}sidebar`} onChange={() => updateDataSet('lifestyle',value.key)} type="checkbox" checked={dataLifestyle.has(value.key)} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                              <label htmlFor={`${value.key}sidebar`} className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{value.question}</label>
+                              <label htmlFor={`${value.key}sidebar`} className="ms-2 text-sm font-normal text-gray-900 dark:text-gray-300">{value.question}</label>
                            </div>
                         )}
                      </div>
@@ -590,7 +596,7 @@ function Sidebar(props:typeProps) {
                </div>
             </ul>
 
-            <ul className="relative insetshadow font-medium mt-5 border border-gray-300 rounded-xl overflow-y-auto max-h-60 pb-3">
+            <ul className="relative insetshadow font-normal mt-5 border border-gray-300 rounded-xl overflow-y-auto max-h-60 pb-3">
                <div>
                   <div className="sticky top-0 right-0 left-0 max-w-full h-8 text-lg text-center bg-gray-100 rounded-t-xl">{props.defaultLanguage?.filter_use[props.language]}</div>
                      <span className='border border-zinc-300 inline-flex items-center bg-white ml-2 mr-2 mt-2 p-2 rounded-lg hover:bg-gray-200'>
@@ -607,7 +613,7 @@ function Sidebar(props:typeProps) {
                   {allCategories?.map((value) => {
                      return(
                         <span key={value.name}>
-                           <Filter_displaycatagory data={[...value.data]} updateDataSet={updateDataSet} name={value.name}/>
+                           <Filter_displaycatagory data={[...value.data]} updateDataSet={updateDataSet} name={value.name} lang={props.language}/>
                         </span>
                      )
                   })}

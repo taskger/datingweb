@@ -4,8 +4,9 @@ import Script from 'next/script';
 import { useEffect, useRef, useState,useCallback  } from 'react';
 import { createCustomMarker , CustomMarker } from './lib/createCustomMarkers';
 import { PopupUser ,PopupMySelfCurrent } from './lib/createCustomTextPopup';
-import { Profile, typeData } from './lib/typeData';
-
+import { Lang, Profile, typeData } from './lib/typeData';
+import { Settings } from './lib/typeData';
+import { settings } from '@/components/data/FakeData';
 interface typeProps{
   userData?:typeData[]
   userMove?: {
@@ -13,7 +14,7 @@ interface typeProps{
     email?: string;
   };
   getDataMyself:typeData
-  
+  defaultLanguage:Settings
 }
 
 const MapProvider = (props:typeProps) => {
@@ -31,14 +32,14 @@ const MapProvider = (props:typeProps) => {
   const infoWindowMapRef = useRef<Map<string, google.maps.InfoWindow>>(new Map()); //เก้บข้อมูลแสดงผล
   const getUserRef = useRef<typeData[]>([]); //เก็บ user ดิบๆ
   const [dataMyself,setDataMyself] = useState<typeData>()
+  const [toggleDisplay,setToggleDisplay] = useState<boolean>(false)
   const {userData,getDataMyself} = props
-
   useEffect(() => {
     if(getDataMyself){
       setDataMyself(getDataMyself as typeData)
     }
   },[getDataMyself])
-
+  
   const datamap = useCallback(async () => {
     if (mapLoaded && window.google && mapRef.current) {
       const map = new window.google.maps.Map(mapRef.current, {
@@ -66,12 +67,14 @@ const MapProvider = (props:typeProps) => {
     datamap() 
   }, [datamap]);
 
-  const clickUserMove = (location:Profile['location'],email:string) =>{
-    map?.panTo(location)
-    map?.setZoom(18)
-    const marker = markerMapRef.current.get(email)
-    const infoWindow = infoWindowMapRef.current.get(email)
-    if (marker && marker?.position && infoWindow && map) {
+  const clickUserMove = (location:Profile['location'],email?:string) =>{
+      map?.panTo(location)
+      map?.setZoom(15)
+    if(email) {
+      const marker = markerMapRef.current.get(email)
+      const infoWindow = infoWindowMapRef.current.get(email)
+      console.log(infoWindow)
+      if (marker && marker?.position && infoWindow && map) {
         infoWindow.open({
           anchor: marker,
           map,
@@ -79,14 +82,30 @@ const MapProvider = (props:typeProps) => {
         map.panTo(marker.position);
         map.setZoom(15);
       }
+    }else{
+      const getMarker =  markerMapRef.current.get('registerMap')
+      console.log(getMarker)
+      if (getMarker) {
+        getMarker.map = null
+        markerMapRef.current.delete('registerMap')
+      }
+      const registerMap = new window.google.maps.marker.AdvancedMarkerElement({
+        map,
+        position: location,
+      });
+      markerMapRef.current.set('registerMap', registerMap);
+    }
   }
   useEffect(() => {
-    if(!props.userMove?.location || !props.userMove?.email) return
+    if (props.userMove?.location && !props.userMove?.email){
+      clickUserMove(props.userMove.location)
+    }else if(props.userMove?.location && props.userMove?.email){
       const location = props.userMove.location
       const email = props.userMove.email
       if (props.userMove){
         clickUserMove(location,email)
       }
+    }
   }, [props.userMove,map])
   
   useEffect(() => {
@@ -134,6 +153,18 @@ const MapProvider = (props:typeProps) => {
   }
 
   useEffect(() => {
+    markerMapRef.current.forEach((marker) => {
+      marker.map = null; 
+    });
+    markerMapRef.current.clear();
+    markerRef.current.clear()
+    infoWindowMapRef.current.forEach((info) => {
+      info.close() 
+    });
+    infoWindowMapRef.current.clear()
+  },[dataMyself])
+  
+  useEffect(() => {
     user?.forEach((value:typeData) => { 
       if (value.profile){
         if (markerRef.current.has(`${value.email}`)) return
@@ -147,12 +178,12 @@ const MapProvider = (props:typeProps) => {
         let infoWindow
         if(value.profile.gender == 'female'){
           infoWindow = new window.google.maps.InfoWindow({
-            content: PopupUser(value),
+            content: PopupUser(value,dataMyself?.language as Lang,dataMyself?._id as string),
             ariaLabel: "Female",
           });
         }else{
           infoWindow = new window.google.maps.InfoWindow({
-            content: PopupUser(value),
+            content: PopupUser(value,dataMyself?.language as Lang,dataMyself?._id as string),
             ariaLabel: "Male",
           });
         }
@@ -167,7 +198,7 @@ const MapProvider = (props:typeProps) => {
       }
     })
       
-  },[user,map])
+  },[user,map,dataMyself])
   
   
   useEffect(() => {
@@ -193,8 +224,7 @@ const MapProvider = (props:typeProps) => {
   
   const button_move_locationdata = async () => {
     if(dataMyself && dataMyself.profile) {
-      map?.panTo(dataMyself?.profile.location)
-      map?.setZoom(15)
+      clickUserMove(dataMyself?.profile.location,dataMyself.email)
     }
 
 
@@ -203,16 +233,16 @@ const MapProvider = (props:typeProps) => {
     navigator.geolocation.getCurrentPosition((position) => {
       const {latitude,longitude} = position.coords
       const LatLng = {lat:latitude,lng:longitude}
+      clickUserMove(LatLng,dataMyself?.email)
       map?.panTo(LatLng)
-      map?.setZoom(12)
+      map?.setZoom(15)
       
     })
   }
-  
   return (
     <>
       <Script
-        // src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&v=3.59&libraries=marker`}
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}&v=3.59&libraries=marker,geometry`}
         strategy="afterInteractive"
         onLoad={() => {
           console.log('✅ Google Maps API loaded');
@@ -221,31 +251,40 @@ const MapProvider = (props:typeProps) => {
       />
       <div>
         <div id="googleMap" ref={mapRef} className="w-screen h-screen"/>
-        <div className='absolute top-2.5 right-15 z-10 text-black text-gray-500 font-bold border-1 border-gray-300 p-2 rounded-lg bg-white'>
+        <div onClick={() => setToggleDisplay(!toggleDisplay)} className=' cursor-pointer absolute top-2.5 right-5 z-10 text-black text-gray-500 font-bold border-1 border-gray-300 p-2 rounded-lg bg-white flex items-center justify-between'>
           <span>
-            จำนวนคนที่เจอ {copuntPeople}
+            {settings.found_filter_people[dataMyself?.language as Lang ?? 'th']} 
           </span>
+          <span className='ml-2 mr-2'>
+          {copuntPeople}
+          </span>
+          <span className=' mr-2'>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </span> 
         </div>
-        <div className='max-h-60 overflow-y-auto absolute top-13 right-15 z-10 text-black text-gray-500 font-bold border-1 border-gray-300 p-2 rounded-lg bg-white'>
+        {toggleDisplay ? 
+        <div className='max-h-60 overflow-y-auto absolute top-14 right-5 z-10 text-black text-gray-500 font-bold border-1 border-gray-300 p-1 rounded-lg bg-white'>
             {userInBound.map(value => 
             <div key={value.email}>
-              <button onClick={() => {if (value.profile) { clickUserMove(value.profile.location,value.email)}}} onMouseEnter={() => console.log('qweqw')}className={`w-full mb-1 
+              <button onClick={() => {if (value.profile) { clickUserMove(value.profile.location,value.email)}}} onMouseEnter={() => console.log('qweqw')}className={`w-full rounded-sm p-1 mb-1
                 ${value.profile?.gender == 'female' ? 'filterbannerfemale text-white ' : value.profile?.gender == 'male' ? 'filterbannermale text-white ' : 'filterbannerother text-black'}`}>
                 {value.profile?.name}
               </button>
             </div>
             )}
-        </div>
+        </div>:''}
         <div className='absolute bottom-6 right-50 z-10'>
           <button type="button" onClick={button_move_locationdata} 
           className="text-black border-1 border-gray-300 ml-5 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800  focus:ring-4 focus:ring-purple-300 rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
           >
-            ที่อยู่ในระบบ
+            {settings.location_in_system[dataMyself?.language as Lang ?? 'th']} 
           </button>
           <button type="button" onClick={button_move_current} 
           className="text-black border-1 border-gray-300 ml-5 bg-purple-700 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800  focus:ring-4 focus:ring-purple-300 rounded-lg text-sm px-5 py-2.5 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
           >
-            ที่อยู่ในปัจจุบัน
+            {settings.location_current[dataMyself?.language as Lang ?? 'th']} 
           </button>
         </div>
 

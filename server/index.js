@@ -78,6 +78,26 @@ app.put('/update/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+app.put('/heart/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const payload = req.body
+    const likeUser = await User.findOne({ _id: id });
+    const userRequest = await User.findOne({ _id:payload.id });
+    if (!userRequest) return res.status(401).json({ error: 'Unauthorized user' });
+    const checkHaveLike = likeUser.profile.like.includes(userRequest.id)
+    if (!checkHaveLike){
+       console.log('work')
+      await User.updateOne({_id: id}, {$push: {"profile.like":userRequest.id}});
+      res.status(200).json({ status : 200});    
+    }else{
+      await User.updateOne({_id: id}, {$pull: {"profile.like":userRequest.id}});
+      return res.status(409).json({ status : 409});
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 app.delete('/delete/:id', async (req, res) => {
   try{
     const { id } = req.params
@@ -112,6 +132,17 @@ app.post('/create/:id', async (req, res) => {
       console.log('error')
       res.status(401).json({status:401})
     }
+  }catch{
+    res.status(500).json({ error: error.message });
+  }
+})
+app.post('/create', async (req, res) => {
+  try{
+    const payload = req.body
+    const checkEmail = await User.findOne({email:payload.email})
+    if (checkEmail?.email) return res.status(400).json({status:400})
+    await User.create(payload)
+    res.status(200).json({status:200})
   }catch{
     res.status(500).json({ error: error.message });
   }

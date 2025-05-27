@@ -1,4 +1,4 @@
-import { Settings } from "@/providers/lib/typeData";
+import { SettingChineseZodiac, SettingGender, SettingRole, Settings, SettingWorldEthnicities } from "@/providers/lib/typeData";
 
 export const fakeLocations = [
   {'location': {'lat': 18.825, 'lng': 98.912}}, 
@@ -103,7 +103,7 @@ export const settings : Settings = {
   university: { en: 'University', th: 'มหาวิทยาลัย' },
   hobby: { en: 'Hobby', th: 'งานอดิเรก' },
   adventure: { en: 'Adventure', th: 'ผจญภัย' },
-  song: { en: 'Music', th: 'ร้องเลพง' }, 
+  song: { en: 'Music', th: 'ร้องเพลง' }, 
   content: { en: 'Content Creation', th: 'สร้างคอนเทนต์' },
   game: { en: 'Games', th: 'เกม' }, 
   movie: { en: 'Movies', th: 'หนัง' }, 
@@ -120,12 +120,13 @@ export const settings : Settings = {
   birthday: { en: 'Birth Day',th: 'วันเกิด'},
   submit_button: { en: 'Submit',th: 'ยืนยันข้อมูล'},
   reset_button: { en: 'Reset',th: 'ล้างข้อมูล'},
-  permisson_update: { en: "You Don't have Permission Edit!",th: 'คุณไม่มีสิทธิ์แก้ไขข้อมูล'},
+  permisson_update: { en: "You don't have permission to edit.",th: 'คุณไม่มีสิทธิ์แก้ไขข้อมูล'},
   success_update: { en: 'Update Success!',th: 'อัพเดทข้อมูลเสร็จสิ้น'},
   update_fail: { en: 'Update Fail!',th: 'อัพเดทข้อมูลไม่สำเร็จ'},
   error: { en: 'Error!',th: 'เกิดข้อผิดพลาด'},
-  success_but: { en: 'Warning:Something is wrong!',th: 'อาจมีบ้างอย่างผิดพลาด'},
-  empty_form: { en: 'Error : Invalid input!',th: 'กรุณากรอกข้อมูลให้ครบ'},
+  success_but: { en: 'Warning: Something might be incorrect.',th: 'อาจมีบ้างอย่างผิดพลาด'},
+  empty_form_edit: { en: 'Please complete all required fields: Name and Birth Date.',th: 'กรุณากรอกข้อมูลสำคัญให้ครบ ชื่อ วันเกิด'},
+  empty_form_create: { en: 'Please complete all required fields: Email, Role, Address, Name, Gendedr, and Birth Date.',th: 'กรุณากรอกข้อมูลสำคัญให้ครบ อีเมล์ ตำแหน่ง ที่อยู่ ชื่อ วันเกิด เพศ'},
   edit: { en: 'Edit',th: 'แก้ไข'},
   create: { en: 'Create',th: 'สร้าง'},
   delete: { en: 'Delete',th: 'ลบ'},
@@ -135,114 +136,110 @@ export const settings : Settings = {
   submit_delete: { en: "Yes, I'm sure",th: 'ยืนยัน'},
   cancel: { en: "No, cancel!",th: 'ยกเลิก'},
   admin_cant_delete_self: { en: "Admin cannot delete themselves.",th: 'แอดมินไม่สามารถลบตัวเองได้'},
+  email: {en: "Email" , th: "อีเมล์"},
+  location: {en: "Location" , th: "ที่อยู่"},
+  facebook: {en: "Facebook" , th: "เฟสบุ๊ค"},
+  instragram: {en: "Instagram" , th: "อินสตาแกรม"},
+  telephone: {en: "Telephone" , th: "เบอร์โทร"},
+  age_more_eighteen: {en: "You must be at least 18 years old.", th: "คุณต้องมีอายุอย่างน้อย 18 ปี" },
+  kilometers: {en: "Km.", th: "กิโลเมตร" },
+  permission_create: { en: "You Don't have Permission Create !",th: 'คุณไม่มีสิทธิ์สร้างข้อมูล'},
+  create_email_have: {en: "This email already exists in the system.", th: "มีอีเมล์นี้อยู่ในระบบแล้ว" },
+  location_current: {en: "Current Location", th: "ที่อยู่ปัจจุบัน" },  
+  location_in_system: {en: "Location In System", th: "ที่อยู่ในระบบ" },
+  laglngempty: {
+en: "Please complete Location with search or use current location and select",
+    th: "กรุณาหาที่อยู่ด้วยการกดค้นหาหรือใช้ตำแหน่งปัจจุบัน"
+  },
+  success_create: { en: 'Create Success!',th: 'สร้างข้อมูลใหม่เสร็จสิ้น'},
+
   
 };
-
-export const role = {
-  admin: 'ผู้ดูแลระบบ',
-  user: 'ผู้ใช้งาน'
-}
-
-export const degree = {
-  middle_school:'มัธยมศึกษาตอนต้น',
-  high_school:'มัธยมศึกษาตอนปลาย',
-  vocational:'ปวช',
-  high_vocational:'ปวส',
-  diploma:'อนุปริญญา',
-  bachelors:'ปริญญาตรี',
-  masters:'ปริญญาโท',
-  doctorate:'ปริญญาเอก',
-}
 
 
 export const hobbys = {
   adventure: {
-    dive: 'ดำน้ำ',
-    mountain_climbing: 'ปีนเขา',
-    camping: 'แคมป์ปิ้ง',
-    trekking: 'เดินป่า',
-    bungee_jump: 'บันจี้จัมพ์',
-    skydiving: 'กระโดดร่ม',
-    zipline: 'โหนสลิง',
-    kayaking: 'พายเรือคายัค'
+    dive: { en: 'Diving', th: 'ดำน้ำ' },
+    mountain_climbing: { en: 'Mountain Climbing', th: 'ปีนเขา' },
+    camping: { en: 'Camping', th: 'แคมป์ปิ้ง' },
+    trekking: { en: 'Trekking', th: 'เดินป่า' },
+    bungee_jump: { en: 'Bungee Jump', th: 'บันจี้จัมพ์' },
+    skydiving: { en: 'Skydiving', th: 'กระโดดร่ม' },
+    zipline: { en: 'Zipline', th: 'โหนสลิง' },
+    kayaking: { en: 'Kayaking', th: 'พายเรือคายัค' }
   },
   song: {
-    rock: 'ร็อค',
-    indy: 'อินดี้',
-    jazz: 'แจ๊ส',
-    rap: 'แร็ป',
-    pop: 'ป๊อป',
-    edm: 'อีดีเอ็ม',
-    classical: 'คลาสสิก',
+    rock: { en: 'Rock', th: 'ร็อค' },
+    indy: { en: 'Indie', th: 'อินดี้' },
+    jazz: { en: 'Jazz', th: 'แจ๊ส' },
+    rap: { en: 'Rap', th: 'แร็ป' },
+    pop: { en: 'Pop', th: 'ป๊อป' },
+    edm: { en: 'EDM', th: 'อีดีเอ็ม' },
+    classical: { en: 'Classical', th: 'คลาสสิก' }
   },
   sport: {
-    football: 'ฟุตบอล',
-    basketball: 'บาสเกตบอล',
-    yoga: 'โยคะ',
-    gym: 'ฟิตเนส',
-    running: 'วิ่ง',
-    cycling: 'ปั่นจักรยาน',
-    badminton: 'แบดมินตัน',
-    swimming: 'ว่ายน้ำ',
-    boxing: 'มวย'
+    football: { en: 'Football', th: 'ฟุตบอล' },
+    basketball: { en: 'Basketball', th: 'บาสเกตบอล' },
+    yoga: { en: 'Yoga', th: 'โยคะ' },
+    gym: { en: 'Gym', th: 'ฟิตเนส' },
+    running: { en: 'Running', th: 'วิ่ง' },
+    cycling: { en: 'Cycling', th: 'ปั่นจักรยาน' },
+    badminton: { en: 'Badminton', th: 'แบดมินตัน' },
+    swimming: { en: 'Swimming', th: 'ว่ายน้ำ' },
+    boxing: { en: 'Boxing', th: 'มวย' }
   },
   movie: {
-    action: 'แอคชั่น',
-    romance: 'โรแมนติก',
-    horror: 'สยองขวัญ',
-    scifi: 'ไซไฟ',
-    animation: 'แอนิเมชัน',
-    documentary: 'สารคดี',
-    comedy: 'ตลก',
-    drama: 'ดราม่า',
-    fantasy: 'แฟนตาซี'
+    action: { en: 'Action', th: 'แอคชั่น' },
+    romance: { en: 'Romance', th: 'โรแมนติก' },
+    horror: { en: 'Horror', th: 'สยองขวัญ' },
+    scifi: { en: 'Sci-fi', th: 'ไซไฟ' },
+    animation: { en: 'Animation', th: 'แอนิเมชัน' },
+    documentary: { en: 'Documentary', th: 'สารคดี' },
+    comedy: { en: 'Comedy', th: 'ตลก' },
+    drama: { en: 'Drama', th: 'ดราม่า' },
+    fantasy: { en: 'Fantasy', th: 'แฟนตาซี' }
   },
   content: {
-    youtuber: 'ทำ YouTube',
-    tiktoker: 'ทำ TikTok',
-    podcast: 'ทำพอดแคสต์',
-    bloger: 'สร้างบล็อก',
-    streaming: 'สตรีมมิ่ง',
-    vlogging: 'ทำ vlog',
-    review: 'รีวิวสินค้า',
-    shortvideo: 'คลิปสั้น'
+    youtuber: { en: 'YouTuber', th: 'ทำ YouTube' },
+    tiktoker: { en: 'TikToker', th: 'ทำ TikTok' },
+    podcast: { en: 'Podcasting', th: 'ทำพอดแคสต์' },
+    bloger: { en: 'Blogging', th: 'สร้างบล็อก' },
+    streaming: { en: 'Streaming', th: 'สตรีมมิ่ง' },
+    vlogging: { en: 'Vlogging', th: 'ทำ vlog' },
+    review: { en: 'Product Reviews', th: 'รีวิวสินค้า' },
+    shortvideo: { en: 'Short Videos', th: 'คลิปสั้น' }
   },
   travel: {
-    beach: 'เที่ยวทะเล',
-    mountain: 'เที่ยวเขา',
-    cafe_hopping: 'คาเฟ่ฮอปปิ้ง',
-    road_trip: 'โร้ดทริป',
-    abroad: 'เที่ยวต่างประเทศ',
-    backpack: 'แบกเป้เที่ยว',
-    local: 'เที่ยวในประเทศ',
-    culture_trip: 'เที่ยวเชิงวัฒนธรรม'
+    beach: { en: 'Beach Trips', th: 'เที่ยวทะเล' },
+    mountain: { en: 'Mountain Trips', th: 'เที่ยวเขา' },
+    cafe_hopping: { en: 'Cafe Hopping', th: 'คาเฟ่ฮอปปิ้ง' },
+    road_trip: { en: 'Road Trip', th: 'โร้ดทริป' },
+    abroad: { en: 'Travel Abroad', th: 'เที่ยวต่างประเทศ' },
+    backpack: { en: 'Backpacking', th: 'แบกเป้เที่ยว' },
+    local: { en: 'Local Travel', th: 'เที่ยวในประเทศ' },
+    culture_trip: { en: 'Cultural Trips', th: 'เที่ยวเชิงวัฒนธรรม' }
   },
   game: {
-    console: 'เกมคอนโซล',
-    pc: 'เกมพีซี',
-    mobile: 'เกมมือถือ',
-    boardgame: 'บอร์ดเกม',
-    moba: 'เกม MOBA',
-    rpg: 'เกม RPG',
-    fps: 'เกมยิงปืน (FPS)',
-    simulation: 'เกมจำลองสถานการณ์'
+    console: { en: 'Console Games', th: 'เกมคอนโซล' },
+    pc: { en: 'PC Games', th: 'เกมพีซี' },
+    mobile: { en: 'Mobile Games', th: 'เกมมือถือ' },
+    boardgame: { en: 'Board Games', th: 'บอร์ดเกม' },
+    moba: { en: 'MOBA Games', th: 'เกม MOBA' },
+    rpg: { en: 'RPG Games', th: 'เกม RPG' },
+    fps: { en: 'FPS Games', th: 'เกมยิงปืน (FPS)' },
+    simulation: { en: 'Simulation Games', th: 'เกมจำลองสถานการณ์' }
   },
   selfcare: {
-    meditation: 'นั่งสมาธิ',
-    skincare: 'ดูแลผิวหน้า',
-    spa: 'เข้าสปา',
-    reading: 'อ่านหนังสือ',
-    journaling: 'เขียนไดอารี่',
-    gardening: 'ปลูกต้นไม้',
-    cooking: 'ทำอาหาร',
-    sleep: 'นอนพักผ่อน'
+    meditation: { en: 'Meditation', th: 'นั่งสมาธิ' },
+    skincare: { en: 'Skincare', th: 'ดูแลผิวหน้า' },
+    spa: { en: 'Spa', th: 'เข้าสปา' },
+    reading: { en: 'Reading', th: 'อ่านหนังสือ' },
+    journaling: { en: 'Journaling', th: 'เขียนไดอารี่' },
+    gardening: { en: 'Gardening', th: 'ปลูกต้นไม้' },
+    cooking: { en: 'Cooking', th: 'ทำอาหาร' },
+    sleep: { en: 'Sleep', th: 'นอนพักผ่อน' }
   }
-}
-
- export const gender = {
-    female: 'หญิง',
-    male: 'ชาย'
-  }
+};
  
  export const questionLifestyle = [
   {
@@ -280,63 +277,83 @@ export const hobbys = {
 ];
 
 export const group_blood = ['A','B','AB','O']
-export const chinese_zodiac = {
-  rat: 'ชวด',
-  ox: 'ฉลู',
-  tiger: 'ขาล',
-  rabbit: 'เถาะ',
-  dragon: 'มะโรง',
-  snake: 'มะเส็ง',
-  horse: 'มะเมีย',
-  goat: 'มะแม',
-  monkey: 'วอก',
-  rooster: 'ระกา',
-  dog: 'จอ',
-  pig: 'กุน',
+export const role : SettingRole = {
+  admin: { en: "Admin", th: "ผู้ดูแลระบบ" },
+  user: { en: "User", th: "ผู้ใช้งาน" },
+}
+export const gender:SettingGender = {
+  female: {en:'Female',th:'หญิง'},
+  male: {en:'Male',th:'ชาย'}
+}
+export const degree = {
+  middle_school: { en: "Middle School", th: "มัธยมศึกษาตอนต้น" },
+  high_school: { en: "High School", th: "มัธยมศึกษาตอนปลาย" },
+  vocational: { en: "Vocational", th: "ปวช" },
+  high_vocational: { en: "High Vocational", th: "ปวส" },
+  diploma: { en: "Diploma", th: "อนุปริญญา" },
+  bachelors: { en: "Bachelors", th: "ปริญญาตรี" },
+  masters: { en: "Masters", th: "ปริญญาโท" },
+  doctorate: { en: "Doctorate", th: "ปริญญาเอก" }
+}
+
+
+export const chinese_zodiac: SettingChineseZodiac = {
+  rat: { en: "Rat", th: "ชวด" },
+  ox: { en: "Ox", th: "ฉลู" },
+  tiger: { en: "Tiger", th: "ขาล" },
+  rabbit: { en: "Rabbit", th: "เถาะ" },
+  dragon: { en: "Dragon", th: "มะโรง" },
+  snake: { en: "Snake", th: "มะเส็ง" },
+  horse: { en: "Horse", th: "มะเมีย" },
+  goat: { en: "Goat", th: "มะแม" },
+  monkey: { en: "Monkey", th: "วอก" },
+  rooster: { en: "Rooster", th: "ระกา" },
+  dog: { en: "Dog", th: "จอ" },
+  pig: { en: "Pig", th: "กุน" }
 }
 export const western_zodiac = {
-  aries: 'เมษ',
-  taurus: 'พฤษภ',
-  gemini: 'เมถุน',
-  cancer: 'กรกฏ',
-  leo: 'สิงห์',
-  virgo: 'กันย์',
-  libra: 'ตุลย์',
-  scorpio: 'พิจิก',
-  sagittarius: 'ธนู',
-  capricorn: 'มังกร',
-  aquarius: 'กุมภ์',
-  pisces: 'มีน',
+  aries: { en: "Aries", th: "เมษ" },
+  taurus: { en: "Taurus", th: "พฤษภ" },
+  gemini: { en: "Gemini", th: "เมถุน" },
+  cancer: { en: "Cancer", th: "กรกฏ" },
+  leo: { en: "Leo", th: "สิงห์" },
+  virgo: { en: "Virgo", th: "กันย์" },
+  libra: { en: "Libra", th: "ตุลย์" },
+  scorpio: { en: "Scorpio", th: "พิจิก" },
+  sagittarius: { en: "Sagittarius", th: "ธนู" },
+  capricorn: { en: "Capricorn", th: "มังกร" },
+  aquarius: { en: "Aquarius", th: "กุมภ์" },
+  pisces: { en: "Pisces", th: "มีน" }
 }
 export const status = {
-  single: 'โสด',
-  separated: 'แยกกันอยู่',
-  divorced: 'หย่าร้างแล้ว',
-  widowed: 'หม้าย',
-  open_relationship: 'ความสัมพันธ์แบบเปิด',
-  prefer_not_to_say: 'ไม่ต้องการระบุ'
+  single: { en: "Single", th: "โสด" },
+  separated: { en: "Separated", th: "แยกกันอยู่" },
+  divorced: { en: "Divorced", th: "หย่าร้างแล้ว" },
+  widowed: { en: "Widowed", th: "หม้าย" },
+  open_relationship: { en: "Open Relationship", th: "ความสัมพันธ์แบบเปิด" },
+  prefer_not_to_say: { en: "Prefer Not To Say", th: "ไม่ต้องการระบุ" },
 }
-export const worldEthnicities = {
-  asian: 'เอเชีย',
-  east_asian: 'เอเชียตะวันออก',
-  southeast_asian: 'เอเชียตะวันออกเฉียงใต้',
-  south_asian: 'เอเชียใต้',
-  central_asian: 'เอเชียกลาง',
-  middle_eastern: 'ตะวันออกกลาง',
-  european: 'ยุโรป',
-  african: 'แอฟริกัน',
-  americas: 'อเมริกาเหนือ',
-  latino: 'ละตินอเมริกัน',
+export const worldEthnicities:SettingWorldEthnicities = {
+  asian: { en: "Asian", th: "เอเชีย" },
+  east_asian: { en: "East Asian", th: "เอเชียตะวันออก" },
+  southeast_asian: { en: "Southeast Asian", th: "เอเชียตะวันออกเฉียงใต้" },
+  south_asian: { en: "South Asian", th: "เอเชียใต้" },
+  central_asian: { en: "Central Asian", th: "เอเชียกลาง" },
+  middle_eastern: { en: "Middle Eastern", th: "ตะวันออกกลาง" },
+  european: { en: "European", th: "ยุโรป" },
+  african: { en: "African", th: "แอฟริกัน" },
+  americas: { en: "Americas", th: "อเมริกาเหนือ" },
+  latino: { en: "Latino", th: "ละตินอเมริกัน" }
 };
 export const worldReligions = {
-  buddhism: 'พุทธ',
-  christianity: 'คริสต์',
-  islam: 'อิสลาม',
-  hinduism: 'ฮินดู',
-  sikhism: 'ซิกข์',
-  judaism: 'ยิว',
-  taoism: 'เต๋า',
-  confucianism: 'ขงจื๊อ',
-  jainism: 'เชน',
-  non_religious: 'ไม่มีศาสนา / ไม่ระบุ',
+  buddhism: { en: "Buddhism", th: "พุทธ" },
+  christianity: { en: "Christianity", th: "คริสต์" },
+  islam: { en: "Islam", th: "อิสลาม" },
+  hinduism: { en: "Hinduism", th: "ฮินดู" },
+  sikhism: { en: "Sikhism", th: "ซิกข์" },
+  judaism: { en: "Judaism", th: "ยิว" },
+  taoism: { en: "Taoism", th: "เต๋า" },
+  confucianism: { en: "Confucianism", th: "ขงจื๊อ" },
+  jainism: { en: "Jainism", th: "เชน" },
+  non_religious: { en: "Non Religious", th: "ไม่มีศาสนา / ไม่ระบุ" }
 };

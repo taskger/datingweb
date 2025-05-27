@@ -22,7 +22,7 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/providers/lib/TranslateToThai.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/providers/lib/TranslateToThai.js", "src/app/session-provider.js"],
   "exclude": ["node_modules"],
   "types": ["google.maps"]
 }

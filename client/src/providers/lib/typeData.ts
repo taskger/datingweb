@@ -3,6 +3,7 @@ export interface typeData {
   email:string,
   role:string,
   language?:string,
+  image?:string,
   profile?: Profile
 }
 
@@ -56,7 +57,7 @@ export type Lang = 'en' | 'th';
 
 export type TranslatedString = Record<Lang, string>;
 
-export type SettingsKey =
+export type GeneralKey =
   | 'name'
   | 'gender'
   | 'age'
@@ -96,7 +97,8 @@ export type SettingsKey =
   | 'update_fail'
   | 'error'
   | 'success_but'
-  | 'empty_form'
+  | 'empty_form_edit'
+  | 'empty_form_create'
   | 'edit'
   | 'create'
   | 'delete'
@@ -105,12 +107,89 @@ export type SettingsKey =
   | 'text_confirm_delete'
   | 'submit_delete'
   | 'cancel'
-  | 'admin_cant_delete_self';
+  | 'email'
+  | 'admin_cant_delete_self'
+  | 'location'
+  | 'facebook'
+  | 'instragram'
+  | 'telephone'
+  | 'age_more_eighteen'
+  | 'kilometers'
+  | 'permission_create'
+  | 'create_email_have'
+  | 'laglngempty'
+  | 'location_current'
+  | 'location_in_system'
+  | 'success_create'
+  ;
 
-export type Settings = Record<SettingsKey, TranslatedString>;
+
+export type GenderKey = 'male' | 'female';
+export type RoleKey ='admin' | 'user' ;
+export type DegreeKey = 'middle_school' | 'high_school' |
+"vocational" | "high_vocational" | "diploma" | "bachelors" | "masters" | "doctorate";
+export type ChineseZodiacKey =
+  | 'rat' | 'ox' | 'tiger' | 'rabbit' | 'dragon' | 'snake'
+  | 'horse' | 'goat' | 'monkey' | 'rooster' | 'dog' | 'pig';
+
+export type WesternZodiacKey =
+  | 'aries' | 'taurus' | 'gemini' | 'cancer' | 'leo' | 'virgo'
+  | 'libra' | 'scorpio' | 'sagittarius' | 'capricorn' | 'aquarius' | 'pisces';
+
+export type StatusKey =
+  | 'single' | 'separated' | 'divorced' | 'widowed'
+  | 'open_relationship' | 'prefer_not_to_say';
+
+export type WorldEthnicityKey =
+  | 'asian' | 'east_asian' | 'southeast_asian' | 'south_asian'
+  | 'central_asian' | 'middle_eastern' | 'european'
+  | 'african' | 'americas' | 'latino';
+
+export type WorldReligionKey =
+  | 'buddhism' | 'christianity' | 'islam' | 'hinduism' | 'sikhism'
+  | 'judaism' | 'taoism' | 'confucianism' | 'jainism' | 'non_religious';
+
+  export type HobbyCategory =
+  | 'adventure'
+  | 'song'
+  | 'sport'
+  | 'movie'
+  | 'content'
+  | 'travel'
+  | 'game'
+  | 'selfcare';
+
+export type Settings = Record<GeneralKey, TranslatedString>;
+export type SettingGender = Record<GenderKey, TranslatedString>;
+export type SettingRole = Record<RoleKey, TranslatedString>;
+export type SettingDegree = Record<DegreeKey, TranslatedString>;
+export type SettingChineseZodiac = Record<ChineseZodiacKey, TranslatedString>;
+export type SettingWesternZodiac = Record<WesternZodiacKey, TranslatedString>;
+export type SettingStatus = Record<StatusKey, TranslatedString>;
+export type SettingWorldEthnicities = Record<WorldEthnicityKey, TranslatedString>;
+export type SettingWorldReligions = Record<WorldReligionKey, TranslatedString>;
+export type SettingHobbyCategory = Record<HobbyCategory, TranslatedString>;
+export type SettingOther =
+  | SettingGender
+  | SettingRole
+  | SettingDegree
+  | SettingChineseZodiac
+  | SettingWesternZodiac
+  | SettingStatus
+  | SettingWorldEthnicities
+  | SettingWorldReligions;
 export type CategoryNameHobby = | 'adventure' | 'song' | 'content' | 'game' | 'movie'
   | 'selfcare' | 'sport' | 'travel'
 export type LifestyleKey = 'pet' | 'exercise' | 'book' | 'game' | 'healthy' | 'alcohol' | 'smoke' | 'weed';
 export type CategoryProfile = 'gender' | 'status' | 'ethnicity' | 'religion'
 | 'western_zodiac' | 'chinese_zodiac' | 'group'
 | 'degree' | 'university'
+
+export type SessionGoogle = {
+  user: {
+    name: string
+    email: string
+    image: string
+  }
+  expires: string // หรือใช้ Date ถ้าคุณจะทำการแปลงเป็น Date object
+}

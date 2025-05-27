@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { HobbyCategory, Lang, SettingHobbyCategory, TranslatedString } from '@/providers/lib/typeData'
 interface FilterAccordionProps {
-  name: string
-  data: Record<string, string>
+  name: HobbyCategory
+  data: Record<string, TranslatedString>
   updateDataSet:(name: string, value: string) =>void
   parent:string
+  lang:Lang
 }
 export default function Filter_accordion(props:FilterAccordionProps) {
   const [imageurl,setImageUrl] = useState<string>('')
@@ -20,24 +22,24 @@ export default function Filter_accordion(props:FilterAccordionProps) {
       travel: '/travel-icon.png',
       sport: '/sport-icon.png',
     };
-    const statusMapName: Record<string, string> = {
-      adventure: 'ผจญภัย',
-      song: 'เพลง',
-      content: 'สร้างคอนเทนต์',
-      game: 'เกม',
-      movie: 'หนัง',
-      selfcare: 'ดูแลตัวเอง',
-      travel: 'ท่องเที่ยว',
-      sport: 'กีฬา',
+    const statusMapName: SettingHobbyCategory = {
+      adventure: {en:'Adventure',th:'ผจญภัย'},
+      song: {en:'Song',th:'ร้องเพลง'},
+      content: {en:'Content',th:'สร้างคอนเทนต์'},
+      game: {en:'Game',th:'เกม'},
+      movie: {en:'Movie',th:'หนัง'},
+      selfcare: {en:'Selfcare',th:'ดูแลตัวเอง'},
+      travel: {en:'Travel',th:'ท่องเที่ยว'},
+      sport: {en:'Sport',th:'กีฬา'},
     };
     setImageUrl(statusMap[props.name])
-    setNameThai(statusMapName[props.name])
-    },[props.name])
+    setNameThai(statusMapName[props.name as HobbyCategory]?.[props.lang as Lang])
+    },[props.name,props.lang])
 
   return (
     <>
       <h2 id={`accordion-collapse-heading-${props.name}${props.parent ?? ''}`}>
-        <button type="button" className="flex items-center justify-between w-full pl-4 pr-4 pt-2 pb-2  font-medium rtl:text-right text-gray-500 focus:ring-0 focus:border-blue-600 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target={`#accordion-collapse-body-${props.name}${props.parent ?? ''}`} aria-expanded="false" aria-controls={`accordion-collapse-body-${props.name}${props.parent ?? ''}`}>
+        <button type="button" className="flex items-center justify-between w-full pl-4 pr-4 pt-2 pb-2  font-normal rtl:text-right text-gray-500 focus:ring-0 focus:border-blue-600 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target={`#accordion-collapse-body-${props.name}${props.parent ?? ''}`} aria-expanded="false" aria-controls={`accordion-collapse-body-${props.name}${props.parent ?? ''}`}>
           <span> 
             { imageurl ?
               <Image src={imageurl} width={30} height={30} alt={`${props.name}${props.parent ?? ''} image`} className='p-1'/> : ''
@@ -54,7 +56,7 @@ export default function Filter_accordion(props:FilterAccordionProps) {
           {props.data ? 
               Object.entries(props.data).map(([id,value]) => (
                     <button key={id} id={`${id}${props.parent ?? ''}`} onClick={() => props.updateDataSet(props.name,id)} className='border border-zinc-300 inline-flex items-center bg-white ml-2 mr-2 mt-2 p-1 rounded-lg hover:bg-gray-200'>
-                      {value}
+                      {value[props.lang  as Lang]}
                     </button>
               )): ''}
         </div>
