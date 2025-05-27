@@ -27,7 +27,7 @@ export const PopupUser = (data:typeData,lang:Lang,id:string) => {
     { name: 'smoke', image: 'smoke-icon.png', text: { en: 'Smoking', th: 'สูบบุหรี่' } },
     { name: 'weed', image: 'weed-icon.png', text: { en: 'Cannabis', th: 'สูบกัญชา' } },
   ];
-
+  
   if (display) {
     popup.innerHTML = `
       <div class="bg">
@@ -71,14 +71,15 @@ export const PopupUser = (data:typeData,lang:Lang,id:string) => {
               `<span class="texthead">${settings.salary[lang]} <span class="textinfo">${display.salary}</span></span>` : ''}
           </div>
         </div>
-        
-        <div>
+        ${Object.entries(data.profile?.lifestyle ?? {}).filter(([,value])=> value).length != 0 ? 
+        `<div>
           <div>
             <span class="head">${settings.lifestyle[lang]}</span>
           </div>
           <div>
           ${Object.entries(data.profile?.lifestyle ?? {}).filter(([,value])=> value).map(([key]) => {
-            const data = mapDataLifestyle.find(value => value.name == key)
+            const data = mapDataLifestyle.find(valuefind => valuefind.name == key)
+            console.log(data)
             return(
               `<span class="lifestyle ${data?.name}">
                 <img class="imagelifestyle" src="${data?.image}" width="20" height="20">${data?.text?.[lang]}
@@ -86,11 +87,10 @@ export const PopupUser = (data:typeData,lang:Lang,id:string) => {
             )
           }).join('')}
           </div>
-        </div>
-        ${Object.values(display.hobbys ?? {}).filter(value => {
-          if(value){
-            return
-          }
+        </div>`: ''}
+ 
+        ${Object.values(display.hobbys ?? {}).filter(value => { 
+          if(value.length > 0) return value
         }).length != 0 ? 
         `<div>
           <div>
