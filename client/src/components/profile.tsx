@@ -1,7 +1,7 @@
 'user client'
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { typeData , Settings , Lang, Profile, LifestyleKey, CategoryNameHobby, HobbyCategory, TranslatedString } from '@/providers/lib/typeData'
+import { typeData , Settings , Lang, Profile, LifestyleKey, CategoryNameHobby, HobbyCategory, TranslatedString, GoogleGeocodeResult } from '@/providers/lib/typeData'
 import Filter_form from './ui/filter_form'
 import Filter_displayselect from './ui/filter_displayselect'
 import Filter_accordion from './ui/filter_accordion'
@@ -16,6 +16,8 @@ interface typeProp{
    userData:typeData[]
    defaultLanguage:Settings
    setGetLatLng:(localtion?: Profile['location'],email?:string) => void
+   requestEdit:typeData
+   requestDelete:typeData
 }
 function SideProfile(props:typeProp) {
    const [inputLatLng, setInputLatlng] = useState<Profile['location']>()
@@ -75,9 +77,10 @@ function SideProfile(props:typeProp) {
    const [getUniversity, setGetUniversity] = useState<string[]>([])
    const [defaultUserSelect ,setDefaultUserSelect] = useState<typeData>()
    const [userDataSelect,setUserDataSelect] = useState<typeData[]>()
-   const [searchLocation,setSearchLocation] = useState<any>()
+   const [searchLocation,setSearchLocation] = useState<GoogleGeocodeResult[]>()
    const [loading,setLoading] = useState<boolean>()
    const [toggleDelete,setToggleDelete] = useState<boolean>()
+   const [toggleBackdrop,setToggleBackdrop] = useState<boolean>(false)
    const data = props.data as typeData
    const userData = props.userData as typeData[]
    useEffect(() => {
@@ -141,6 +144,7 @@ function SideProfile(props:typeProp) {
       setBooleanInputUniversity(false)
       setBooleanInputGroup(false)
       setBooleanInputRole(false)
+      setToggleBackdrop(false)
    }
    },[data])
    
@@ -318,7 +322,25 @@ function SideProfile(props:typeProp) {
          value(new Set())
       })
    }
+   useEffect(() => {
+      if(props.requestEdit){
+         console.log(toggleBackdrop)
+         setToggleBackdrop(true)
+         setSelectUser(props.requestEdit)
+      }
+   },[props.requestEdit])
+   
+   useEffect(() => {
+      if(props.requestDelete){
+         setId(props.requestDelete?._id)
+         setToggleDelete(true)
+      }
+   },[props.requestDelete])
+
+
    const setSelectUser = (user:typeData) => {
+      if(!user) return
+      console.log(user)
       setDefaultUserSelect(user)
       setId(user?._id ?? '')
       setInputRole(user?.role)
@@ -635,8 +657,14 @@ function SideProfile(props:typeProp) {
          setInputSalary(Number(value))
       }
     }
+   const closebackdrop = () => {
+      const backdrop = document.getElementById('editforInfo')
+      backdrop?.classList.add('hidden')
+   }
   return (
     <div >
+      {toggleBackdrop ? <div className='absolute flex justify-center h-full w-full z-40 backdrop-blur-xs'></div> : ''}  
+      <div className='hidden absolute flex justify-center h-full w-full z-40 backdrop-blur-xs'></div>  
       {loading ?
        <div role="status" className='absolute flex justify-center h-full w-full z-50 backdrop-blur-xs'>
           <svg aria-hidden="true" className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 w-10 h-10 text-gray-200 animate-spin  fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -650,8 +678,14 @@ function SideProfile(props:typeProp) {
             <Modal_Confirm_Delete data={data} defaultLanguage={props.defaultLanguage} deleteUser={deleteUser} close={setToggleDelete}/>
          </div> 
       : ''}
+      <div role="status" id='editforInfo' className='hidden absolute flex justify-center items-center h-full w-full z-30 backdrop-blur-xs'>
+      </div> 
+      <div role="status" id='deleteforInfo' className='hidden absolute flex justify-center items-center h-full w-full z-50 backdrop-blur-xs'>
+         <Modal_Confirm_Delete_forInfo data={data} defaultLanguage={props.defaultLanguage} deleteUser={deleteUser} close={setToggleDelete}/>
+      </div> 
+
       <div className="btnthreeline fixed z-5 left-0 top-0 text-center absolute">
-         <button className="threeline inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200   " type="button" data-drawer-target="sidebar-profile" data-drawer-show="sidebar-profile" data-drawer-placement="left" aria-controls="sidebar-profile">
+         <button onClick={() => setToggleBackdrop(true)} className="threeline inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200   " type="button" data-drawer-target="sidebar-profile" data-drawer-show="sidebar-profile" data-drawer-placement="left" aria-controls="sidebar-profile">
          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
          </svg>
@@ -684,7 +718,7 @@ function SideProfile(props:typeProp) {
                   } 
                </>
              :  ''}
-            <button type="button" data-drawer-hide="sidebar-profile" aria-controls="sidebar-profile" 
+            <button onClick={() => {setToggleBackdrop(false);closebackdrop()}} type="button" data-drawer-hide="sidebar-profile" aria-controls="sidebar-profile" 
                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center  " >
                <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
                <span className="sr-only">Close menu</span>
@@ -698,7 +732,7 @@ function SideProfile(props:typeProp) {
                   </span>
                </>
                : 
-               <span className='w-full mr-2'>               
+               <span className='w-full mr-2 dark:w-full'>               
                   <Filter_form onFocus={setBooleanInputUser} onBlur={setBooleanInputUser} value={inputUser} onChange={setInputUser} name={props.defaultLanguage?.select_user[props.data?.language as Lang ?? 'th']} id="user"/>
                   <div onMouseDown={(e) => e.preventDefault()} className='w-67 absolute mt-2 max-h-30 z-20 bg-white 
                      overflow-y-auto
@@ -737,7 +771,7 @@ function SideProfile(props:typeProp) {
                      [&::-webkit-scrollbar-track]:bg-gray-100
                      [&::-webkit-scrollbar-thumb]:rounded-full
                      [&::-webkit-scrollbar-thumb]:bg-gray-300'>
-                  {userData && booleanInputLocation ? searchLocation?.map((value : any) => {
+                  {userData && booleanInputLocation ? searchLocation?.map((value : GoogleGeocodeResult) => {
                      const location = {
                         lat: value.location.latitude,
                         lng: value.location.longitude
@@ -888,7 +922,7 @@ function SideProfile(props:typeProp) {
                </span>
                {toggleCreate ? '' : 
                <span className='mr-2'>
-                  <button onBlur={() => setBooleanToggleLike(false)} onClick={() => {setBooleanToggleLike(true);like(inputLike)}} className='bg-red-500 p-2 inline-flex items-center text-center justify-center rounded-lg'>
+                  <button onBlur={() => setBooleanToggleLike(false)} onClick={() => {setBooleanToggleLike(true);like(inputLike)}} className='bg-red-500 cursor-pointer p-2 inline-flex items-center text-center justify-center rounded-lg'>
                      <span>
                         <Image src={'/white-heart-icon.png'} width={155} height={155} alt={`${id ?? ''} heart icon`} className='p-1'/>
                      </span>
@@ -972,8 +1006,8 @@ function SideProfile(props:typeProp) {
                   </div>
                   }
                </div>
+
             </ul>
-            
       </div>   
     </div>
   )
@@ -997,10 +1031,10 @@ interface typePropModal_Confirm{
 export function Modal_Confirm_Delete(props:typePropModal_Confirm) {
    return (
      <div>
-      <div id="popup-modal" className="z-50 justify-center items-center w-100 max-h-full">
+      <div id={`popup-modal`} className=" z-50 justify-center items-center w-100 max-h-full">
          <div className="relative p-4 w-full max-w-md max-h-full">
             <div className="relative bg-white rounded-lg shadow-sm ">
-                  <button type="button" className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center  " data-modal-hide="popup-modal">
+                  <button type="button" className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center  " data-modal-hide={`popup-modal`}>
                      <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                      </svg>
@@ -1023,5 +1057,36 @@ export function Modal_Confirm_Delete(props:typePropModal_Confirm) {
    )
  }
  
-
+ export function Modal_Confirm_Delete_forInfo(props:typePropModal_Confirm) {
+   const closeModal = () => {
+      const modalDelete = document.getElementById('deleteforInfo')
+      modalDelete?.classList.add('hidden')
+   }
+   return (
+     <div>
+      <div id={`Modal_Confirm_Delete_forInfo`} className=" z-50 justify-center items-center w-100 max-h-full">
+         <div className="relative p-4 w-full max-w-md max-h-full">
+            <div className="relative bg-white rounded-lg shadow-sm ">
+                  <button onClick={() => {props.close(false);closeModal()}} type="button" className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center  ">
+                     <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                     </svg>
+                     <span className="sr-only">Close modal</span>
+                  </button>
+                  <div className="p-4 md:p-5 text-center">
+                     <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                     </svg>
+                     <h3 className="mb-5 text-lg font-normal text-gray-500 ">{props.defaultLanguage?.text_confirm_delete[props.data?.language as Lang ?? 'th']}</h3>
+                     <button  onClick={() => {props.deleteUser();props.close(false);closeModal()}} type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-normal rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                        {props.defaultLanguage?.submit_delete[props.data?.language as Lang ?? 'th']}
+                     </button>
+                     <button onClick={() => {props.close(false);closeModal()}} type="button" className="py-2.5 px-5 ms-3 text-sm font-normal text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100      ">{props.defaultLanguage?.cancel[props.data?.language as Lang ?? 'th']}</button>
+                  </div>
+            </div>
+         </div>
+      </div>
+     </div>
+   )
+ }
  

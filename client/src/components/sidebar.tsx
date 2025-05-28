@@ -6,10 +6,10 @@ import Filter_accordion from './ui/filter_accordion'
 import Filter_displaycatagory from './ui/filter_displaycatagory'
 import Filter_buttonuser from './ui/filter_buttonuser'
 import { degree,hobbys,questionLifestyle,gender,worldReligions,
-   group_blood,chinese_zodiac,western_zodiac,status,worldEthnicities } from './data/FakeData'
-import { checkDegree } from '@/providers/lib/TranslateToThai'
+   group_blood,chinese_zodiac,western_zodiac,status,worldEthnicities} from './data/FakeData'
+import { checkAdventureString, checkChineseZodiac, checkContentString, checkDegree, checkEthnicitie, checkGameString, checkGender, checkGroup, checkMovieString, checkReligion,checkSelfcaretring, checkSongString, checkSportString, checkStatus, checkTravelString, checkWesternZodiac } from '@/providers/lib/TranslateToThai'
 import { toast } from 'react-toastify';
-import { typeData,Profile,Settings,TranslatedString,CategoryNameHobby,LifestyleKey,CategoryProfile, HobbyCategory } from '@/providers/lib/typeData'
+import { typeData,Profile,Settings,TranslatedString,CategoryNameHobby,LifestyleKey,CategoryProfile, HobbyCategory, Lang } from '@/providers/lib/typeData'
 
 // import Modalsetting from '@/components/report/Modalsetting';
 
@@ -69,7 +69,7 @@ function Sidebar(props:typeProps) {
    const [dataSport, setDataSport] = useState<Set<string>>(new Set());
    const [dataTravel, setDataTravel] = useState<Set<string>>(new Set());
    const [dataClasslistReset,setDataClasslistReset] = useState<Set<string>>(new Set());
-   
+   const [toggleBackdrop,setToggleBackdrop] = useState<boolean>(false)
     const hobbyCategories = [
       { name: 'adventure', data: hobbys.adventure },
       { name: 'song', data: hobbys.song },
@@ -113,12 +113,12 @@ function Sidebar(props:typeProps) {
     }, []);
 
     const deleteAlert = (value:string) => {
-      toast.error(`ลบตัวกรอง ${value} เรียบร้อย`, {
+      toast.error(`${props.defaultLanguage.deletefilter[props.language]} ${value} ${props.defaultLanguage.success_filter[props.language]}`, {
         position: 'bottom-right',
       });
     };
     const addAlert = (value:string) => {
-      toast.success(`เพิ่มตัวกรอง ${value} เรียบร้อย`, {
+      toast.success(`${props.defaultLanguage.addfilter[props.language]} ${value} ${props.defaultLanguage.success_filter[props.language]}`, {
         position: 'bottom-right',
       });
     };
@@ -199,26 +199,26 @@ function Sidebar(props:typeProps) {
       // 🔄 Map ของชื่อ filter ที่ใช้ Set
       const toggleableFilters: Record<string, {
          setter: React.Dispatch<React.SetStateAction<Set<string>>>,
-         translateTH?: (val: string) => string
+         translateTH?: (val: string , lang:Lang) => string
       }> = {
-         gender: { setter: setDataGender },
-         status: { setter: setDataStatus },
-         ethnicity: { setter: setDataEthnicity },
-         religion: { setter: setDataReligion },
-         western_zodiac: { setter: setDataWesternZodiac },
-         chinese_zodiac: { setter: setDataChineseZodiac },
-         group: { setter: setDataGroupฺBlood },
-         degree: { setter: setDataDegree},
+         gender: { setter: setDataGender , translateTH : checkGender},
+         status: { setter: setDataStatus , translateTH : checkStatus},
+         ethnicity: { setter: setDataEthnicity , translateTH : checkEthnicitie},
+         religion: { setter: setDataReligion , translateTH : checkReligion},
+         western_zodiac: { setter: setDataWesternZodiac , translateTH : checkWesternZodiac},
+         chinese_zodiac: { setter: setDataChineseZodiac , translateTH : checkChineseZodiac},
+         group: { setter: setDataGroupฺBlood , translateTH : checkGroup},
+         degree: { setter: setDataDegree, translateTH : checkDegree},
          university: { setter: setDataUniversity },
          lifestyle: { setter: setDataLifestyle },
-         adventure: { setter: setDataAdventure},
-         song: { setter: setDataSong},
-         content: { setter: setDataContent},
-         game: { setter:  setDataGame},
-         movie: { setter: setDataMovie},
-         selfcare: { setter: setDataSelfcare},
-         sport: { setter: setDataSport},
-         travel: { setter:  setDataTravel}
+         adventure: { setter: setDataAdventure, translateTH : checkAdventureString},
+         song: { setter: setDataSong, translateTH : checkSongString},
+         content: { setter: setDataContent, translateTH : checkContentString},
+         game: { setter:  setDataGame, translateTH : checkGameString},
+         movie: { setter: setDataMovie, translateTH : checkMovieString},
+         selfcare: { setter: setDataSelfcare, translateTH : checkSelfcaretring},
+         sport: { setter: setDataSport, translateTH : checkSportString},
+         travel: { setter:  setDataTravel, translateTH : checkTravelString}
       };
 
       if(name != 'height') {
@@ -275,18 +275,18 @@ function Sidebar(props:typeProps) {
          setCountSelect(2)
          // เพิ่ม filter อื่น ๆ ถ้ามี
          setTimeout(() => {
-            toast.error(`ล้างตัวกรองทั้งหมดเรียบร้อย`, {
+            toast.error(`${props.defaultLanguage.cleanfilter?.[props.language]}`, {
             position: 'bottom-right',
             });
          }, 0);
       }else if (name === 'height') {
          setDataHeight(parseInt(value));
          added = true;
-         handleAlert(`ความสูง ${value} ขึ้นไป`,name);
+         handleAlert(`${props.defaultLanguage.height[props.language]} ${value} ${props.defaultLanguage.upheight?.[props.language]}`,name);
       }else if (toggleableFilters[name]) {
          const { setter, translateTH } = toggleableFilters[name];
          handleSetToggle(setter);
-         handleAlert(translateTH ? translateTH(value) : value);
+         handleAlert(translateTH ? translateTH(value,props.language) : value);
       }
       };
 
@@ -353,8 +353,9 @@ function Sidebar(props:typeProps) {
 
   return (
     <div>
+      {toggleBackdrop ? <div className='absolute flex justify-center h-full w-full z-40 backdrop-blur-xs'></div> : ''}  
       <div className="btnthreeline fixed z-5 left-0 top-15 text-center absolute">
-         <button className="threeline inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200   " type="button" data-drawer-target="sidebar" data-drawer-show="sidebar" aria-controls="sidebar">
+         <button onClick={() => setToggleBackdrop(true)} className="threeline inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200   " type="button" data-drawer-target="sidebar" data-drawer-show="sidebar" aria-controls="sidebar">
          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
          </svg>
@@ -363,8 +364,8 @@ function Sidebar(props:typeProps) {
       <div>
          
       </div>
-      <div id="sidebar" className="fixed top-0 left-0 z-40 w-100 h-full p-2 overflow-y-auto transition-transform -translate-x-full bg-white" tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-label">
-         <button type="button" data-drawer-hide="sidebar" aria-controls="sidebar" 
+      <div id="sidebar" className="fixed top-0 left-0 z-40 w-96 h-full p-2 overflow-y-auto transition-transform -translate-x-full bg-white" tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-label">
+         <button onClick={() => setToggleBackdrop(false)} type="button" data-drawer-hide="sidebar" aria-controls="sidebar" 
             className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center  " >
             <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
             <span className="sr-only">Close menu</span>
@@ -407,16 +408,16 @@ function Sidebar(props:typeProps) {
                   <button></button>
                   <span>{props.defaultLanguage?.found_filter_people[props.language]} {[...dataFilter].length}</span>
                </div>
-               <ul className="relative bg-gray-100 insetshadow font-normal border border-gray-300 rounded-xl overflow-y-auto h-80 max-h-full pb-3 pl-2 pr-2">
+               <ul className="relative bg-gray-100 insetshadow font-normal border border-gray-300 rounded-xl overflow-y-auto h-80 max-h-full pb-3 pl-2 overflow-x-hidden">
                   <div data-drawer-hide="sidebar" aria-controls="sidebar" role="button" >
-                        <Filter_buttonuser data={[...dataFilter]} defaultLanguage={props.defaultLanguage} language={props.language} setGetLatLng={props.setGetLatLng} />
+                        <Filter_buttonuser data={[...dataFilter]} defaultLanguage={props.defaultLanguage} language={props.language} setGetLatLng={props.setGetLatLng} setToggleBackdrop={setToggleBackdrop} />
                   </div>   
                </ul>
             </ul>
          </div>
       </div> 
 
-      <div id="sidebar-filter" className="fixed top-0 left-0 z-40 w-100 h-screen p-2 overflow-y-auto transition-transform -translate-x-full bg-white " tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-label-filter">
+      <div id="sidebar-filter" className="fixed top-0 left-0 z-40 w-96 h-screen p-2 overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-white" tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-label-filter">
          <div className='flex justify-end items-end'>
          <button onClick={() => updateDataSet('reset','')}type="button" data-drawer-hide="sidebar-filter" aria-controls="sidebar-filter" className='absolute left-2 top-2 p-2 z-15 border border-gray-300 rounded-lg hover:bg-gray-300'>
          {props.defaultLanguage?.reset_filter[props.language]}         
@@ -493,7 +494,7 @@ function Sidebar(props:typeProps) {
             <ul className="font-normal mt-5">
                <div className="grid grid-cols-4 gap-2 z-0">
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataGender].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.gender[props.language]} id="gender"/>
+                     <Filter_form readonly value={[...dataGender].map(value => checkGender(value,props.language))} class="cursor-pointer" name={props.defaultLanguage?.gender[props.language]} id="gender"/>
                      <Filter_displayselect  data={gender} updateDataSet={updateDataSet} name="gender" lang={props.language}/>
                   </div>
                   <div className='relative'>
@@ -501,29 +502,29 @@ function Sidebar(props:typeProps) {
                      <Filter_displayselect data={[...Array(60)].map((x,i)=>`${i+140}cm`)} updateDataSet={updateDataSet} name="height" lang={''}/>
                   </div>
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataStatus].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.status[props.language]} id="status"/>
+                     <Filter_form readonly value={[...dataStatus].map(value => checkStatus(value,props.language))} class="cursor-pointer" name={props.defaultLanguage?.status[props.language]} id="status"/>
                      <Filter_displayselect data={status} updateDataSet={updateDataSet} name="status" lang={props.language}/>
                   </div> 
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataEthnicity].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.ethnicity[props.language]} id="ethnicity"/>
+                     <Filter_form readonly value={[...dataEthnicity].map(value => checkEthnicitie(value,props.language))} class="cursor-pointer" name={props.defaultLanguage?.ethnicity[props.language]} id="ethnicity"/>
                      <Filter_displayselect data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={props.language}/>
                   </div>
                </div>
                <div className="grid grid-cols-4 gap-2 z-0 mt-2 ">
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataReligion].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.religion[props.language]} id="religion"/>
+                     <Filter_form readonly value={[...dataReligion].map(value => checkReligion(value,props.language))} class="cursor-pointer" name={props.defaultLanguage?.religion[props.language]} id="religion"/>
                      <Filter_displayselect data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={props.language}/>
                   </div>
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataWesternZodiac].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.western_zodiac[props.language]} id="western_zodiac"/>
+                     <Filter_form readonly value={[...dataWesternZodiac].map(value => checkWesternZodiac(value,props.language))} class="cursor-pointer" name={props.defaultLanguage?.western_zodiac[props.language]} id="western_zodiac"/>
                      <Filter_displayselect data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={props.language}/>
                   </div>
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataChineseZodiac].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.chinese_zodiac[props.language]} id="chinese_zodiac"/>
+                     <Filter_form readonly value={[...dataChineseZodiac].map(value => checkChineseZodiac(value,props.language))} class="cursor-pointer" name={props.defaultLanguage?.chinese_zodiac[props.language]} id="chinese_zodiac"/>
                      <Filter_displayselect data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={props.language}/>
                   </div>
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataGroupฺBlood].map(value => value)} class="cursor-pointer" name={props.defaultLanguage?.group_blood[props.language]} id="group"/>
+                     <Filter_form readonly value={[...dataGroupฺBlood].map(value => checkGroup(value))} class="cursor-pointer" name={props.defaultLanguage?.group_blood[props.language]} id="group"/>
                      <Filter_displayselect data={group_blood} updateDataSet={updateDataSet} name="group" lang={''}/>
                   </div>
                </div>

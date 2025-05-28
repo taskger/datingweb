@@ -121,6 +121,11 @@ export type GeneralKey =
   | 'location_current'
   | 'location_in_system'
   | 'success_create'
+  | 'cleanfilter'
+  | 'deletefilter'
+  | 'addfilter'
+  | 'success_filter'
+  | 'upheight'
   ;
 
 
@@ -192,4 +197,12 @@ export type SessionGoogle = {
     image: string
   }
   expires: string // หรือใช้ Date ถ้าคุณจะทำการแปลงเป็น Date object
+}
+export interface GoogleGeocodeResult {
+  placeId: string;
+  formattedAddress: string;
+  location: {
+    latitude: number;
+    longitude: number;
+  };
 }

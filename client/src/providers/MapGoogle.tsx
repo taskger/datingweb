@@ -15,6 +15,8 @@ interface typeProps{
   };
   getDataMyself:typeData
   defaultLanguage:Settings
+  setRequestEdit:(data : typeData) => void
+  setRequestDelete:(data : typeData) => void
 }
 
 const MapProvider = (props:typeProps) => {
@@ -178,12 +180,12 @@ const MapProvider = (props:typeProps) => {
         let infoWindow
         if(value.profile.gender == 'female'){
           infoWindow = new window.google.maps.InfoWindow({
-            content: PopupUser(value,dataMyself?.language as Lang,dataMyself?._id as string),
+            content: PopupUser(value,dataMyself?.language as Lang,dataMyself?._id as string,props.setRequestEdit,props.setRequestDelete),
             ariaLabel: "Female",
           });
         }else{
           infoWindow = new window.google.maps.InfoWindow({
-            content: PopupUser(value,dataMyself?.language as Lang,dataMyself?._id as string),
+            content: PopupUser(value,dataMyself?.language as Lang,dataMyself?._id as string,props.setRequestEdit,props.setRequestDelete),
             ariaLabel: "Male",
           });
         }

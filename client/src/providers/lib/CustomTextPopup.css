@@ -307,6 +307,25 @@
   right: 20px;
   top: 20px;
 }
+.divadmin{
+  position: absolute;
+  left: 20px;
+  top: 20px;
+}
+.divadmin #button-edit{
+  color: #6c6c6c;
+}
+.divadmin #button-edit:hover{
+  color: #0064fa;
+  cursor: pointer;
+}
+.divadmin #button-delete{
+  color: #6c6c6c;
+}
+.divadmin #button-delete:hover{
+  color: #f73e3e;
+  cursor: pointer;
+}
 .heartsendmale{
   background-color: #448bef;
   padding: 4px;           

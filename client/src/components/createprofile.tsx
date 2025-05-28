@@ -1,6 +1,6 @@
 'user client'
 import React, { useEffect, useState } from 'react'
-import { typeData , Settings , Profile, LifestyleKey, CategoryNameHobby, SessionGoogle, HobbyCategory, TranslatedString } from '@/providers/lib/typeData'
+import { typeData , Settings , Profile, LifestyleKey, CategoryNameHobby, SessionGoogle, HobbyCategory, TranslatedString, GoogleGeocodeResult } from '@/providers/lib/typeData'
 import Filter_form from './ui/filter_form'
 import Filter_displayselect from './ui/filter_displayselect'
 import Filter_accordion from './ui/filter_accordion'
@@ -63,7 +63,7 @@ function CreateProfile(props:typeProp) {
    const [booleanToggleUniversitye,setBooleanToggleUniversity] = useState<boolean>(false)
    const [toggleReload,setToggleReload] = useState<boolean>(false)
    const [getUniversity, setGetUniversity] = useState<string[]>([])
-   const [searchLocation,setSearchLocation] = useState<any>()
+   const [searchLocation,setSearchLocation] = useState<GoogleGeocodeResult[]>()
    const [loading,setLoading] = useState<boolean>()
    const data = props.data
    useEffect(() => {
@@ -444,7 +444,7 @@ function CreateProfile(props:typeProp) {
                      [&::-webkit-scrollbar-thumb]:rounded-full
                      [&::-webkit-scrollbar-thumb]:bg-gray-300'>
                         
-                  {booleanInputLocation ? searchLocation?.map((value : any) => {
+                  {booleanInputLocation ? searchLocation?.map((value: GoogleGeocodeResult) => {
                      const location = {
                         lat: value.location.latitude,
                         lng: value.location.longitude

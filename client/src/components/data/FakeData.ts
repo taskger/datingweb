@@ -152,7 +152,11 @@ en: "Please complete Location with search or use current location and select",
     th: "กรุณาหาที่อยู่ด้วยการกดค้นหาหรือใช้ตำแหน่งปัจจุบัน"
   },
   success_create: { en: 'Create Success!',th: 'สร้างข้อมูลใหม่เสร็จสิ้น'},
-
+  cleanfilter: {en: 'Successfully clean filter',th:'ล้างตัวกรองทั้งหมดเรียบร้อย'},
+  deletefilter: {en: 'Successfully deleted filter',th:'ลบตัวกรอง'},
+  addfilter: {en: 'Successfully add filter',th:'เพิ่มตัวกรอง'},
+  success_filter: {en: '',th:'เรียบร้อย'},
+  upheight: {en: 'Or higher',th:'ขึ้นไป'},
   
 };
 

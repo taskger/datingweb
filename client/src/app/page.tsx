@@ -26,6 +26,8 @@ const Page = () => {
     const [toggleCreate,setToggleCreate] = useState<boolean>(false)
     const [showHoverGoogle,setShowHoverGoogle] = useState<boolean>(false)
     const [loading,setLoading] = useState<boolean>(true)
+    const [requestEdit,setRequestEdit] = useState<typeData>()
+    const [requestDelete,setRequestDelete] = useState<typeData>()
     const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
     const { data: session } = useSession();
     useEffect(() => {
@@ -35,7 +37,6 @@ const Page = () => {
         setLoading(false)
       }
     },[session])
-
     const checkAuthentication = async() => {
       setLoading(true)
       if (!session)  {
@@ -138,9 +139,9 @@ const Page = () => {
         </button>
 
         <Button_Setting_User/>
-        <ProfileUser setGetLatLng={setGetLatLng} data={dataMyself as typeData} userData={userData ?? []} defaultLanguage={settings}/>
+        <ProfileUser requestEdit={requestEdit as typeData} requestDelete={requestDelete as typeData} setGetLatLng={setGetLatLng} data={dataMyself as typeData} userData={userData ?? []} defaultLanguage={settings}/>
         <Sidebar data={dataMyself as typeData} userData={userData} userFilter={setDataFilter} setGetLatLng={setGetLatLng} defaultLanguage={settings} language={dataMyself?.language as Lang ?? 'th'}/>
-        <MapGoogle userData={dataFilter} userMove={getLatLng} getDataMyself={dataMyself as typeData} defaultLanguage={settings}/>
+        <MapGoogle userData={dataFilter} userMove={getLatLng} getDataMyself={dataMyself as typeData} defaultLanguage={settings} setRequestEdit={setRequestEdit} setRequestDelete={setRequestDelete}/>
         <ToastContainer autoClose={3000}/>
         
       </div>
