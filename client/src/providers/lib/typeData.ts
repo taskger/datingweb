@@ -126,6 +126,8 @@ export type GeneralKey =
   | 'addfilter'
   | 'success_filter'
   | 'upheight'
+  | 'signingoogle'
+  | 'signout'
   ;
 
 

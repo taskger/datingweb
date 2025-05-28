@@ -1,7 +1,7 @@
 'user client'
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { typeData , Settings , Lang, Profile, LifestyleKey, CategoryNameHobby, HobbyCategory, TranslatedString, GoogleGeocodeResult } from '@/providers/lib/typeData'
+import { typeData , Settings , Lang, Profile, LifestyleKey, CategoryNameHobby, HobbyCategory, TranslatedString, GoogleGeocodeResult, RoleKey } from '@/providers/lib/typeData'
 import Filter_form from './ui/filter_form'
 import Filter_displayselect from './ui/filter_displayselect'
 import Filter_accordion from './ui/filter_accordion'
@@ -9,7 +9,7 @@ import { chinese_zodiac, degree, gender ,group_blood,hobbys ,questionLifestyle, 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { alovaInstance, alovaOutApi } from './data/alova'
-import { calculateAge } from '@/providers/lib/TranslateToThai'
+import { calculateAge, checkChineseZodiac, checkDegree, checkEthnicitie, checkGender, checkReligion, checkStatus, checkWesternZodiac } from '@/providers/lib/TranslateToThai'
 import { toast } from 'react-toastify'
 interface typeProp{
    data:typeData
@@ -324,8 +324,6 @@ function SideProfile(props:typeProp) {
    }
    useEffect(() => {
       if(props.requestEdit){
-         console.log(toggleBackdrop)
-         setToggleBackdrop(true)
          setSelectUser(props.requestEdit)
       }
    },[props.requestEdit])
@@ -338,9 +336,11 @@ function SideProfile(props:typeProp) {
    },[props.requestDelete])
 
 
-   const setSelectUser = (user:typeData) => {
-      if(!user) return
+   const setSelectUser = async(data:typeData) => {
+      if(!data) return
+      const user : typeData = await alovaInstance.Get(`/user/${data.email}?t=${Date.now()}`)
       console.log(user)
+      setInputUser(user.email)
       setDefaultUserSelect(user)
       setId(user?._id ?? '')
       setInputRole(user?.role)
@@ -362,6 +362,7 @@ function SideProfile(props:typeProp) {
       setInputFacebook(user?.profile?.contact?.facebook ?? '')
       setInputInstagram(user?.profile?.contact?.ig ?? '')
       setInputTelephone(user?.profile?.contact?.telephone ?? '')
+      setInputLatlng(user.profile?.location)
       const hobbymap = {
          adventure:setDataAdventure,
          song:setDataSong,
@@ -457,11 +458,11 @@ function SideProfile(props:typeProp) {
       try {
          if (!inputName || !selectedDate){
             setLoading(false)  
-            return toast.error(`${props.defaultLanguage?.empty_form_edit[props.data?.language as Lang ?? 'th']}`);
+            return toast.error(`${props.defaultLanguage?.empty_form_edit[props.data?.language as Lang ?? 'en']}`);
          }
          if (Number(calculateAge(selectedDate.toLocaleDateString('fr-CA'))) < 18){
             setLoading(false) 
-            return toast.error(`${props.defaultLanguage?.age_more_eighteen[props.data?.language as Lang ?? 'th']}`);
+            return toast.error(`${props.defaultLanguage?.age_more_eighteen[props.data?.language as Lang ?? 'en']}`);
          }
          const dateForAge = (selectedDate?.toLocaleDateString('fr-CA'))
          const response : Response = await alovaInstance.Put(`/update/${data._id}`, { 
@@ -505,22 +506,23 @@ function SideProfile(props:typeProp) {
                "ig": inputInstagram,
                "telephone": inputTelephone
             },
+            "profile.location": inputLatLng
          });
          console.log(response.status)
          if (response.status === 200) {
-            toast.success(`${props.defaultLanguage?.success_update[props.data?.language as Lang ?? 'th']}`);
+            toast.success(`${props.defaultLanguage?.success_update[props.data?.language as Lang ?? 'en']}`);
             
           }else if (response.status === 401) {
-            toast.error(`${props.defaultLanguage?.permisson_update[props.data?.language as Lang ?? 'th']}`);
+            toast.error(`${props.defaultLanguage?.permisson_update[props.data?.language as Lang ?? 'en']}`);
             
           }else {
-            toast.warning(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'th']} ${response.status}`);
+            toast.warning(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'en']} ${response.status}`);
           }
         } catch (error: unknown) {
          if (error instanceof Error) {
-           toast.error(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'th']} ${error.message}`);
+           toast.error(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'en']} ${error.message}`);
          } else {
-           toast.error(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'th']} Unknown error`);
+           toast.error(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'en']} Unknown error`);
          }
        }finally{
          setLoading(false) 
@@ -532,15 +534,15 @@ function SideProfile(props:typeProp) {
          if(inputRole != 'admin') {
             if (!inputStatus || !inputEmail || !inputRole || !inputLocation || !inputName  || !selectedDate || !inputGender){
                setLoading(false) 
-               return toast.error(`${props.defaultLanguage?.empty_form_create[props.data?.language as Lang ?? 'th']}`);
+               return toast.error(`${props.defaultLanguage?.empty_form_create[props.data?.language as Lang ?? 'en']}`);
             }
             if (!inputLatLng) {
                setLoading(false) 
-               return toast.error(`${props.defaultLanguage?.laglngempty[props.data?.language as Lang ?? 'th']}`);
+               return toast.error(`${props.defaultLanguage?.laglngempty[props.data?.language as Lang ?? 'en']}`);
             }
             if (Number(calculateAge(selectedDate.toLocaleDateString('fr-CA'))) < 18){
                setLoading(false) 
-               return toast.error(`${props.defaultLanguage?.age_more_eighteen[props.data?.language as Lang ?? 'th']}`);
+               return toast.error(`${props.defaultLanguage?.age_more_eighteen[props.data?.language as Lang ?? 'en']}`);
             }
          }
          
@@ -598,19 +600,19 @@ function SideProfile(props:typeProp) {
          });
          console.log(response.status)
          if (response.status === 200) {
-            toast.success(`${props.defaultLanguage?.success_create[props.data?.language as Lang ?? 'th']}`);
+            toast.success(`${props.defaultLanguage?.success_create[props.data?.language as Lang ?? 'en']}`);
             }else if (response.status === 401) {
-            toast.error(`${props.defaultLanguage?.permission_create[props.data?.language as Lang ?? 'th']}`);
+            toast.error(`${props.defaultLanguage?.permission_create[props.data?.language as Lang ?? 'en']}`);
             }else if (response.status === 400){
-            toast.error(`${props.defaultLanguage?.create_email_have[props.data?.language as Lang ?? 'th']}`);
+            toast.error(`${props.defaultLanguage?.create_email_have[props.data?.language as Lang ?? 'en']}`);
             }else {
-            toast.warning(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'th']} ${response.status}`);
+            toast.warning(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'en']} ${response.status}`);
             }
          } catch (error: unknown) {
             if (error instanceof Error) {
-              toast.error(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'th']} ${error.message}`);
+              toast.error(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'en']} ${error.message}`);
             } else {
-              toast.error(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'th']} Unknown error`);
+              toast.error(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'en']} Unknown error`);
             }
           }finally{
             setLoading(false) 
@@ -625,23 +627,23 @@ function SideProfile(props:typeProp) {
             _id:id,
          });
          if (response.status === 200) {
-            toast.success(`${props.defaultLanguage?.success_delete[props.data?.language as Lang ?? 'th']}`);
+            toast.success(`${props.defaultLanguage?.success_delete[props.data?.language as Lang ?? 'en']}`);
             setUserDataSelect(prev => prev?.filter(user => user._id !== id));
             setDefaultUserSelect(data)
             setNull()
           }else if (response.status === 401) {
-            toast.error(`${props.defaultLanguage?.permission_delete[props.data?.language as Lang ?? 'th']}`);
+            toast.error(`${props.defaultLanguage?.permission_delete[props.data?.language as Lang ?? 'en']}`);
             
           }else if (response.status === 403){
-            toast.error(`${props.defaultLanguage?.admin_cant_delete_self[props.data?.language as Lang ?? 'th']}`);
+            toast.error(`${props.defaultLanguage?.admin_cant_delete_self[props.data?.language as Lang ?? 'en']}`);
           }else {
-            toast.warning(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'th']} ${response.status}`);
+            toast.warning(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'en']} ${response.status}`);
           }
         } catch (error: unknown) {
          if (error instanceof Error) {
-           toast.error(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'th']} ${error.message}`);
+           toast.error(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'en']} ${error.message}`);
          } else {
-           toast.error(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'th']} Unknown error`);
+           toast.error(`${props.defaultLanguage?.error[props.data?.language as Lang ?? 'en']} Unknown error`);
          }
        }finally{
             setLoading(false) 
@@ -699,18 +701,18 @@ function SideProfile(props:typeProp) {
                   <div>
 
                      <button onClick={() => {setNull();setToggleCreate(false);setSelectUser(defaultUserSelect as typeData)}} type="button" data-drawer-hide="sidebar-filter" aria-controls="sidebar-filter" className='ml-2 p-2 z-15 border border-blue-600 bg-blue-500 rounded-lg hover:bg-blue-700 text-white'>
-                     {props.defaultLanguage?.edit[props.data?.language as Lang ?? 'th']}      
+                     {props.defaultLanguage?.edit[props.data?.language as Lang ?? 'en']}      
                      </button>
                   </div>
                   :
                   <div>
 
                      <button onClick={() => {setNull();setToggleCreate(true)}} type="button" data-drawer-hide="sidebar-filter" aria-controls="sidebar-filter" className='ml-2 p-2 z-15 border border-blue-600 bg-blue-500 rounded-lg hover:bg-blue-700 text-white'>
-                     {props.defaultLanguage?.create[props.data?.language as Lang ?? 'th']}      
+                     {props.defaultLanguage?.create[props.data?.language as Lang ?? 'en']}      
                      </button>
                      
                      <button onClick={() => {setToggleDelete(true)}} type="button" className='ml-2 p-2 z-15 border border-red-600 bg-red-500 rounded-lg hover:bg-red-700 text-white'>
-                        {props.defaultLanguage?.delete[props.data?.language as Lang ?? 'th']}      
+                        {props.defaultLanguage?.delete[props.data?.language as Lang ?? 'en']}      
                      </button>
 
 
@@ -728,12 +730,12 @@ function SideProfile(props:typeProp) {
                {toggleCreate ?  
                <>
                   <span className='w-full mr-2'>          
-                     <Filter_form onFocus={setBooleanInputUser} onBlur={setBooleanInputUser} value={inputEmail} onChange={setInputEmail} name={props.defaultLanguage?.email[props.data?.language as Lang ?? 'th']} id="email"/>
+                     <Filter_form onFocus={setBooleanInputUser} onBlur={setBooleanInputUser} value={inputEmail} onChange={setInputEmail} name={props.defaultLanguage?.email[props.data?.language as Lang ?? 'en']} id="email"/>
                   </span>
                </>
                : 
                <span className='w-full mr-2 dark:w-full'>               
-                  <Filter_form onFocus={setBooleanInputUser} onBlur={setBooleanInputUser} value={inputUser} onChange={setInputUser} name={props.defaultLanguage?.select_user[props.data?.language as Lang ?? 'th']} id="user"/>
+                  <Filter_form onFocus={setBooleanInputUser} onBlur={setBooleanInputUser} value={inputUser} onChange={setInputUser} name={props.defaultLanguage?.select_user[props.data?.language as Lang ?? 'en']} id="user"/>
                   <div onMouseDown={(e) => e.preventDefault()} className='w-67 absolute mt-2 max-h-30 z-20 bg-white 
                      overflow-y-auto
                      [&::-webkit-scrollbar]:w-2
@@ -750,13 +752,13 @@ function SideProfile(props:typeProp) {
                </span>
                }
                <span className='w-30 mr-2'>
-                  <Filter_form onFocus={setBooleanInputRole} readonly class='cursor-pointer' onBlur={setBooleanInputRole} value={inputRole} name={props.defaultLanguage?.role[props.data?.language as Lang ?? 'th']} id="role"/>            
+                  <Filter_form onFocus={setBooleanInputRole} readonly class='cursor-pointer' onBlur={setBooleanInputRole} value={role[inputRole as RoleKey]?.[props.data?.language as Lang]} name={props.defaultLanguage?.role[props.data?.language as Lang ?? 'en']} id="role"/>            
                   {booleanInputRole ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={role} updateDataSet={updateDataSet} name="role" lang={props.data?.language ?? ''}/>
+                     <Filter_displayselect  data={role} updateDataSet={updateDataSet} name="role" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
             </div>:""}
-            {toggleCreate ? 
+            {toggleCreate || data?.role == 'admin'  ? 
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='relative w-full mr-2'>
                   {toggleReload ?  
@@ -764,7 +766,7 @@ function SideProfile(props:typeProp) {
                      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
                      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
                   </svg>: ''}     
-                  <Filter_form onFocus={setBooleanInputLocation} onBlur={setBooleanInputLocation} value={inputLocation} onChange={setInputLocation} name={props.defaultLanguage?.location[props.data?.language as Lang ?? 'th']} id="location"/>
+                  <Filter_form onFocus={setBooleanInputLocation} onBlur={setBooleanInputLocation} value={inputLocation} onChange={setInputLocation} name={props.defaultLanguage?.location[props.data?.language as Lang ?? 'en']} id="location"/>
                   <div onMouseDown={(e) => e.preventDefault()} className='w-67 absolute mt-2 max-h-30 z-20 bg-white 
                      overflow-y-auto
                      [&::-webkit-scrollbar]:w-2
@@ -784,7 +786,7 @@ function SideProfile(props:typeProp) {
                            props.setGetLatLng(location)
                            setBooleanInputLocation(false)
                            }
-                        } className="text-left rounded-lg border-1  border-gray-300 text-gray-800 w-full py-3 px-4 inline-flex items-center gap-x-2 text-sm font-normal  border-b-1 border-gray-300 bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none " onMouseDown={(e) => e.preventDefault()} >{value?.formattedAddress} ({caldistance} {props.defaultLanguage?.kilometers[props.data?.language as Lang ?? 'th']})  </button>
+                        } className="text-left rounded-lg border-1  border-gray-300 text-gray-800 w-full py-3 px-4 inline-flex items-center gap-x-2 text-sm font-normal  border-b-1 border-gray-300 bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none " onMouseDown={(e) => e.preventDefault()} >{value?.formattedAddress} ({caldistance} {props.defaultLanguage?.kilometers[props.data?.language as Lang ?? 'en']})  </button>
                      </div>)   
                      } 
                   )
@@ -809,17 +811,17 @@ function SideProfile(props:typeProp) {
             </div> : '' }
             <div className={`flex ml-2 mr-2 ${data?.role == 'admin' ? 'mt-2' : 'mt-12'} items-center`}>
                <span className='w-full mr-2'>               
-                  <Filter_form onFocus={setBooleanInputName} onBlur={setBooleanInputName} value={inputName} onChange={setInputName} name={props.defaultLanguage?.name[props.data?.language as Lang ?? 'th']} id="name"/>
+                  <Filter_form onFocus={setBooleanInputName} onBlur={setBooleanInputName} value={inputName} onChange={setInputName} name={props.defaultLanguage?.name[props.data?.language as Lang ?? 'en']} id="name"/>
                      {booleanInputName ? '' : ''}
                </span>
                <span className='w-full mr-2'>
-                  <Filter_form onFocus={setBooleanInputGender} readonly class='cursor-pointer' onBlur={setBooleanInputGender} value={inputGender} name={props.defaultLanguage?.gender[props.data?.language as Lang ?? 'th']} id="gender"/>            
+                  <Filter_form onFocus={setBooleanInputGender} readonly class='cursor-pointer' onBlur={setBooleanInputGender} value={checkGender(inputGender,props.data?.language as Lang)} name={props.defaultLanguage?.gender[props.data?.language as Lang ?? 'en']} id="gender"/>            
                   {booleanInputGender ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={gender} updateDataSet={updateDataSet} name="gender" lang={props.data?.language ?? ''}/>
+                     <Filter_displayselect  data={gender} updateDataSet={updateDataSet} name="gender" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
-               <span className='w-50'>
-                  <Filter_form onFocus={setBooleanInputHeight} readonly class='cursor-pointer' onBlur={setBooleanInputHeight} value={inputHeight} name={props.defaultLanguage?.height[props.data?.language as Lang ?? 'th']} id="height"/>            
+               <span className='w-60'>
+                  <Filter_form onFocus={setBooleanInputHeight} readonly class='cursor-pointer' onBlur={setBooleanInputHeight} value={inputHeight} name={props.defaultLanguage?.height[props.data?.language as Lang ?? 'en']} id="height"/>            
                   {booleanInputHeight ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect  data={[...Array(60)].map((x,i)=>`${i+140}cm`)} updateDataSet={updateDataSet} name="height" lang={''}/>
                   </div> : ''}
@@ -827,9 +829,9 @@ function SideProfile(props:typeProp) {
             </div>
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-full mr-2'>               
-                  <Filter_form readonly class='cursor-pointer' onFocus={setBooleanInputStatus} onBlur={setBooleanInputStatus} value={inputStatus} onChange={setInputStatus} name={props.defaultLanguage?.status[props.data?.language as Lang ?? 'th']} id="status"/>
+                  <Filter_form readonly class='cursor-pointer' onFocus={setBooleanInputStatus} onBlur={setBooleanInputStatus} value={checkStatus(inputStatus,props.data?.language as Lang)} onChange={setInputStatus} name={props.defaultLanguage?.status[props.data?.language as Lang ?? 'en']} id="status"/>
                   {booleanInputStatus ? <div className='absolute w-40 mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={status} updateDataSet={updateDataSet} name="status"  lang={props.data?.language ?? ''}/>
+                     <Filter_displayselect  data={status} updateDataSet={updateDataSet} name="status"  lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
                <span className='w-60 mr-2 relative'>
@@ -841,55 +843,55 @@ function SideProfile(props:typeProp) {
                   className=" h-12 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-2 p-2.5    "
                   placeholderText=""
                   />
-                  <label htmlFor={`filter_form_birthday`} className={`cursor-pointer absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.birthday[props.data?.language as Lang ?? 'th']}</label>
+                  <label htmlFor={`filter_form_birthday`} className={`cursor-pointer absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.birthday[props.data?.language as Lang ?? 'en']}</label>
                </span>
                <span className='w-60 mr-2'>
-                  <Filter_form onFocus={setBooleanInputEthnicity} readonly class='cursor-pointer' onBlur={setBooleanInputEthnicity} value={inputEthnicity} name={props.defaultLanguage?.ethnicity[props.data?.language as Lang ?? 'th']} id="ethnicity"/>            
+                  <Filter_form onFocus={setBooleanInputEthnicity} readonly class='cursor-pointer' onBlur={setBooleanInputEthnicity} value={checkEthnicitie(inputEthnicity,props.data?.language as Lang)} name={props.defaultLanguage?.ethnicity[props.data?.language as Lang ?? 'en']} id="ethnicity"/>            
                   {booleanInputEthnicity ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={props.data?.language ?? ''}/>
+                     <Filter_displayselect  data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
 
             </div>
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-40 mr-2'>  
-                  <Filter_form onFocus={setBooleanInputReligion} readonly class='cursor-pointer' onBlur={setBooleanInputReligion} value={inputReligion} name={props.defaultLanguage?.religion[props.data?.language as Lang ?? 'th']} id="religion"/>            
+                  <Filter_form onFocus={setBooleanInputReligion} readonly class='cursor-pointer' onBlur={setBooleanInputReligion} value={checkReligion(inputReligion,props.data?.language as Lang)} name={props.defaultLanguage?.religion[props.data?.language as Lang ?? 'en']} id="religion"/>            
                   {booleanInputReligion ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={props.data?.language ?? ''}/>
+                     <Filter_displayselect  data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}             
                </span>
                <span className='w-60 mr-2'>
-                  <Filter_form onFocus={setBooleanInputChineseZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputChineseZodiac} value={inputChineseZodiac} name={props.defaultLanguage?.chinese_zodiac[props.data?.language as Lang ?? 'th']} id="chinese_zodiac"/>            
+                  <Filter_form onFocus={setBooleanInputChineseZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputChineseZodiac} value={checkChineseZodiac(inputChineseZodiac,props.data?.language as Lang)} name={props.defaultLanguage?.chinese_zodiac[props.data?.language as Lang ?? 'en']} id="chinese_zodiac"/>            
                   {booleanInputChineseZodiac ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={props.data?.language ?? ''}/>
+                     <Filter_displayselect  data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
-                  <Filter_form onFocus={setBooleanInputWesternZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputWesternZodiac} value={inputWesternZodiac} name={props.defaultLanguage?.western_zodiac[props.data?.language as Lang ?? 'th']} id="western_zodiac"/>            
+                  <Filter_form onFocus={setBooleanInputWesternZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputWesternZodiac} value={checkWesternZodiac(inputWesternZodiac,props.data?.language as Lang)} name={props.defaultLanguage?.western_zodiac[props.data?.language as Lang ?? 'en']} id="western_zodiac"/>            
                   {booleanInputWesternZodiac ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={props.data?.language ?? ''}/>
+                     <Filter_displayselect  data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
             </div>
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-18 mr-2'>
-                  <Filter_form onFocus={setBooleanInputGroup} readonly class='cursor-pointer' onBlur={setBooleanInputGroup} value={inputGroup} name={props.defaultLanguage?.group_blood[props.data?.language as Lang ?? 'th']} id="group_blood"/>            
+                  <Filter_form onFocus={setBooleanInputGroup} readonly class='cursor-pointer' onBlur={setBooleanInputGroup} value={inputGroup} name={props.defaultLanguage?.group_blood[props.data?.language as Lang ?? 'en']} id="group_blood"/>            
                   {booleanInputGroup ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect  data={group_blood} updateDataSet={updateDataSet} name="group_blood" lang={''}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
-                  <Filter_form onFocus={setBooleanInputDegree} readonly class='cursor-pointer' onBlur={setBooleanInputDegree} value={inputDegree} name={props.defaultLanguage?.degree[props.data?.language as Lang ?? 'th']} id="degree"/>            
+                  <Filter_form onFocus={setBooleanInputDegree} readonly class='cursor-pointer' onBlur={setBooleanInputDegree} value={checkDegree(inputDegree,props.data?.language as Lang)} name={props.defaultLanguage?.degree[props.data?.language as Lang ?? 'en']} id="degree"/>            
                   {booleanInputDegree ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={degree} updateDataSet={updateDataSet} name="degree" lang={props.data?.language ?? ''}/>
+                     <Filter_displayselect  data={degree} updateDataSet={updateDataSet} name="degree" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
                   {booleanToggleUniversitye ? 
-                  <Filter_form onFocus={setBooleanInputUniversity} onBlur={setBooleanInputUniversity} onChange={setInputUniversity} value={inputUniversity} name={props.defaultLanguage?.university[props.data?.language as Lang ?? 'th']} id="university"/>            
+                  <Filter_form onFocus={setBooleanInputUniversity} onBlur={setBooleanInputUniversity} onChange={setInputUniversity} value={inputUniversity} name={props.defaultLanguage?.university[props.data?.language as Lang ?? 'en']} id="university"/>            
                   : ''}
                   {booleanInputUniversity ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={getUniversity.filter(value => value.match(inputUniversity))} updateDataSet={updateDataSet} name="university" lang={''}/>
+                     <Filter_displayselect  data={getUniversity.filter(value => {if (inputUniversity) return value.toLocaleLowerCase().match(inputUniversity.toLocaleLowerCase())})} updateDataSet={updateDataSet} name="university" lang={''}/>
                   </div> : ''}
                </span>
             </div>
@@ -897,13 +899,13 @@ function SideProfile(props:typeProp) {
                <span className='w-50 mr-2'>
                   <div className='relative'>
                         <input autoComplete='off' value={Number(inputSalary)} type="number" id={`filter_form_salary`} onChange={(e) => checkSalary(Number(e.target.value))} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
-                        <label htmlFor={`filter_form_salary`} className={` absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.salary[props.data?.language as Lang ?? 'th']}</label>
+                        <label htmlFor={`filter_form_salary`} className={` absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.salary[props.data?.language as Lang ?? 'en']}</label>
                   </div>
                </span>
                <span className='w-full mr-2'>          
                   <div className='relative'>
                         <input autoComplete='off' value={inputFacebook} type="text" id={`filter_form_facebook`} onChange={(e) => setInputFacebook(e.target.value)} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
-                        <label htmlFor={`filter_form_facebook`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.facebook[props.data?.language as Lang ?? 'th']}</label>
+                        <label htmlFor={`filter_form_facebook`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.facebook[props.data?.language as Lang ?? 'en']}</label>
                   </div>               
                </span>
             </div>
@@ -911,13 +913,13 @@ function SideProfile(props:typeProp) {
                <span className='w-full mr-2'>         
                   <div className='relative'>
                      <input autoComplete='off' value={inputInstagram} type="text" id={`filter_form_instragram`} onChange={(e) => setInputInstagram(e.target.value)} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
-                     <label htmlFor={`filter_form_instragram`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.instragram[props.data?.language as Lang ?? 'th']}</label>
+                     <label htmlFor={`filter_form_instragram`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.instragram[props.data?.language as Lang ?? 'en']}</label>
                   </div>   
                </span>
                <span className='w-full mr-2'>       
                   <div className='relative'>
                      <input autoComplete='off' value={inputTelephone}inputMode="numeric" maxLength={10} pattern="[0-9]*" type="tel" id={`filter_form_telephone`} onChange={(e) => checkTel(e)} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
-                     <label htmlFor={`filter_form_telephone`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.telephone[props.data?.language as Lang ?? 'th']}</label>
+                     <label htmlFor={`filter_form_telephone`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.telephone[props.data?.language as Lang ?? 'en']}</label>
                   </div>     
                </span>
                {toggleCreate ? '' : 
@@ -948,7 +950,7 @@ function SideProfile(props:typeProp) {
                <div id="accordion-collapse-hobbys-userprofile" data-accordion="collapse" className='font-normal mt-5'>
                   <h2 id="accordion-collapse-heading-hobbys-userprofile">
                      <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200    hover:bg-gray-100  gap-3" data-accordion-target="#accordion-collapse-body-hobbys-userprofile" aria-expanded="false" aria-controls="accordion-collapse-body-hobbys-userprofile">
-                        <span>{props.defaultLanguage?.hobby[props.data?.language as Lang ?? 'th']}</span>
+                        <span>{props.defaultLanguage?.hobby[props.data?.language as Lang ?? 'en']}</span>
                         <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
                         </svg>
@@ -960,7 +962,7 @@ function SideProfile(props:typeProp) {
                      {hobbyCategories?.map((value) => {
                         return(
                            <span key={value.name} >
-                              <Filter_accordion data={value.data as Record<string, TranslatedString>} updateDataSet={updateDataSet} name={value.name as HobbyCategory} parent={'profile'} lang={props.data?.language  as Lang ?? ''}/>
+                              <Filter_accordion data={value.data as Record<string, TranslatedString>} updateDataSet={updateDataSet} name={value.name as HobbyCategory} parent={'profile'} lang={props.data?.language  as Lang ?? 'en'}/>
                            </span>
                         )
                      })}
@@ -975,7 +977,7 @@ function SideProfile(props:typeProp) {
                <div id="accordion-collapse-liftstyle-userprofile" data-accordion="collapse" className='font-normal mt-5'>
                   <h2 id="accordion-collapse-heading-liftstyle-userprofile">
                      <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200    hover:bg-gray-100  gap-3" data-accordion-target="#accordion-collapse-body-liftstyle-userprofile" aria-expanded="false" aria-controls="accordion-collapse-body-liftstyle-userprofile">
-                        <span>{props.defaultLanguage?.lifestyle[props.data?.language as Lang ?? 'th']}</span>
+                        <span>{props.defaultLanguage?.lifestyle[props.data?.language as Lang ?? 'en']}</span>
                         <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
                         </svg>
@@ -988,7 +990,7 @@ function SideProfile(props:typeProp) {
                            return(
                            <div key={value.key} className="flex items-center ml-2 mb-2 mt-2">
                               <input id={`${value.key}profile`} onChange={() => updateLifestyle(value.key as LifestyleKey)} type="checkbox" checked={isChecked} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500   focus:ring-2  "/>
-                              <label htmlFor={`${value.key}profile`} className="ms-2 text-sm font-normal text-gray-900 ">{value.question}</label>
+                              <label htmlFor={`${value.key}profile`} className="ms-2 text-sm font-normal text-gray-900 ">{value.question[props.data?.language  as Lang ?? 'en']}</label>
                            </div>
                            )}
                         ) : ''}
@@ -996,13 +998,13 @@ function SideProfile(props:typeProp) {
                   </div>
                   {toggleCreate ? 
                   <div className='flex justify-center items-end pt-10'>
-                     <button type="button" onClick={()=> clickSubmitCreate()} className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.submit_button[props.data?.language as Lang ?? 'th']}</button>
-                     <button type="button" onClick={()=> setNull()} className="text-white bg-red-500 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.reset_button[props.data?.language as Lang ?? 'th']}</button>            
+                     <button type="button" onClick={()=> clickSubmitCreate()} className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.submit_button[props.data?.language as Lang ?? 'en']}</button>
+                     <button type="button" onClick={()=> setNull()} className="text-white bg-red-500 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.reset_button[props.data?.language as Lang ?? 'en']}</button>            
                   </div>
                   : 
                   <div className='flex justify-center items-end pt-10'>
-                     <button type="button" onClick={()=> clickSubmitEdit()} className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.submit_button[props.data?.language as Lang ?? 'th']}</button>
-                     <button type="button" onClick={()=> setSelectUser(defaultUserSelect as typeData)} className="text-white bg-red-500 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.reset_button[props.data?.language as Lang ?? 'th']}</button>            
+                     <button type="button" onClick={()=> clickSubmitEdit()} className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.submit_button[props.data?.language as Lang ?? 'en']}</button>
+                     <button type="button" onClick={()=> setSelectUser(defaultUserSelect as typeData)} className="text-white bg-red-500 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.reset_button[props.data?.language as Lang ?? 'en']}</button>            
                   </div>
                   }
                </div>
@@ -1044,11 +1046,11 @@ export function Modal_Confirm_Delete(props:typePropModal_Confirm) {
                      <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                      </svg>
-                     <h3 className="mb-5 text-lg font-normal text-gray-500 ">{props.defaultLanguage?.text_confirm_delete[props.data?.language as Lang ?? 'th']}</h3>
+                     <h3 className="mb-5 text-lg font-normal text-gray-500 ">{props.defaultLanguage?.text_confirm_delete[props.data?.language as Lang ?? 'en']}</h3>
                      <button  onClick={() => {props.deleteUser();props.close(false)}} type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-normal rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
-                        {props.defaultLanguage?.submit_delete[props.data?.language as Lang ?? 'th']}
+                        {props.defaultLanguage?.submit_delete[props.data?.language as Lang ?? 'en']}
                      </button>
-                     <button onClick={() => {props.close(false)}} type="button" className="py-2.5 px-5 ms-3 text-sm font-normal text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100      ">{props.defaultLanguage?.cancel[props.data?.language as Lang ?? 'th']}</button>
+                     <button onClick={() => {props.close(false)}} type="button" className="py-2.5 px-5 ms-3 text-sm font-normal text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100      ">{props.defaultLanguage?.cancel[props.data?.language as Lang ?? 'en']}</button>
                   </div>
             </div>
          </div>
@@ -1077,11 +1079,11 @@ export function Modal_Confirm_Delete(props:typePropModal_Confirm) {
                      <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                      </svg>
-                     <h3 className="mb-5 text-lg font-normal text-gray-500 ">{props.defaultLanguage?.text_confirm_delete[props.data?.language as Lang ?? 'th']}</h3>
+                     <h3 className="mb-5 text-lg font-normal text-gray-500 ">{props.defaultLanguage?.text_confirm_delete[props.data?.language as Lang ?? 'en']}</h3>
                      <button  onClick={() => {props.deleteUser();props.close(false);closeModal()}} type="button" className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300  font-normal rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
-                        {props.defaultLanguage?.submit_delete[props.data?.language as Lang ?? 'th']}
+                        {props.defaultLanguage?.submit_delete[props.data?.language as Lang ?? 'en']}
                      </button>
-                     <button onClick={() => {props.close(false);closeModal()}} type="button" className="py-2.5 px-5 ms-3 text-sm font-normal text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100      ">{props.defaultLanguage?.cancel[props.data?.language as Lang ?? 'th']}</button>
+                     <button onClick={() => {props.close(false);closeModal()}} type="button" className="py-2.5 px-5 ms-3 text-sm font-normal text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100      ">{props.defaultLanguage?.cancel[props.data?.language as Lang ?? 'en']}</button>
                   </div>
             </div>
          </div>

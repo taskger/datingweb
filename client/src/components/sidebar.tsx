@@ -39,6 +39,7 @@ import { typeData,Profile,Settings,TranslatedString,CategoryNameHobby,LifestyleK
 
 
 function Sidebar(props:typeProps) {
+   const lang = props.language ?? 'en'
    const [countSelect,setCountSelect] = useState<number>(2)
    const [minAge, setMinAge] = useState<number>(18)
    const [maxAge, setMaxAge] = useState<number>(100)
@@ -113,12 +114,12 @@ function Sidebar(props:typeProps) {
     }, []);
 
     const deleteAlert = (value:string) => {
-      toast.error(`${props.defaultLanguage.deletefilter[props.language]} ${value} ${props.defaultLanguage.success_filter[props.language]}`, {
+      toast.error(`${props.defaultLanguage.deletefilter[lang ?? 'en']} ${value} ${props.defaultLanguage.success_filter[lang ?? 'en']}`, {
         position: 'bottom-right',
       });
     };
     const addAlert = (value:string) => {
-      toast.success(`${props.defaultLanguage.addfilter[props.language]} ${value} ${props.defaultLanguage.success_filter[props.language]}`, {
+      toast.success(`${props.defaultLanguage.addfilter[lang ?? 'en']} ${value} ${props.defaultLanguage.success_filter[lang ?? 'en']}`, {
         position: 'bottom-right',
       });
     };
@@ -275,18 +276,18 @@ function Sidebar(props:typeProps) {
          setCountSelect(2)
          // เพิ่ม filter อื่น ๆ ถ้ามี
          setTimeout(() => {
-            toast.error(`${props.defaultLanguage.cleanfilter?.[props.language]}`, {
+            toast.error(`${props.defaultLanguage.cleanfilter?.[lang ?? 'en']}`, {
             position: 'bottom-right',
             });
          }, 0);
       }else if (name === 'height') {
          setDataHeight(parseInt(value));
          added = true;
-         handleAlert(`${props.defaultLanguage.height[props.language]} ${value} ${props.defaultLanguage.upheight?.[props.language]}`,name);
+         handleAlert(`${props.defaultLanguage.height[lang ?? 'en']} ${value} ${props.defaultLanguage.upheight?.[lang ?? 'en']}`,name);
       }else if (toggleableFilters[name]) {
          const { setter, translateTH } = toggleableFilters[name];
          handleSetToggle(setter);
-         handleAlert(translateTH ? translateTH(value,props.language) : value);
+         handleAlert(translateTH ? translateTH(value,lang ?? 'en') : value);
       }
       };
 
@@ -373,10 +374,10 @@ function Sidebar(props:typeProps) {
          
          <div className='flex ml-2 mr-10 justify-between items-center'>
                <span>
-                  {countSelect} {props.defaultLanguage.select[props.language]}
+                  {countSelect} {props.defaultLanguage.select[lang ?? 'en']}
                </span>
                <button className=" text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-normal rounded-full text-sm px-5 py-2.5 me-2 mb-2  " type="button" data-drawer-target="sidebar-filter" data-drawer-show="sidebar-filter" aria-controls="sidebar-filter">
-                  {props.defaultLanguage.filter[props.language]}
+                  {props.defaultLanguage.filter[lang ?? 'en']}
                </button>
          </div>
          <div className="pt-2">
@@ -384,10 +385,10 @@ function Sidebar(props:typeProps) {
                <ul className="relative insetshadow font-normal border border-gray-300 rounded-xl overflow-y-auto h-40 pb-3">
                   <div>
                      <span className='border border-zinc-300 inline-flex items-center bg-white ml-2 mr-2 mt-2 p-2 rounded-lg hover:bg-gray-200'>
-                     {props.defaultLanguage?.age[props.language]} {minAge} - {maxAge}
+                     {props.defaultLanguage?.age[lang ?? 'en']} {minAge} - {maxAge}
                      </span>
                      <span className='border border-zinc-300 inline-flex items-center bg-white ml-2 mr-2 mt-2 p-2 rounded-lg hover:bg-gray-200'>
-                        {props.defaultLanguage?.salary[props.language]} {minSalary} - {maxSalary}
+                        {props.defaultLanguage?.salary[lang ?? 'en']} {minSalary} - {maxSalary}
                      </span>
                      {dataHeight != 0 &&
                         <span className='border border-zinc-300 inline-flex items-center bg-white ml-2 mr-2 mt-2 p-2 rounded-lg hover:bg-gray-200'>
@@ -397,7 +398,7 @@ function Sidebar(props:typeProps) {
                      {allCategories?.map((value) => {
                      return(
                         <span key={value.name}>
-                           <Filter_displaycatagory data={[...value.data]} updateDataSet={updateDataSet} name={value.name} lang={props.language}/>
+                           <Filter_displaycatagory data={[...value.data]} updateDataSet={updateDataSet} name={value.name} lang={lang ?? 'en'}/>
                         </span>
                         )
                      })}
@@ -406,11 +407,11 @@ function Sidebar(props:typeProps) {
                </ul>
                <div className='flex justify-between mt-3 mb-3 ml-2 mr-2'>
                   <button></button>
-                  <span>{props.defaultLanguage?.found_filter_people[props.language]} {[...dataFilter].length}</span>
+                  <span>{props.defaultLanguage?.found_filter_people[lang ?? 'en']} {[...dataFilter].length}</span>
                </div>
                <ul className="relative bg-gray-100 insetshadow font-normal border border-gray-300 rounded-xl overflow-y-auto h-80 max-h-full pb-3 pl-2 overflow-x-hidden">
                   <div data-drawer-hide="sidebar" aria-controls="sidebar" role="button" >
-                        <Filter_buttonuser data={[...dataFilter]} defaultLanguage={props.defaultLanguage} language={props.language} setGetLatLng={props.setGetLatLng} setToggleBackdrop={setToggleBackdrop} />
+                        <Filter_buttonuser data={[...dataFilter]} defaultLanguage={props.defaultLanguage} language={lang ?? 'en'} setGetLatLng={props.setGetLatLng} setToggleBackdrop={setToggleBackdrop} />
                   </div>   
                </ul>
             </ul>
@@ -420,7 +421,7 @@ function Sidebar(props:typeProps) {
       <div id="sidebar-filter" className="fixed top-0 left-0 z-40 w-96 h-screen p-2 overflow-y-auto transition-transform -translate-x-full bg-white dark:bg-white" tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-label-filter">
          <div className='flex justify-end items-end'>
          <button onClick={() => updateDataSet('reset','')}type="button" data-drawer-hide="sidebar-filter" aria-controls="sidebar-filter" className='absolute left-2 top-2 p-2 z-15 border border-gray-300 rounded-lg hover:bg-gray-300'>
-         {props.defaultLanguage?.reset_filter[props.language]}         
+         {props.defaultLanguage?.reset_filter[lang ?? 'en']}         
          </button>
          <button type="button" data-drawer-hide="sidebar-filter" aria-controls="sidebar-filter" className='p-2 z-15 rounded-lg hover:bg-gray-300'>
             <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 8 14">
@@ -432,7 +433,7 @@ function Sidebar(props:typeProps) {
             <ul className="font-normal">
                <div className='flex justify-between items-center'>
                      <span>
-                        {props.defaultLanguage?.age[props.language]}
+                        {props.defaultLanguage?.age[lang ?? 'en']}
                      </span>
                      {minAge} - {maxAge}
                </div>
@@ -462,7 +463,7 @@ function Sidebar(props:typeProps) {
             <ul className="font-normal mt-5">
                <div className='flex justify-between items-center'>
                      <span>
-                        {props.defaultLanguage?.salary[props.language]}
+                        {props.defaultLanguage?.salary[lang ?? 'en']}
                      </span>
                      {minSalary} - {maxSalary}
                </div>
@@ -494,46 +495,46 @@ function Sidebar(props:typeProps) {
             <ul className="font-normal mt-5">
                <div className="grid grid-cols-4 gap-2 z-0">
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataGender].map(value => checkGender(value,props.language))} class="cursor-pointer" name={props.defaultLanguage?.gender[props.language]} id="gender"/>
-                     <Filter_displayselect  data={gender} updateDataSet={updateDataSet} name="gender" lang={props.language}/>
+                     <Filter_form readonly value={[...dataGender].map(value => checkGender(value,lang ?? 'en'))} class="cursor-pointer" name={props.defaultLanguage?.gender[lang ?? 'en']} id="gender"/>
+                     <Filter_displayselect  data={gender} updateDataSet={updateDataSet} name="gender" lang={lang ?? 'en'}/>
                   </div>
                   <div className='relative'>
-                     <Filter_form readonly value={`${dataHeight}cm+`} class="cursor-pointer" name={props.defaultLanguage?.height[props.language]} id="height"/>
+                     <Filter_form readonly value={`${dataHeight}cm+`} class="cursor-pointer" name={props.defaultLanguage?.height[lang ?? 'en']} id="height"/>
                      <Filter_displayselect data={[...Array(60)].map((x,i)=>`${i+140}cm`)} updateDataSet={updateDataSet} name="height" lang={''}/>
                   </div>
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataStatus].map(value => checkStatus(value,props.language))} class="cursor-pointer" name={props.defaultLanguage?.status[props.language]} id="status"/>
-                     <Filter_displayselect data={status} updateDataSet={updateDataSet} name="status" lang={props.language}/>
+                     <Filter_form readonly value={[...dataStatus].map(value => checkStatus(value,lang ?? 'en'))} class="cursor-pointer" name={props.defaultLanguage?.status[lang ?? 'en']} id="status"/>
+                     <Filter_displayselect data={status} updateDataSet={updateDataSet} name="status" lang={lang ?? 'en'}/>
                   </div> 
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataEthnicity].map(value => checkEthnicitie(value,props.language))} class="cursor-pointer" name={props.defaultLanguage?.ethnicity[props.language]} id="ethnicity"/>
-                     <Filter_displayselect data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={props.language}/>
+                     <Filter_form readonly value={[...dataEthnicity].map(value => checkEthnicitie(value,lang ?? 'en'))} class="cursor-pointer" name={props.defaultLanguage?.ethnicity[lang ?? 'en']} id="ethnicity"/>
+                     <Filter_displayselect data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={lang ?? 'en'}/>
                   </div>
                </div>
                <div className="grid grid-cols-4 gap-2 z-0 mt-2 ">
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataReligion].map(value => checkReligion(value,props.language))} class="cursor-pointer" name={props.defaultLanguage?.religion[props.language]} id="religion"/>
-                     <Filter_displayselect data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={props.language}/>
+                     <Filter_form readonly value={[...dataReligion].map(value => checkReligion(value,lang ?? 'en'))} class="cursor-pointer" name={props.defaultLanguage?.religion[lang ?? 'en']} id="religion"/>
+                     <Filter_displayselect data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={lang ?? 'en'}/>
                   </div>
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataWesternZodiac].map(value => checkWesternZodiac(value,props.language))} class="cursor-pointer" name={props.defaultLanguage?.western_zodiac[props.language]} id="western_zodiac"/>
-                     <Filter_displayselect data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={props.language}/>
+                     <Filter_form readonly value={[...dataWesternZodiac].map(value => checkWesternZodiac(value,lang ?? 'en'))} class="cursor-pointer" name={props.defaultLanguage?.western_zodiac[lang ?? 'en']} id="western_zodiac"/>
+                     <Filter_displayselect data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={lang ?? 'en'}/>
                   </div>
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataChineseZodiac].map(value => checkChineseZodiac(value,props.language))} class="cursor-pointer" name={props.defaultLanguage?.chinese_zodiac[props.language]} id="chinese_zodiac"/>
-                     <Filter_displayselect data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={props.language}/>
+                     <Filter_form readonly value={[...dataChineseZodiac].map(value => checkChineseZodiac(value,lang ?? 'en'))} class="cursor-pointer" name={props.defaultLanguage?.chinese_zodiac[lang ?? 'en']} id="chinese_zodiac"/>
+                     <Filter_displayselect data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={lang ?? 'en'}/>
                   </div>
                   <div className='relative'>
-                     <Filter_form readonly value={[...dataGroupฺBlood].map(value => checkGroup(value))} class="cursor-pointer" name={props.defaultLanguage?.group_blood[props.language]} id="group"/>
+                     <Filter_form readonly value={[...dataGroupฺBlood].map(value => checkGroup(value))} class="cursor-pointer" name={props.defaultLanguage?.group_blood[lang ?? 'en']} id="group"/>
                      <Filter_displayselect data={group_blood} updateDataSet={updateDataSet} name="group" lang={''}/>
                   </div>
                </div>
             </ul>
             <ul className="font-normal mt-5">
                <div className="z-0">
-                     <Filter_form  class="cursor-pointer" readonly name={props.defaultLanguage?.degree[props.language]} id="degree" value={[...dataDegree].map(value => checkDegree(value,props.language))} onFocus = {setToggleOpenDegree} onBlur = {setToggleOpenDegree}/>
+                     <Filter_form  class="cursor-pointer" readonly name={props.defaultLanguage?.degree[lang ?? 'en']} id="degree" value={[...dataDegree].map(value => checkDegree(value,lang ?? 'en'))} onFocus = {setToggleOpenDegree} onBlur = {setToggleOpenDegree}/>
                   {toggleOpenDegree ? 
-                     <Filter_displayselect data={degree} updateDataSet = {updateDataSet} name="degree" lang={props.language}/>
+                     <Filter_displayselect data={degree} updateDataSet = {updateDataSet} name="degree" lang={lang ?? 'en'}/>
                   :''}
                </div>
             </ul>
@@ -541,7 +542,7 @@ function Sidebar(props:typeProps) {
                   || dataDegree.has('bachelors') || dataDegree.has('masters') || dataDegree.has('doctorate')) ?
                <ul className="font-normal mt-5">
                <div className=" z-0">
-                     <Filter_form name={props.defaultLanguage?.university[props.language]} id="university" value={inputUniversity} onFocus = {setToggleOpenUniversity} onBlur = {setToggleOpenUniversity} onChange = {setInputUniversity}/>
+                     <Filter_form name={props.defaultLanguage?.university[lang ?? 'en']} id="university" value={inputUniversity} onFocus = {setToggleOpenUniversity} onBlur = {setToggleOpenUniversity} onChange = {setInputUniversity}/>
                      {toggleOpenUniversity ? 
                         <Filter_displayselect data={filteredUniversity} setInput = {setInputUniversity} updateDataSet = {updateDataSet} name="university" lang={''}/>
                      :''}
@@ -552,7 +553,7 @@ function Sidebar(props:typeProps) {
                <div id="accordion-collapse-hobbys" data-accordion="collapse" className='font-normal mt-5'>
                   <h2 id="accordion-collapse-heading-hobbys">
                      <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200    hover:bg-gray-100  gap-3" data-accordion-target="#accordion-collapse-body-hobbys" aria-expanded="false" aria-controls="accordion-collapse-body-hobbys">
-                        <span>{props.defaultLanguage?.hobby[props.language]}</span>
+                        <span>{props.defaultLanguage?.hobby[lang ?? 'en']}</span>
                         <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
                         </svg>
@@ -564,7 +565,7 @@ function Sidebar(props:typeProps) {
                      {hobbyCategories?.map((value) => {
                         return(
                            <span key={value.name}>
-                              <Filter_accordion data={value.data} updateDataSet={updateDataSet} name={value.name as HobbyCategory} parent={''} lang={props.language}/>
+                              <Filter_accordion data={value.data} updateDataSet={updateDataSet} name={value.name as HobbyCategory} parent={''} lang={lang ?? 'en'}/>
                            </span>
                         )
                      })}
@@ -579,7 +580,7 @@ function Sidebar(props:typeProps) {
                <div id="accordion-collapse-liftstyle" data-accordion="collapse" className='font-normal mt-5'>
                   <h2 id="accordion-collapse-heading-liftstyle">
                      <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200    hover:bg-gray-100  gap-3" data-accordion-target="#accordion-collapse-body-liftstyle" aria-expanded="false" aria-controls="accordion-collapse-body-liftstyle">
-                        <span>{props.defaultLanguage?.lifestyle[props.language]}</span>
+                        <span>{props.defaultLanguage?.lifestyle[lang ?? 'en']}</span>
                         <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
                         </svg>
@@ -590,7 +591,7 @@ function Sidebar(props:typeProps) {
                         {questionLifestyle.map((value) => 
                            <div key={value.key} className="flex items-center ml-2 mb-2 mt-2">
                               <input id={`${value.key}sidebar`} onChange={() => updateDataSet('lifestyle',value.key)} type="checkbox" checked={dataLifestyle.has(value.key)} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500   focus:ring-2  "/>
-                              <label htmlFor={`${value.key}sidebar`} className="ms-2 text-sm font-normal text-gray-900 ">{value.question}</label>
+                              <label htmlFor={`${value.key}sidebar`} className="ms-2 text-sm font-normal text-gray-900 ">{value.question[lang ?? 'en']}</label>
                            </div>
                         )}
                      </div>
@@ -600,12 +601,12 @@ function Sidebar(props:typeProps) {
 
             <ul className="relative insetshadow font-normal mt-5 border border-gray-300 rounded-xl overflow-y-auto max-h-60 pb-3">
                <div>
-                  <div className="sticky top-0 right-0 left-0 max-w-full h-8 text-lg text-center bg-gray-100 rounded-t-xl">{props.defaultLanguage?.filter_use[props.language]}</div>
+                  <div className="sticky top-0 right-0 left-0 max-w-full h-8 text-lg text-center bg-gray-100 rounded-t-xl">{props.defaultLanguage?.filter_use[lang ?? 'en']}</div>
                      <span className='border border-zinc-300 inline-flex items-center bg-white ml-2 mr-2 mt-2 p-2 rounded-lg hover:bg-gray-200'>
-                     {props.defaultLanguage?.age[props.language]} {minAge} - {maxAge}
+                     {props.defaultLanguage?.age[lang ?? 'en']} {minAge} - {maxAge}
                      </span>
                   <span className='border border-zinc-300 inline-flex items-center bg-white ml-2 mr-2 mt-2 p-2 rounded-lg hover:bg-gray-200'>
-                     {props.defaultLanguage?.salary[props.language]} {minSalary} - {maxSalary}
+                     {props.defaultLanguage?.salary[lang ?? 'en']} {minSalary} - {maxSalary}
                   </span>
                   {dataHeight != 0 &&
                      <span className='border border-zinc-300 inline-flex items-center bg-white ml-2 mr-2 mt-2 p-2 rounded-lg hover:bg-gray-200'>
@@ -615,7 +616,7 @@ function Sidebar(props:typeProps) {
                   {allCategories?.map((value) => {
                      return(
                         <span key={value.name}>
-                           <Filter_displaycatagory data={[...value.data]} updateDataSet={updateDataSet} name={value.name} lang={props.language}/>
+                           <Filter_displaycatagory data={[...value.data]} updateDataSet={updateDataSet} name={value.name} lang={lang ?? 'en'}/>
                         </span>
                      )
                   })}

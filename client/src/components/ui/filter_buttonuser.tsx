@@ -1,5 +1,5 @@
 import React from 'react'
-import { checkStatus,checkGender } from '@/providers/lib/TranslateToThai'
+import { checkStatus, checkEthnicitie, checkReligion, checkDegree, checkWesternZodiac, checkChineseZodiac } from '@/providers/lib/TranslateToThai'
 import { typeData ,Profile,Settings,TranslatedString} from '@/providers/lib/typeData';
 import Image from 'next/image';
 interface Props {
@@ -22,7 +22,6 @@ export default function Filter_buttonuser(props:Props) {
         props.setGetLatLng(value.profile.location, value.email);
       }
     };
-    
   return (
     <>
     {props.data.map((value,index) => {
@@ -37,23 +36,46 @@ export default function Filter_buttonuser(props:Props) {
               <span className={`absolute ${value.profile?.gender == 'female' ? 'text-red-400' : 'text-blue-400' }` } >{CalculateLike(value.profile?.like?.length ?? 0) }</span>
           </span>
       </div>
-      <span className='relative top-0 left-18 items-center justify-center w-70 text-start text-md pl-2  pb-2 font-normal'>
-      <div className='pt-0'>
+      <span className='relative top-0 left-18 items-center justify-center w-70 text-start text-md pl-3  pb-2 font-normal'>
+      <div className='pt-1'>
             <p>
                 {props.defaultLanguage.name[props.language]} {value.profile?.name}
             </p>
-            <p className='pl-2'>
-                {props.defaultLanguage.gender[props.language]} {checkGender(value.profile?.gender ?? '',props.language)}
-            </p>
-            <p className='pl-2'>
+            
+            <p className='pt-1 pl-2'>
+              <span>
                 {props.defaultLanguage.age[props.language]} {value.profile?.age}
+              </span>
+              {value.profile?.ethnicity ? 
+              <span className='pl-4'>
+                {props.defaultLanguage.ethnicity[props.language]} {checkEthnicitie(value.profile?.ethnicity ?? '',props.language)}
+              </span> 
+              : value.profile?.degree ? 
+              <span className='pl-4'>
+                {props.defaultLanguage.degree[props.language]} {checkDegree(value.profile?.degree ?? '',props.language)}
+              </span> 
+               :''}
             </p>
-            {value.profile ? 
-            <p>
-                {props.defaultLanguage.status[props.language]} {checkStatus(value.profile.status ?? '',props.language)}
+            <p className='pt-1'>
+              <span>
+                {props.defaultLanguage.status[props.language]} {checkStatus(value.profile?.status ?? '',props.language)}
+              </span>
+              {value.profile?.religion ? 
+              <span className='pl-4'>
+                {props.defaultLanguage.religion[props.language]} {checkReligion(value.profile?.religion ?? '',props.language)}
+              </span>
+              : value.profile?.western_zodiac ? 
+              <span className='pl-4'>
+                {props.defaultLanguage.western_zodiac[props.language]} {checkWesternZodiac(value.profile?.western_zodiac ?? '',props.language)}
+              </span>
+              : value.profile?.chinese_zodiac ?
+              <span className='pl-4'>
+                {props.defaultLanguage.chinese_zodiac[props.language]} {checkChineseZodiac(value.profile?.chinese_zodiac ?? '',props.language)}
+              </span>
+              : ''}
             </p>
-              :'' }
           </div>
+          
           <div>
           </div>
       </span>

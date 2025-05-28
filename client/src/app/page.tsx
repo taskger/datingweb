@@ -29,6 +29,7 @@ const Page = () => {
     const [requestEdit,setRequestEdit] = useState<typeData>()
     const [requestDelete,setRequestDelete] = useState<typeData>()
     const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
+    const [lang,setLang] = useState<Lang>('en')
     const { data: session } = useSession();
     useEffect(() => {
       if(session){
@@ -97,19 +98,19 @@ const Page = () => {
           <div className='absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2  flex items-center justify-between'>
               <button className='z-10 border-1 border-gray-300 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center' onClick={() => signIn("google")}>
                 <Image src={'/google-logo.png'} width={30} height={30} alt='google-logo' className='mr-3'/>
-                Sign In with Google
+                {settings.signingoogle?.[lang as Lang]}
               </button>
           </div>
       </div>: '' }
       {!session ? (
           <button onClick={() => signIn("google")} onMouseOver={() =>  hoverTimeout.current = setTimeout(() => setShowHoverGoogle(true),200)} onMouseOut={() =>  {if (hoverTimeout.current) clearTimeout(hoverTimeout.current);setShowHoverGoogle(false)}} className={`absolute googleloginhover p-2.5 left-17 top-2 z-10 border-1 border-gray-300 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-sm  text-center inline-flex items-center`}>
             <Image src={'/google-logo.png'} width={20} height={20} alt='google-logo' className='mr-3'/>
-            {showHoverGoogle && 'Sign In with Google'}
+            {showHoverGoogle && `${settings.signingoogle?.[lang as Lang ]}`}
           </button>
         ) : (
           <button onClick={() => signOut()} onMouseOver={() =>  hoverTimeout.current = setTimeout(() => setShowHoverGoogle(true),200)} onMouseOut={() =>  {if (hoverTimeout.current) clearTimeout(hoverTimeout.current);setShowHoverGoogle(false)}} className={`absolute googlelogouthover p-2.5 left-17 top-2 z-10 border-1 border-gray-300 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-sm  text-center inline-flex items-center`}>
             <Image src={'/google-logo.png'} width={20} height={20} alt='google-logo' className='mr-3'/>
-            {showHoverGoogle && 'Sign Out'}
+            {showHoverGoogle && `${settings.signout?.[dataMyself?.language as Lang]}`}
           </button>
         )}
       <div onMouseDown={() => {if (!session) checkAuthentication()}}>
@@ -117,12 +118,14 @@ const Page = () => {
           <div role="status" id='LoginGoogleBackdrop' className='absolute flex justify-center h-full w-full z-50 backdrop-blur-xs'>
             <button onClick={() => signOut()} className={`right-10 top-0 absolute p-2.5 top-2 z-10 border-1 border-gray-300 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-sm  text-center inline-flex items-center`}>
                <Image src={'/google-logo.png'} width={20} height={20} alt='google-logo' className='mr-3'/>
-               Sign Out
+               {settings.signout?.[lang as Lang]}
+            </button>
+            <button onClick={() => setLang(lang === 'th' ? 'en' : 'th')} id="dropdownDefaultButton" className={`right-10 absolute p-2.5 top-15 z-10 border-1 border-gray-300 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-sm  text-center inline-flex items-center`} type="button">
+              {settings.language?.[(lang as Lang) === 'en' ? 'th' : 'en']}
             </button>
             <div className='absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2  '>
                 <div className='z-10 w-150 h-150 shadow-2xl border-1 border-gray-300 text-gray-500 font-bold bg-white focus:ring-blue-300 rounded-xl text-sm px-5 py-2.5 text-center inline-flex items-center' >
-                  
-                <CreateProfile setGetLatLng={setGetLatLng} data={session as SessionGoogle} userData={userData ?? []}  defaultLanguage={settings}/>
+                <CreateProfile lang={lang} setGetLatLng={setGetLatLng} data={session as SessionGoogle} userData={userData ?? []}  defaultLanguage={settings}/>
                 </div>
             </div>
         </div> : ''}

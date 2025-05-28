@@ -168,7 +168,7 @@ const MapProvider = (props:typeProps) => {
   
   useEffect(() => {
     user?.forEach((value:typeData) => { 
-      if (value.profile){
+      if (value.profile && dataMyself){
         if (markerRef.current.has(`${value.email}`)) return
         markerRef.current.add(`${value.email}`)
         const userMap = new window.google.maps.marker.AdvancedMarkerElement({
@@ -180,12 +180,12 @@ const MapProvider = (props:typeProps) => {
         let infoWindow
         if(value.profile.gender == 'female'){
           infoWindow = new window.google.maps.InfoWindow({
-            content: PopupUser(value,dataMyself?.language as Lang,dataMyself?._id as string,props.setRequestEdit,props.setRequestDelete),
+            content: PopupUser(value,dataMyself?.language as Lang,dataMyself as typeData,props.setRequestEdit,props.setRequestDelete),
             ariaLabel: "Female",
           });
         }else{
           infoWindow = new window.google.maps.InfoWindow({
-            content: PopupUser(value,dataMyself?.language as Lang,dataMyself?._id as string,props.setRequestEdit,props.setRequestDelete),
+            content: PopupUser(value,dataMyself?.language as Lang,dataMyself as typeData,props.setRequestEdit,props.setRequestDelete),
             ariaLabel: "Male",
           });
         }
@@ -254,7 +254,7 @@ const MapProvider = (props:typeProps) => {
         <div id="googleMap" ref={mapRef} className="w-screen h-screen"/>
         <div onClick={() => setToggleDisplay(!toggleDisplay)} className=' cursor-pointer absolute top-2.5 right-5 z-10 text-black text-gray-500 font-bold border-1 border-gray-300 p-2 rounded-lg bg-white flex items-center justify-between'>
           <span>
-            {settings.found_filter_people[dataMyself?.language as Lang ?? 'th']} 
+            {settings.found_filter_people[dataMyself?.language as Lang ?? 'en']} 
           </span>
           <span className='ml-2 mr-2'>
           {copuntPeople}
@@ -280,12 +280,12 @@ const MapProvider = (props:typeProps) => {
           <button type="button" onClick={button_move_locationdata} 
           className="text-black border-1 border-gray-300 ml-5 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800  focus:ring-4 focus:ring-purple-300 rounded-lg text-sm px-5 py-2.5   "
           >
-            {settings.location_in_system[dataMyself?.language as Lang ?? 'th']} 
+            {settings.location_in_system[dataMyself?.language as Lang ?? 'en']} 
           </button>
           <button type="button" onClick={button_move_current} 
           className="text-black border-1 border-gray-300 ml-5 bg-purple-700 text-gray-500 font-bold bg-white hover:bg-gray-200 hover:text-gray-800  focus:ring-4 focus:ring-purple-300 rounded-lg text-sm px-5 py-2.5   "
           >
-            {settings.location_current[dataMyself?.language as Lang ?? 'th']} 
+            {settings.location_current[dataMyself?.language as Lang ?? 'en']} 
           </button>
         </div>
 

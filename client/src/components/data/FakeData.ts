@@ -157,7 +157,8 @@ en: "Please complete Location with search or use current location and select",
   addfilter: {en: 'Successfully add filter',th:'เพิ่มตัวกรอง'},
   success_filter: {en: '',th:'เรียบร้อย'},
   upheight: {en: 'Or higher',th:'ขึ้นไป'},
-  
+  signingoogle: {en: 'Sign In with Google',th:'เข้าสู่ระบบด้วย Google'},
+  signout: {en: 'Sign Out',th:'ออกจากระบบ'},
 };
 
 
@@ -204,12 +205,12 @@ export const hobbys = {
     fantasy: { en: 'Fantasy', th: 'แฟนตาซี' }
   },
   content: {
-    youtuber: { en: 'YouTuber', th: 'ทำ YouTube' },
-    tiktoker: { en: 'TikToker', th: 'ทำ TikTok' },
+    youtuber: { en: 'YouTuber', th: 'YouTuber' },
+    tiktoker: { en: 'TikToker', th: 'TikToker' },
     podcast: { en: 'Podcasting', th: 'ทำพอดแคสต์' },
     bloger: { en: 'Blogging', th: 'สร้างบล็อก' },
     streaming: { en: 'Streaming', th: 'สตรีมมิ่ง' },
-    vlogging: { en: 'Vlogging', th: 'ทำ vlog' },
+    vlogging: { en: 'Vlogging', th: 'Vlogger' },
     review: { en: 'Product Reviews', th: 'รีวิวสินค้า' },
     shortvideo: { en: 'Short Videos', th: 'คลิปสั้น' }
   },
@@ -245,39 +246,63 @@ export const hobbys = {
   }
 };
  
- export const questionLifestyle = [
+export const questionLifestyle = [
   {
     key: "pet",
-    question: "เลี้ยงสัตว์หรือไม่"
+    question: {
+      en: "Do you have pets?",
+      th: "เลี้ยงสัตว์หรือไม่"
+    }
   },
   {
     key: "exercise",
-    question: "ออกกำลังกายหรือไม่"
+    question: {
+      en: "Do you exercise?",
+      th: "ออกกำลังกายหรือไม่"
+    }
   },
   {
     key: "book",
-    question: "อ่านหนังสือหรือไม่"
+    question: {
+      en: "Do you read books?",
+      th: "อ่านหนังสือหรือไม่"
+    }
   },
   {
     key: "game",
-    question: "เล่นเกมหรือไม่"
+    question: {
+      en: "Do you play games?",
+      th: "เล่นเกมหรือไม่"
+    }
   },
   {
     key: "healthy",
-    question: "กินอาหารสุขภาพหรือไม่"
+    question: {
+      en: "Do you eat healthy food?",
+      th: "กินอาหารสุขภาพหรือไม่"
+    }
   },
   {
     key: "alcohol",
-    question: "ดื่มแอลกอฮอล์หรือไม่"
+    question: {
+      en: "Do you drink alcohol?",
+      th: "ดื่มแอลกอฮอล์หรือไม่"
+    }
   },
   {
     key: "smoke",
-    question: "สูบบุหรี่หรือไม่"
+    question: {
+      en: "Do you smoke?",
+      th: "สูบบุหรี่หรือไม่"
+    }
   },
   {
     key: "weed",
-    question: "สูบกัญชาหรือไม่"
-  },
+    question: {
+      en: "Do you use cannabis?",
+      th: "สูบกัญชาหรือไม่"
+    }
+  }
 ];
 
 export const group_blood = ['A','B','AB','O']

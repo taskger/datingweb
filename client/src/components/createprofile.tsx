@@ -1,6 +1,6 @@
 'user client'
 import React, { useEffect, useState } from 'react'
-import { typeData , Settings , Profile, LifestyleKey, CategoryNameHobby, SessionGoogle, HobbyCategory, TranslatedString, GoogleGeocodeResult } from '@/providers/lib/typeData'
+import { typeData , Settings , Profile, LifestyleKey, CategoryNameHobby, SessionGoogle, HobbyCategory, TranslatedString, GoogleGeocodeResult, Lang } from '@/providers/lib/typeData'
 import Filter_form from './ui/filter_form'
 import Filter_displayselect from './ui/filter_displayselect'
 import Filter_accordion from './ui/filter_accordion'
@@ -8,7 +8,7 @@ import { chinese_zodiac, degree, gender ,group_blood,hobbys ,questionLifestyle, 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { alovaInstance, alovaOutApi } from './data/alova'
-import { calculateAge } from '@/providers/lib/TranslateToThai'
+import { calculateAge, checkChineseZodiac, checkDegree, checkEthnicitie, checkGender, checkReligion, checkStatus, checkWesternZodiac } from '@/providers/lib/TranslateToThai'
 import { toast } from 'react-toastify'
 import { initAccordions } from 'flowbite'
 
@@ -17,6 +17,7 @@ interface typeProp{
    userData:typeData[]
    defaultLanguage:Settings
    setGetLatLng:(localtion?: Profile['location'],email?:string) => void
+   lang:Lang
 }
 function CreateProfile(props:typeProp) {
    const [inputLatLng, setInputLatlng] = useState<Profile['location']>()
@@ -66,6 +67,7 @@ function CreateProfile(props:typeProp) {
    const [searchLocation,setSearchLocation] = useState<GoogleGeocodeResult[]>()
    const [loading,setLoading] = useState<boolean>()
    const data = props.data
+   const lang = props.lang
    useEffect(() => {
       fetch('/world_universities.json')
          .then((res) => res.json())
@@ -324,15 +326,15 @@ function CreateProfile(props:typeProp) {
       try {
          if ( !inputLocation || !inputName  || !selectedDate || !inputGender || !inputStatus){
             setLoading(false) 
-            return toast.error(`${props.defaultLanguage?.empty_form_create[ 'th']}`);
+            return toast.error(`${props.defaultLanguage?.empty_form_create[lang]}`);
          }
          if (!inputLatLng) {
             setLoading(false) 
-            return toast.error(`${props.defaultLanguage?.laglngempty[ 'th']}`);
+            return toast.error(`${props.defaultLanguage?.laglngempty[ lang]}`);
          }
          if (Number(calculateAge(selectedDate.toLocaleDateString('fr-CA'))) < 18){
             setLoading(false) 
-            return toast.error(`${props.defaultLanguage?.age_more_eighteen[ 'th']}`);
+            return toast.error(`${props.defaultLanguage?.age_more_eighteen[ lang]}`);
          }
          
          const dateForAge = (selectedDate?.toLocaleDateString('fr-CA'))
@@ -390,18 +392,18 @@ function CreateProfile(props:typeProp) {
          });
          console.log(response.status)
          if (response.status === 200) {
-            toast.success(`${props.defaultLanguage?.success_update[ 'th']}`);
+            toast.success(`${props.defaultLanguage?.success_update[ lang]}`);
             }else if (response.status === 401) {
-            toast.error(`${props.defaultLanguage?.permission_create[ 'th']}`);
+            toast.error(`${props.defaultLanguage?.permission_create[ lang]}`);
             }else {
-            toast.warning(`${props.defaultLanguage?.error[ 'th']} ${response.status}`);
+            toast.warning(`${props.defaultLanguage?.error[ lang]} ${response.status}`);
             }
             window.location.reload()
          } catch (error: unknown) {
             if (error instanceof Error) {
-              toast.error(`${props.defaultLanguage?.error[ 'th']} ${error.message}`);
+              toast.error(`${props.defaultLanguage?.error[ lang]} ${error.message}`);
             } else {
-              toast.error(`${props.defaultLanguage?.error[ 'th']} Unknown error`);
+              toast.error(`${props.defaultLanguage?.error[ lang]} Unknown error`);
             }
           }finally{
             setLoading(false) 
@@ -436,7 +438,7 @@ function CreateProfile(props:typeProp) {
                      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
                      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
                   </svg>: ''}     
-                  <Filter_form onFocus={setBooleanInputLocation} onBlur={setBooleanInputLocation} value={inputLocation} onChange={setInputLocation} name={props.defaultLanguage?.location[ 'th']} id="location"/>
+                  <Filter_form onFocus={setBooleanInputLocation} onBlur={setBooleanInputLocation} value={inputLocation} onChange={setInputLocation} name={props.defaultLanguage?.location[ lang]} id="location"/>
                   <div onMouseDown={(e) => e.preventDefault()} className='w-67 absolute mt-2 max-h-30 z-20 bg-white 
                      overflow-y-auto
                      [&::-webkit-scrollbar]:w-2
@@ -457,7 +459,7 @@ function CreateProfile(props:typeProp) {
                            props.setGetLatLng(location)
                            setBooleanInputLocation(false)
                            }
-                        } className="text-left rounded-lg border-1  border-gray-300 text-gray-800 w-full py-3 px-4 inline-flex items-center gap-x-2 text-sm font-normal  border-b-1 border-gray-300 bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none " onMouseDown={(e) => e.preventDefault()} >{value?.formattedAddress} ({caldistance} {props.defaultLanguage?.kilometers[ 'th']})  </button>
+                        } className="text-left rounded-lg border-1  border-gray-300 text-gray-800 w-full py-3 px-4 inline-flex items-center gap-x-2 text-sm font-normal  border-b-1 border-gray-300 bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-hidden focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none " onMouseDown={(e) => e.preventDefault()} >{value?.formattedAddress} ({caldistance} {props.defaultLanguage?.kilometers[ lang]})  </button>
                      </div>)   
                      } 
                   )
@@ -482,17 +484,17 @@ function CreateProfile(props:typeProp) {
             </div>
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-full mr-2'>               
-                  <Filter_form onFocus={setBooleanInputName} onBlur={setBooleanInputName} value={inputName} onChange={setInputName} name={props.defaultLanguage?.name[ 'th']} id="name"/>
+                  <Filter_form onFocus={setBooleanInputName} onBlur={setBooleanInputName} value={inputName} onChange={setInputName} name={props.defaultLanguage?.name[ lang]} id="name"/>
                      {booleanInputName ? '' : ''}
                </span>
                <span className='w-full mr-2'>
-                  <Filter_form onFocus={setBooleanInputGender} readonly class='cursor-pointer' onBlur={setBooleanInputGender} value={inputGender} name={props.defaultLanguage?.gender[ 'th']} id="gender"/>            
+                  <Filter_form onFocus={setBooleanInputGender} readonly class='cursor-pointer' onBlur={setBooleanInputGender} value={checkGender(inputGender,lang)} name={props.defaultLanguage?.gender[lang]} id="gender"/>            
                   {booleanInputGender ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={gender} updateDataSet={updateDataSet} name="gender" lang={'th'}/>
+                     <Filter_displayselect  data={gender} updateDataSet={updateDataSet} name="gender" lang={lang}/>
                   </div> : ''}
                </span>
                <span className='w-50'>
-                  <Filter_form onFocus={setBooleanInputHeight} readonly class='cursor-pointer' onBlur={setBooleanInputHeight} value={inputHeight} name={props.defaultLanguage?.height[ 'th']} id="height"/>            
+                  <Filter_form onFocus={setBooleanInputHeight} readonly class='cursor-pointer' onBlur={setBooleanInputHeight} value={inputHeight} name={props.defaultLanguage?.height[lang]} id="height"/>            
                   {booleanInputHeight ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect  data={[...Array(60)].map((x,i)=>`${i+140}cm`)} updateDataSet={updateDataSet} name="height" lang={''}/>
                   </div> : ''}
@@ -500,9 +502,9 @@ function CreateProfile(props:typeProp) {
             </div>
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-full mr-2'>               
-                  <Filter_form readonly class='cursor-pointer' onFocus={setBooleanInputStatus} onBlur={setBooleanInputStatus} value={inputStatus} onChange={setInputStatus} name={props.defaultLanguage?.status[ 'th']} id="status"/>
+                  <Filter_form readonly class='cursor-pointer' onFocus={setBooleanInputStatus} onBlur={setBooleanInputStatus} value={checkStatus(inputStatus,lang)} onChange={setInputStatus} name={props.defaultLanguage?.status[ lang]} id="status"/>
                   {booleanInputStatus ? <div className='absolute w-40 mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={status} updateDataSet={updateDataSet} name="status"  lang={'th'}/>
+                     <Filter_displayselect  data={status} updateDataSet={updateDataSet} name="status"  lang={lang}/>
                   </div> : ''}
                </span>
                <span className='w-60 mr-2 relative'>
@@ -514,55 +516,55 @@ function CreateProfile(props:typeProp) {
                   className=" h-12 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-2 p-2.5"
                   placeholderText=""
                   />
-                  <label htmlFor={`filter_form_birthday`} className={`cursor-pointer absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.birthday[ 'th']}</label>
+                  <label htmlFor={`filter_form_birthday`} className={`cursor-pointer absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.birthday[ lang]}</label>
                </span>
                <span className='w-60 mr-2'>
-                  <Filter_form onFocus={setBooleanInputEthnicity} readonly class='cursor-pointer' onBlur={setBooleanInputEthnicity} value={inputEthnicity} name={props.defaultLanguage?.ethnicity[ 'th']} id="ethnicity"/>            
+                  <Filter_form onFocus={setBooleanInputEthnicity} readonly class='cursor-pointer' onBlur={setBooleanInputEthnicity} value={checkEthnicitie(inputEthnicity,lang)} name={props.defaultLanguage?.ethnicity[ lang]} id="ethnicity"/>            
                   {booleanInputEthnicity ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={'th'}/>
+                     <Filter_displayselect  data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={lang}/>
                   </div> : ''}
                </span>
 
             </div>
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-40 mr-2'>  
-                  <Filter_form onFocus={setBooleanInputReligion} readonly class='cursor-pointer' onBlur={setBooleanInputReligion} value={inputReligion} name={props.defaultLanguage?.religion[ 'th']} id="religion"/>            
+                  <Filter_form onFocus={setBooleanInputReligion} readonly class='cursor-pointer' onBlur={setBooleanInputReligion} value={checkReligion(inputReligion,lang)} name={props.defaultLanguage?.religion[ lang]} id="religion"/>            
                   {booleanInputReligion ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={'th'}/>
+                     <Filter_displayselect  data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={lang}/>
                   </div> : ''}             
                </span>
                <span className='w-60 mr-2'>
-                  <Filter_form onFocus={setBooleanInputChineseZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputChineseZodiac} value={inputChineseZodiac} name={props.defaultLanguage?.chinese_zodiac[ 'th']} id="chinese_zodiac"/>            
+                  <Filter_form onFocus={setBooleanInputChineseZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputChineseZodiac} value={checkChineseZodiac(inputChineseZodiac,lang)} name={props.defaultLanguage?.chinese_zodiac[ lang]} id="chinese_zodiac"/>            
                   {booleanInputChineseZodiac ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={'th'}/>
+                     <Filter_displayselect  data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={lang}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
-                  <Filter_form onFocus={setBooleanInputWesternZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputWesternZodiac} value={inputWesternZodiac} name={props.defaultLanguage?.western_zodiac[ 'th']} id="western_zodiac"/>            
+                  <Filter_form onFocus={setBooleanInputWesternZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputWesternZodiac} value={checkWesternZodiac(inputWesternZodiac,lang)} name={props.defaultLanguage?.western_zodiac[ lang]} id="western_zodiac"/>            
                   {booleanInputWesternZodiac ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={'th'}/>
+                     <Filter_displayselect  data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={lang}/>
                   </div> : ''}
                </span>
             </div>
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-18 mr-2'>
-                  <Filter_form onFocus={setBooleanInputGroup} readonly class='cursor-pointer' onBlur={setBooleanInputGroup} value={inputGroup} name={props.defaultLanguage?.group_blood[ 'th']} id="group_blood"/>            
+                  <Filter_form onFocus={setBooleanInputGroup} readonly class='cursor-pointer' onBlur={setBooleanInputGroup} value={inputGroup} name={props.defaultLanguage?.group_blood[ lang]} id="group_blood"/>            
                   {booleanInputGroup ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect  data={group_blood} updateDataSet={updateDataSet} name="group_blood" lang={''}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
-                  <Filter_form onFocus={setBooleanInputDegree} readonly class='cursor-pointer' onBlur={setBooleanInputDegree} value={inputDegree} name={props.defaultLanguage?.degree[ 'th']} id="degree"/>            
+                  <Filter_form onFocus={setBooleanInputDegree} readonly class='cursor-pointer' onBlur={setBooleanInputDegree} value={checkDegree(inputDegree,lang)} name={props.defaultLanguage?.degree[ lang]} id="degree"/>            
                   {booleanInputDegree ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={degree} updateDataSet={updateDataSet} name="degree" lang={'th'}/>
+                     <Filter_displayselect  data={degree} updateDataSet={updateDataSet} name="degree" lang={lang}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
                   {booleanToggleUniversitye ? 
-                  <Filter_form onFocus={setBooleanInputUniversity} onBlur={setBooleanInputUniversity} onChange={setInputUniversity} value={inputUniversity} name={props.defaultLanguage?.university[ 'th']} id="university"/>            
+                  <Filter_form onFocus={setBooleanInputUniversity} onBlur={setBooleanInputUniversity} onChange={setInputUniversity} value={inputUniversity} name={props.defaultLanguage?.university[ lang]} id="university"/>            
                   : ''}
                   {booleanInputUniversity ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={getUniversity.filter(value => value.match(inputUniversity))} updateDataSet={updateDataSet} name="university" lang={''}/>
+                     <Filter_displayselect  data={getUniversity.filter(value => {if (inputUniversity) return value.toLocaleLowerCase().match(inputUniversity.toLocaleLowerCase())})} updateDataSet={updateDataSet} name="university" lang={''}/>
                   </div> : ''}
                </span>
             </div>
@@ -570,13 +572,13 @@ function CreateProfile(props:typeProp) {
                <span className='w-50 mr-2'>
                   <div className='relative'>
                         <input autoComplete='off' value={Number(inputSalary)} type="number" id={`filter_form_salary`} onChange={(e) => checkSalary(Number(e.target.value))} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
-                        <label htmlFor={`filter_form_salary`} className={` absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.salary[ 'th']}</label>
+                        <label htmlFor={`filter_form_salary`} className={` absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.salary[ lang]}</label>
                   </div>
                </span>
                <span className='w-full mr-2'>          
                   <div className='relative'>
                         <input autoComplete='off' value={inputFacebook} type="text" id={`filter_form_facebook`} onChange={(e) => setInputFacebook(e.target.value)} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
-                        <label htmlFor={`filter_form_facebook`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.facebook[ 'th']}</label>
+                        <label htmlFor={`filter_form_facebook`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.facebook[ lang]}</label>
                   </div>               
                </span>
             </div>
@@ -584,13 +586,13 @@ function CreateProfile(props:typeProp) {
                <span className='w-full mr-2'>         
                   <div className='relative'>
                      <input autoComplete='off' value={inputInstagram} type="text" id={`filter_form_instragram`} onChange={(e) => setInputInstagram(e.target.value)} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
-                     <label htmlFor={`filter_form_instragram`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.instragram[ 'th']}</label>
+                     <label htmlFor={`filter_form_instragram`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.instragram[ lang]}</label>
                   </div>   
                </span>
                <span className='w-full mr-2'>       
                   <div className='relative'>
                      <input autoComplete='off' value={inputTelephone}inputMode="numeric" maxLength={10} pattern="[0-9]*" type="tel" id={`filter_form_telephone`} onChange={(e) => checkTel(e)} className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none    focus:outline-none focus:ring-0 focus:border-blue-600 peer`} placeholder="" />
-                     <label htmlFor={`filter_form_telephone`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.telephone[ 'th']}</label>
+                     <label htmlFor={`filter_form_telephone`} className={`absolute text-sm text-gray-500  duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600  peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.telephone[ lang]}</label>
                   </div>     
                </span>
 
@@ -599,7 +601,7 @@ function CreateProfile(props:typeProp) {
                <div id="accordion-collapse-hobbys-userprofile-create" data-accordion="collapse" className='font-normal mt-5'>
                   <h2 id="accordion-collapse-heading-hobbys-userprofile-create">
                      <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200    hover:bg-gray-100  gap-3" data-accordion-target="#accordion-collapse-body-hobbys-userprofile-create" aria-expanded="false" aria-controls="accordion-collapse-body-hobbys-userprofile-create">
-                        <span>{props.defaultLanguage?.hobby[ 'th']}</span>
+                        <span>{props.defaultLanguage?.hobby[ lang]}</span>
                         <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
                         </svg>
@@ -611,7 +613,7 @@ function CreateProfile(props:typeProp) {
                      {hobbyCategories?.map((value) => {
                         return(
                            <span key={value.name} >
-                              <Filter_accordion data={value.data as Record<string, TranslatedString>} updateDataSet={updateDataSet} name={value.name as HobbyCategory} parent={'profile-create'} lang={'th'}/>
+                              <Filter_accordion data={value.data as Record<string, TranslatedString>} updateDataSet={updateDataSet} name={value.name as HobbyCategory} parent={'profile-create'} lang={lang}/>
                            </span>
                         )
                      })}
@@ -625,7 +627,7 @@ function CreateProfile(props:typeProp) {
                <div id="accordion-collapse-liftstyle-userprofile-create" data-accordion="collapse" className='font-normal mt-5'>
                   <h2 id="accordion-collapse-heading-liftstyle-userprofile-create">
                      <button type="button" className="flex items-center justify-between w-full p-3  font-normal rtl:text-right text-gray-500 border-1 border-gray-300 rounded-lg focus:ring-0 focus:border-blue-600 focus:ring-gray-200    hover:bg-gray-100  gap-3" data-accordion-target="#accordion-collapse-body-liftstyle-userprofile-create" aria-expanded="false" aria-controls="accordion-collapse-body-liftstyle-userprofile-create">
-                        <span>{props.defaultLanguage?.lifestyle[ 'th']}</span>
+                        <span>{props.defaultLanguage?.lifestyle[ lang]}</span>
                         <svg data-accordion-icon className="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5 5 1 1 5"/>
                         </svg>
@@ -637,15 +639,15 @@ function CreateProfile(props:typeProp) {
                            return(
                            <div key={value.key} className="flex items-center ml-2 mb-2 mt-2">
                               <input id={`${value.key}profile`} onChange={() => updateLifestyle(value.key as LifestyleKey)} type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500   focus:ring-2  "/>
-                              <label htmlFor={`${value.key}profile`} className="ms-2 text-sm font-normal text-gray-900 ">{value.question}</label>
+                              <label htmlFor={`${value.key}profile`} className="ms-2 text-sm font-normal text-gray-900 ">{value.question[lang]}</label>
                            </div>
                            )}
                         ): ''}
                      </div>
                   </div>
                   <div className='flex justify-center items-end pt-10'>
-                     <button type="button" onClick={()=> clickSubmitCreate()} className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.submit_button[ 'th']}</button>
-                     <button type="button" onClick={()=> setNull()} className="text-white bg-red-500 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-bold rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.reset_button[ 'th']}</button>            
+                     <button type="button" onClick={()=> clickSubmitCreate()} className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-normal rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.submit_button[ lang]}</button>
+                     <button type="button" onClick={()=> setNull()} className="text-white bg-red-500 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-normal rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2   ">{props.defaultLanguage?.reset_button[ lang]}</button>            
                   </div>
                </div>
             </ul>
