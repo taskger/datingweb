@@ -488,38 +488,40 @@ function SideProfile(props:typeProp) {
    const clickSubmitEdit = async () => {
       setLoading(true)
       try {
-         if (!inputName || !selectedDate){
-            if (!inputName){
-               addValidation('name')
+         if(inputRole != 'admin'){
+            if (!inputName || !selectedDate){
+               if (!inputName){
+                  addValidation('name')
+               }
+               if (!selectedDate){
+                  addValidation('birthday')
+               }
+               setLoading(false)  
+               return toast.error(`${props.defaultLanguage?.empty_form_edit[props.data?.language as Lang ?? 'en']}`);
             }
-            if (!selectedDate){
-               addValidation('birthday')
-            }
-            setLoading(false)  
-            return toast.error(`${props.defaultLanguage?.empty_form_edit[props.data?.language as Lang ?? 'en']}`);
-         }
 
-         const age = calculateAge(selectedDate?.toLocaleDateString('fr-CA'))
-         if (age < 18){
-            addValidation('birthday')
-            setLoading(false) 
-            return toast.error(`${props.defaultLanguage?.age_more_eighteen[props.data?.language as Lang ?? 'en']}`);
-         }
-         removeValidation('name')
-         removeValidation('birthday')
-         if (!inputTelephone && !inputFacebook && !inputInstagram){
-            addValidation('telephone')
-            addValidation('instragram')
-            addValidation('facebook')
-            setLoading(false) 
-            return toast.error(`${props.defaultLanguage?.contect_empty[props.data?.language as Lang ?? 'en']}`);
-         }else{
-            removeValidation('telephone')
-            removeValidation('instragram')
-            removeValidation('facebook')
-            if(inputTelephone && inputTelephone.length != 10){
+            const age = calculateAge(selectedDate?.toLocaleDateString('fr-CA'))
+            if (age < 18){
+               addValidation('birthday')
                setLoading(false) 
-               return toast.error(`${props.defaultLanguage?.telephonemust10[props.data?.language as Lang ?? 'en']}`);  
+               return toast.error(`${props.defaultLanguage?.age_more_eighteen[props.data?.language as Lang ?? 'en']}`);
+            }
+            removeValidation('name')
+            removeValidation('birthday')
+            if (!inputTelephone && !inputFacebook && !inputInstagram){
+               addValidation('telephone')
+               addValidation('instragram')
+               addValidation('facebook')
+               setLoading(false) 
+               return toast.error(`${props.defaultLanguage?.contect_empty[props.data?.language as Lang ?? 'en']}`);
+            }else{
+               removeValidation('telephone')
+               removeValidation('instragram')
+               removeValidation('facebook')
+               if(inputTelephone && inputTelephone.length != 10){
+                  setLoading(false) 
+                  return toast.error(`${props.defaultLanguage?.telephonemust10[props.data?.language as Lang ?? 'en']}`);  
+               }
             }
          }
          const response : Response = await alovaInstance.Put(`/update/${data._id}`, { 
