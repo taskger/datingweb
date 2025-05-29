@@ -524,6 +524,8 @@ function SideProfile(props:typeProp) {
                }
             }
          }
+         if (!selectedDate) return
+         const dateToAge = calculateAge(selectedDate?.toLocaleDateString('fr-CA'))
          const response : Response = await alovaInstance.Put(`/update/${data._id}`, { 
             _id:id,
             "profile.name":inputName,
@@ -531,7 +533,7 @@ function SideProfile(props:typeProp) {
             "profile.height":inputHeight,
             "profile.status":inputStatus,
             "profile.birthday":selectedDate,
-            "profile.age":String(age),
+            "profile.age":String(dateToAge),
             "profile.ethnicity":inputEthnicity,
             "profile.religion":inputReligion,
             "profile.western_zodiac":inputWesternZodiac,
