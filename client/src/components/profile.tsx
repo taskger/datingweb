@@ -528,6 +528,7 @@ function SideProfile(props:typeProp) {
          const dateToAge = calculateAge(selectedDate?.toLocaleDateString('fr-CA'))
          const response : Response = await alovaInstance.Put(`/update/${data._id}`, { 
             _id:id,
+            "role":inputRole,
             "profile.name":inputName,
             "profile.gender":inputGender,
             "profile.height":inputHeight,

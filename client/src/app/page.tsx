@@ -41,7 +41,7 @@ const Page = () => {
       }, 7000);
       return () => clearTimeout(timer); // cleanup
     }, []);
-    
+
     useEffect(() => {
       if (!loadingFirst) {
         setShowText(false);
@@ -97,7 +97,7 @@ const Page = () => {
     const ClickSetLanguage = async  (_id: string, lang: string) => {
       const updatedLang = lang === 'en' ? 'th' : 'en'
       setDataMyself((prev) => {
-        if (!prev) return prev; // เผื่อ null/undefined
+        if (!prev) return prev;
         return {
           ...prev,
           language: updatedLang,
@@ -269,8 +269,6 @@ const Page = () => {
           setRequestDelete={setRequestDelete}
           RequestEditInMap={RequestEditInMap} 
           />
-          
-
         <ToastContainer 
           autoClose={3000}/>
         
