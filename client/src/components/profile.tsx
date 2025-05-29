@@ -18,6 +18,12 @@ interface typeProp{
    setGetLatLng:(localtion?: Profile['location'],email?:string) => void
    requestEdit:typeData
    requestDelete:typeData
+   setLoading:(value:boolean) => void
+   RequestDeleteInMap:(value:string) => void
+   RequestEditInMap:(value:string) => void
+   RequestCreateMap:(value:string) => void
+   setrequestDeleteRegisterMap:(value:boolean) => void
+   requestReload:() => void
 }
 function SideProfile(props:typeProp) {
    const [inputLatLng, setInputLatlng] = useState<Profile['location']>()
@@ -78,11 +84,10 @@ function SideProfile(props:typeProp) {
    const [defaultUserSelect ,setDefaultUserSelect] = useState<typeData>()
    const [userDataSelect,setUserDataSelect] = useState<typeData[]>()
    const [searchLocation,setSearchLocation] = useState<GoogleGeocodeResult[]>()
-   const [loading,setLoading] = useState<boolean>()
    const [toggleDelete,setToggleDelete] = useState<boolean>()
    const [toggleBackdrop,setToggleBackdrop] = useState<boolean>(false)
-   const data = props.data as typeData
-   const userData = props.userData as typeData[]
+   
+   const {data,userData,setLoading,setrequestDeleteRegisterMap} = props
    useEffect(() => {
       setUserDataSelect(userData)
 
@@ -130,7 +135,8 @@ function SideProfile(props:typeProp) {
       setInputFacebook(data.profile?.contact?.facebook ?? '')
       setInputInstagram(data.profile?.contact?.ig ?? '')
       setInputTelephone(data.profile?.contact?.telephone ?? '')
-
+      setInputLatlng(data.profile?.location)
+      setInputLocation(`${data.profile?.location.lat},${data.profile?.location.lng}`)
       // Reset boolean flags
       setBooleanInputName(false)
       setBooleanInputGender(false)
@@ -258,7 +264,6 @@ function SideProfile(props:typeProp) {
          hobbySetMap[name as CategoryNameHobby](new Set(data))
        } else if (name in stateMap) {
          stateMap[name]();
-         console.log("SET STATE:", name, value);
        } else {
          console.warn("Unknown name", name);
        }
@@ -276,6 +281,7 @@ function SideProfile(props:typeProp) {
    ];
    const setNull = () => {
       setId('')
+      setInputEmail('')
       setInputRole('')
       setInputName('')
       setInputGender( '')
@@ -293,6 +299,19 @@ function SideProfile(props:typeProp) {
       setInputFacebook('')
       setInputInstagram('')
       setInputTelephone('')
+      setInputLocation('')
+      setInputLatlng({lat:NaN,lng:NaN})
+      removeValidation('name')
+      removeValidation('birthday')
+      removeValidation('gender')
+      removeValidation('height')
+      removeValidation('status')
+      removeValidation('telephone')
+      removeValidation('instragram')
+      removeValidation('facebook')
+      removeValidation('email')
+      removeValidation('role')
+      removeValidation('location')
       setDataLifestyle({
          pet: false,
          exercise: false,
@@ -325,6 +344,7 @@ function SideProfile(props:typeProp) {
    useEffect(() => {
       if(props.requestEdit){
          setSelectUser(props.requestEdit)
+         setToggleCreate(false)
       }
    },[props.requestEdit])
    
@@ -338,12 +358,13 @@ function SideProfile(props:typeProp) {
 
    const setSelectUser = async(data:typeData) => {
       if(!data) return
+      setLoading(true)
       const user : typeData = await alovaInstance.Get(`/user/${data.email}?t=${Date.now()}`)
-      console.log(user)
       setInputUser(user.email)
       setDefaultUserSelect(user)
       setId(user?._id ?? '')
-      setInputRole(user?.role)
+      setInputEmail(user.email ?? '')
+      setInputRole(user?.role ?? '')
       setInputName(user?.profile?.name ?? '')
       setInputGender(user?.profile?.gender ?? '')
       setInputHeight(user?.profile?.height ?? 0)
@@ -363,6 +384,9 @@ function SideProfile(props:typeProp) {
       setInputInstagram(user?.profile?.contact?.ig ?? '')
       setInputTelephone(user?.profile?.contact?.telephone ?? '')
       setInputLatlng(user.profile?.location)
+      setInputLocation(`${user.profile?.location.lat},${user.profile?.location.lng}`)
+      removeValidation('name')
+      removeValidation('birthday')
       const hobbymap = {
          adventure:setDataAdventure,
          song:setDataSong,
@@ -388,6 +412,7 @@ function SideProfile(props:typeProp) {
             value(new Set())
          }
       })
+      setLoading(false)
    }
    const like = (dataLike:Profile['like']) => {
       const getDataLike:typeData[] = []
@@ -408,7 +433,6 @@ function SideProfile(props:typeProp) {
         const addressLocation = `https://geocode.googleapis.com/v4beta/geocode/address/${address}?key=${process.env.NEXT_PUBLIC_GOOGLE_GEOCODE_KEY}`;
         const response: Response = await alovaOutApi.Get(addressLocation);
         const [result] = Object.values(response).map((value) => value);
-        console.log(result);
         setToggleReload(false)
         setSearchLocation(result);
       } else {
@@ -453,18 +477,51 @@ function SideProfile(props:typeProp) {
        );
        return (distance/1000).toFixed(3)
     }
+    const addValidation = (name:string) => {
+      const element = document.getElementById(`filter_form_${name}`)
+      element?.classList.add('border-red-500')
+    }
+    const removeValidation = (name:string) => {
+      const element = document.getElementById(`filter_form_${name}`)
+      element?.classList.remove('border-red-500')
+    }
    const clickSubmitEdit = async () => {
       setLoading(true)
       try {
          if (!inputName || !selectedDate){
+            if (!inputName){
+               addValidation('name')
+            }
+            if (!selectedDate){
+               addValidation('birthday')
+            }
             setLoading(false)  
             return toast.error(`${props.defaultLanguage?.empty_form_edit[props.data?.language as Lang ?? 'en']}`);
          }
-         if (Number(calculateAge(selectedDate.toLocaleDateString('fr-CA'))) < 18){
+
+         const age = calculateAge(selectedDate?.toLocaleDateString('fr-CA'))
+         if (age < 18){
+            addValidation('birthday')
             setLoading(false) 
             return toast.error(`${props.defaultLanguage?.age_more_eighteen[props.data?.language as Lang ?? 'en']}`);
          }
-         const dateForAge = (selectedDate?.toLocaleDateString('fr-CA'))
+         removeValidation('name')
+         removeValidation('birthday')
+         if (!inputTelephone && !inputFacebook && !inputInstagram){
+            addValidation('telephone')
+            addValidation('instragram')
+            addValidation('facebook')
+            setLoading(false) 
+            return toast.error(`${props.defaultLanguage?.contect_empty[props.data?.language as Lang ?? 'en']}`);
+         }else{
+            removeValidation('telephone')
+            removeValidation('instragram')
+            removeValidation('facebook')
+            if(inputTelephone && inputTelephone.length != 10){
+               setLoading(false) 
+               return toast.error(`${props.defaultLanguage?.telephonemust10[props.data?.language as Lang ?? 'en']}`);  
+            }
+         }
          const response : Response = await alovaInstance.Put(`/update/${data._id}`, { 
             _id:id,
             "profile.name":inputName,
@@ -472,7 +529,7 @@ function SideProfile(props:typeProp) {
             "profile.height":inputHeight,
             "profile.status":inputStatus,
             "profile.birthday":selectedDate,
-            "profile.age":calculateAge(dateForAge ?? ''),
+            "profile.age":String(age),
             "profile.ethnicity":inputEthnicity,
             "profile.religion":inputReligion,
             "profile.western_zodiac":inputWesternZodiac,
@@ -508,10 +565,9 @@ function SideProfile(props:typeProp) {
             },
             "profile.location": inputLatLng
          });
-         console.log(response.status)
          if (response.status === 200) {
             toast.success(`${props.defaultLanguage?.success_update[props.data?.language as Lang ?? 'en']}`);
-            
+            props.RequestEditInMap(inputEmail)
           }else if (response.status === 401) {
             toast.error(`${props.defaultLanguage?.permisson_update[props.data?.language as Lang ?? 'en']}`);
             
@@ -532,17 +588,89 @@ function SideProfile(props:typeProp) {
       setLoading(true)
       try {
          if(inputRole != 'admin') {
-            if (!inputStatus || !inputEmail || !inputRole || !inputLocation || !inputName  || !selectedDate || !inputGender){
+            if (isNaN(Number(inputLatLng?.lat)) || isNaN(Number(inputLatLng?.lng))) {
+               addValidation('location')
+               setLoading(false) 
+               return toast.error(`${props.defaultLanguage?.laglngempty[props.data?.language as Lang ?? 'en']}`);
+            }else{
+               removeValidation('location')
+            }
+            if (!inputEmail || !inputRole || !inputLocation  || !inputName || !inputGender || !inputStatus ||   !selectedDate || !inputEmail.includes('@gmail.com') || inputHeight < 140 ){
+               if (!inputEmail){
+                  addValidation('email')
+               }else if (!inputEmail.includes('@gmail.com')){
+                  const email = inputEmail.split('@')[0]
+                  setInputEmail(`${email}@gmail.com`)
+                  removeValidation('email')
+               }else{
+                  removeValidation('email')
+               }
+               if (!inputRole){
+                  addValidation('role')
+               }else{
+                  removeValidation('role')
+               }
+               if (!inputLocation){
+                  addValidation('location')
+               }else{
+                  removeValidation('location')
+               }
+               if (!inputName){
+                  addValidation('name')
+               }else{
+                  removeValidation('name')
+               }
+               if (!inputGender){
+                  addValidation('gender')
+               }else{
+                  removeValidation('gender')
+               }
+               if (!inputStatus){
+                  addValidation('status')
+               }else{
+                  removeValidation('status')
+               }
+               if (!selectedDate){
+                  addValidation('birthday')
+               }else{
+                  removeValidation('birthday')
+               }
+               if(inputHeight < 140){
+                  addValidation('height')
+               }else{
+                  removeValidation('height')
+               }
                setLoading(false) 
                return toast.error(`${props.defaultLanguage?.empty_form_create[props.data?.language as Lang ?? 'en']}`);
             }
-            if (!inputLatLng) {
+            removeValidation('email')
+            removeValidation('role')
+            removeValidation('location')
+            removeValidation('name')
+            removeValidation('gender')
+            removeValidation('status')
+            removeValidation('height')
+            if (Number(calculateAge(selectedDate.toLocaleDateString('fr-CA'))) < 18 || Number(calculateAge(selectedDate.toLocaleDateString('fr-CA'))) > 100){
                setLoading(false) 
-               return toast.error(`${props.defaultLanguage?.laglngempty[props.data?.language as Lang ?? 'en']}`);
-            }
-            if (Number(calculateAge(selectedDate.toLocaleDateString('fr-CA'))) < 18){
-               setLoading(false) 
+               addValidation('birthday')
                return toast.error(`${props.defaultLanguage?.age_more_eighteen[props.data?.language as Lang ?? 'en']}`);
+            }else{
+               removeValidation('birthday')
+            }
+            if (!inputTelephone && !inputFacebook && !inputInstagram){
+               addValidation('telephone')
+               addValidation('instragram')
+               addValidation('facebook')
+               setLoading(false) 
+               return toast.error(`${props.defaultLanguage?.contect_empty[props.data?.language as Lang ?? 'en']}`);
+            }else{
+               removeValidation('telephone')
+               removeValidation('instragram')
+               removeValidation('facebook')
+               if(inputTelephone && inputTelephone.length != 10){
+                  setLoading(false) 
+                  return toast.error(`${props.defaultLanguage?.telephonemust10[props.data?.language as Lang ?? 'en']}`);  
+               }
             }
          }
          
@@ -598,10 +726,10 @@ function SideProfile(props:typeProp) {
              "role": inputRole,
              "language": "th"
          });
-         console.log(response.status)
          if (response.status === 200) {
             toast.success(`${props.defaultLanguage?.success_create[props.data?.language as Lang ?? 'en']}`);
-            }else if (response.status === 401) {
+            props.RequestCreateMap(inputEmail)
+         }else if (response.status === 401) {
             toast.error(`${props.defaultLanguage?.permission_create[props.data?.language as Lang ?? 'en']}`);
             }else if (response.status === 400){
             toast.error(`${props.defaultLanguage?.create_email_have[props.data?.language as Lang ?? 'en']}`);
@@ -627,6 +755,7 @@ function SideProfile(props:typeProp) {
             _id:id,
          });
          if (response.status === 200) {
+            props.RequestDeleteInMap(id)
             toast.success(`${props.defaultLanguage?.success_delete[props.data?.language as Lang ?? 'en']}`);
             setUserDataSelect(prev => prev?.filter(user => user._id !== id));
             setDefaultUserSelect(data)
@@ -663,18 +792,18 @@ function SideProfile(props:typeProp) {
       const backdrop = document.getElementById('editforInfo')
       backdrop?.classList.add('hidden')
    }
+   const findUniversity = () => {
+      const data = getUniversity.filter(value => {
+         if (inputUniversity) 
+            return value.toLocaleLowerCase().includes(inputUniversity.toLocaleLowerCase())
+      })
+      return data
+   }
+
   return (
     <div >
       {toggleBackdrop ? <div className='absolute flex justify-center h-full w-full z-40 backdrop-blur-xs'></div> : ''}  
       <div className='hidden absolute flex justify-center h-full w-full z-40 backdrop-blur-xs'></div>  
-      {loading ?
-       <div role="status" className='absolute flex justify-center h-full w-full z-50 backdrop-blur-xs'>
-          <svg aria-hidden="true" className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 w-10 h-10 text-gray-200 animate-spin  fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-              <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-          </svg>
-          <span className="sr-only">Loading...</span>
-      </div> : '' }
       {toggleDelete ?  
          <div role="status" className='absolute flex justify-center items-center h-full w-full z-50 backdrop-blur-xs'>
             <Modal_Confirm_Delete data={data} defaultLanguage={props.defaultLanguage} deleteUser={deleteUser} close={setToggleDelete}/>
@@ -687,13 +816,12 @@ function SideProfile(props:typeProp) {
       </div> 
 
       <div className="btnthreeline fixed z-5 left-0 top-0 text-center absolute">
-         <button onClick={() => setToggleBackdrop(true)} className="threeline inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200   " type="button" data-drawer-target="sidebar-profile" data-drawer-show="sidebar-profile" data-drawer-placement="left" aria-controls="sidebar-profile">
+         <button onClick={() => {setToggleBackdrop(true);props.requestReload()}} className="threeline inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg bg-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200   " type="button" data-drawer-target="sidebar-profile" data-drawer-show="sidebar-profile" data-drawer-placement="left" aria-controls="sidebar-profile">
          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
          </svg>
          </button>
       </div>
-      
             <div id="sidebar-profile" className="fixed top-0 left-0 z-40 w-100 h-full p-2 overflow-y-auto transition-transform -translate-x-full bg-white" tabIndex={-1} aria-hidden="true" aria-labelledby="sidebar-profile-label">
                {data?.role == 'admin' ?
                   <>
@@ -719,8 +847,9 @@ function SideProfile(props:typeProp) {
                   </div>
                   } 
                </>
-             :  ''}
-            <button onClick={() => {setToggleBackdrop(false);closebackdrop()}} type="button" data-drawer-hide="sidebar-profile" aria-controls="sidebar-profile" 
+             : ''
+           }
+            <button onClick={() => {setToggleBackdrop(false);closebackdrop();setrequestDeleteRegisterMap(true)}} type="button" data-drawer-hide="sidebar-profile" aria-controls="sidebar-profile" 
                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 absolute top-2.5 end-2.5 inline-flex items-center  " >
                <svg aria-hidden="true" className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
                <span className="sr-only">Close menu</span>
@@ -730,7 +859,7 @@ function SideProfile(props:typeProp) {
                {toggleCreate ?  
                <>
                   <span className='w-full mr-2'>          
-                     <Filter_form onFocus={setBooleanInputUser} onBlur={setBooleanInputUser} value={inputEmail} onChange={setInputEmail} name={props.defaultLanguage?.email[props.data?.language as Lang ?? 'en']} id="email"/>
+                     <Filter_form onFocus={setBooleanInputUser} onBlur={setBooleanInputUser} value={inputEmail}  onChange={setInputEmail} name={props.defaultLanguage?.email[props.data?.language as Lang ?? 'en']} id="email"/>
                   </span>
                </>
                : 
@@ -752,9 +881,9 @@ function SideProfile(props:typeProp) {
                </span>
                }
                <span className='w-30 mr-2'>
-                  <Filter_form onFocus={setBooleanInputRole} readonly class='cursor-pointer' onBlur={setBooleanInputRole} value={role[inputRole as RoleKey]?.[props.data?.language as Lang]} name={props.defaultLanguage?.role[props.data?.language as Lang ?? 'en']} id="role"/>            
+                  <Filter_form onFocus={setBooleanInputRole} readonly class='cursor-pointer' onBlur={setBooleanInputRole} value={inputRole ? role[inputRole as RoleKey]?.[props.data?.language as Lang] : ''} name={props.defaultLanguage?.role[props.data?.language as Lang ?? 'en']} id="role"/>            
                   {booleanInputRole ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={role} updateDataSet={updateDataSet} name="role" lang={props.data?.language ?? 'en'}/>
+                     <Filter_displayselect setBoolean={setBooleanInputRole}  data={role} updateDataSet={updateDataSet} name="role" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
             </div>:""}
@@ -817,13 +946,13 @@ function SideProfile(props:typeProp) {
                <span className='w-full mr-2'>
                   <Filter_form onFocus={setBooleanInputGender} readonly class='cursor-pointer' onBlur={setBooleanInputGender} value={checkGender(inputGender,props.data?.language as Lang)} name={props.defaultLanguage?.gender[props.data?.language as Lang ?? 'en']} id="gender"/>            
                   {booleanInputGender ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={gender} updateDataSet={updateDataSet} name="gender" lang={props.data?.language ?? 'en'}/>
+                     <Filter_displayselect setBoolean={setBooleanInputGender} data={gender} updateDataSet={updateDataSet} name="gender" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
                <span className='w-60'>
                   <Filter_form onFocus={setBooleanInputHeight} readonly class='cursor-pointer' onBlur={setBooleanInputHeight} value={inputHeight} name={props.defaultLanguage?.height[props.data?.language as Lang ?? 'en']} id="height"/>            
                   {booleanInputHeight ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={[...Array(60)].map((x,i)=>`${i+140}cm`)} updateDataSet={updateDataSet} name="height" lang={''}/>
+                     <Filter_displayselect setBoolean={setBooleanInputHeight} data={[...Array(60)].map((x,i)=>`${i+140}cm`)} updateDataSet={updateDataSet} name="height" lang={''}/>
                   </div> : ''}
                </span>
             </div>
@@ -831,7 +960,7 @@ function SideProfile(props:typeProp) {
                <span className='w-full mr-2'>               
                   <Filter_form readonly class='cursor-pointer' onFocus={setBooleanInputStatus} onBlur={setBooleanInputStatus} value={checkStatus(inputStatus,props.data?.language as Lang)} onChange={setInputStatus} name={props.defaultLanguage?.status[props.data?.language as Lang ?? 'en']} id="status"/>
                   {booleanInputStatus ? <div className='absolute w-40 mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={status} updateDataSet={updateDataSet} name="status"  lang={props.data?.language ?? 'en'}/>
+                     <Filter_displayselect setBoolean={setBooleanInputStatus} data={status} updateDataSet={updateDataSet} name="status"  lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
                <span className='w-60 mr-2 relative'>
@@ -847,8 +976,8 @@ function SideProfile(props:typeProp) {
                </span>
                <span className='w-60 mr-2'>
                   <Filter_form onFocus={setBooleanInputEthnicity} readonly class='cursor-pointer' onBlur={setBooleanInputEthnicity} value={checkEthnicitie(inputEthnicity,props.data?.language as Lang)} name={props.defaultLanguage?.ethnicity[props.data?.language as Lang ?? 'en']} id="ethnicity"/>            
-                  {booleanInputEthnicity ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={props.data?.language ?? 'en'}/>
+                  {booleanInputEthnicity ? <div className='absolute mt-2 right-0 w-40 pr-4 z-20'>
+                     <Filter_displayselect setBoolean={setBooleanInputEthnicity} data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
 
@@ -856,33 +985,33 @@ function SideProfile(props:typeProp) {
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-40 mr-2'>  
                   <Filter_form onFocus={setBooleanInputReligion} readonly class='cursor-pointer' onBlur={setBooleanInputReligion} value={checkReligion(inputReligion,props.data?.language as Lang)} name={props.defaultLanguage?.religion[props.data?.language as Lang ?? 'en']} id="religion"/>            
-                  {booleanInputReligion ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={props.data?.language ?? 'en'}/>
+                  {booleanInputReligion ? <div className='absolute left-2 w-30 mt-2 pr-4 z-20'>
+                     <Filter_displayselect setBoolean={setBooleanInputReligion} data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}             
                </span>
                <span className='w-60 mr-2'>
                   <Filter_form onFocus={setBooleanInputChineseZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputChineseZodiac} value={checkChineseZodiac(inputChineseZodiac,props.data?.language as Lang)} name={props.defaultLanguage?.chinese_zodiac[props.data?.language as Lang ?? 'en']} id="chinese_zodiac"/>            
-                  {booleanInputChineseZodiac ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={props.data?.language ?? 'en'}/>
+                  {booleanInputChineseZodiac ? <div className='absolute w-36 mt-2 pr-4 z-20'>
+                     <Filter_displayselect setBoolean={setBooleanInputChineseZodiac} data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
                   <Filter_form onFocus={setBooleanInputWesternZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputWesternZodiac} value={checkWesternZodiac(inputWesternZodiac,props.data?.language as Lang)} name={props.defaultLanguage?.western_zodiac[props.data?.language as Lang ?? 'en']} id="western_zodiac"/>            
                   {booleanInputWesternZodiac ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={props.data?.language ?? 'en'}/>
+                     <Filter_displayselect setBoolean={setBooleanInputWesternZodiac} data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
             </div>
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-18 mr-2'>
                   <Filter_form onFocus={setBooleanInputGroup} readonly class='cursor-pointer' onBlur={setBooleanInputGroup} value={inputGroup} name={props.defaultLanguage?.group_blood[props.data?.language as Lang ?? 'en']} id="group_blood"/>            
-                  {booleanInputGroup ? <div className='absolute mt-2 pr-4 z-20'>
+                  {booleanInputGroup ? <div className='absolute w-18 mt-2 pr-4 z-20'>
                      <Filter_displayselect  data={group_blood} updateDataSet={updateDataSet} name="group_blood" lang={''}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
                   <Filter_form onFocus={setBooleanInputDegree} readonly class='cursor-pointer' onBlur={setBooleanInputDegree} value={checkDegree(inputDegree,props.data?.language as Lang)} name={props.defaultLanguage?.degree[props.data?.language as Lang ?? 'en']} id="degree"/>            
-                  {booleanInputDegree ? <div className='absolute mt-2 pr-4 z-20'>
+                  {booleanInputDegree ? <div className='absolute w-40 mt-2 pr-4 z-20'>
                      <Filter_displayselect  data={degree} updateDataSet={updateDataSet} name="degree" lang={props.data?.language ?? 'en'}/>
                   </div> : ''}
                </span>
@@ -890,8 +1019,8 @@ function SideProfile(props:typeProp) {
                   {booleanToggleUniversitye ? 
                   <Filter_form onFocus={setBooleanInputUniversity} onBlur={setBooleanInputUniversity} onChange={setInputUniversity} value={inputUniversity} name={props.defaultLanguage?.university[props.data?.language as Lang ?? 'en']} id="university"/>            
                   : ''}
-                  {booleanInputUniversity ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={getUniversity.filter(value => {if (inputUniversity) return value.toLocaleLowerCase().match(inputUniversity.toLocaleLowerCase())})} updateDataSet={updateDataSet} name="university" lang={''}/>
+                  {booleanInputUniversity ? <div className='absolute right-0 w-60 mt-2 pr-4 z-20'>
+                     <Filter_displayselect  data={findUniversity()} updateDataSet={updateDataSet} name="university" lang={''}/>
                   </div> : ''}
                </span>
             </div>
@@ -1017,13 +1146,6 @@ function SideProfile(props:typeProp) {
 
 export default SideProfile
 
-export function Button_Setting_User() {
-  return (
-    <div>
-      
-    </div>
-  )
-}
 interface typePropModal_Confirm{
    data:typeData
    defaultLanguage:Settings

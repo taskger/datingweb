@@ -35,6 +35,18 @@
   animation-fill-mode: forwards;
   animation-duration: 0.4s;
 }
+@keyframes googlelogouthoverth {
+  0% {width: 40px;}
+  100% {width: 150px;}
+}
+.googlelogouthoverth{
+  width: 40px;
+}
+.googlelogouthoverth:hover{
+  animation-name: googlelogouthoverth;
+  animation-fill-mode: forwards;
+  animation-duration: 0.4s;
+}
 .bg{
   width:500px;
   height: max-content;
@@ -43,7 +55,7 @@
   border-radius: 10px;
   padding: 5px;
   font-family: var(--font-mitr);
-  font-weight: 400;
+  font-weight: 300;
   position: relative;
   color: black;
 }
@@ -325,6 +337,18 @@
 .divadmin #button-delete:hover{
   color: #f73e3e;
   cursor: pointer;
+}
+.icon-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* จัดให้ทั้ง img และ text อยู่กึ่งกลางแนวนอน */
+  color: inherit;
+}
+.openingooglemap{
+  top: 20px;
+}
+.openingooglemap:hover{
+  color: #6c6c6c;
 }
 .heartsendmale{
   background-color: #448bef;

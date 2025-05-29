@@ -17,6 +17,10 @@ interface typeProps{
   defaultLanguage:Settings
   setRequestEdit:(data : typeData) => void
   setRequestDelete:(data : typeData) => void
+  setLoading:(value:boolean) => void
+  requestDeleteRegisterMap:boolean
+  setrequestDeleteRegisterMap:(value:boolean) => void
+  RequestEditInMap:(value:string) => void
 }
 
 const MapProvider = (props:typeProps) => {
@@ -35,7 +39,7 @@ const MapProvider = (props:typeProps) => {
   const getUserRef = useRef<typeData[]>([]); //เก็บ user ดิบๆ
   const [dataMyself,setDataMyself] = useState<typeData>()
   const [toggleDisplay,setToggleDisplay] = useState<boolean>(false)
-  const {userData,getDataMyself} = props
+  const {userData,getDataMyself,setLoading,setRequestEdit,setRequestDelete,userMove,requestDeleteRegisterMap,setrequestDeleteRegisterMap,RequestEditInMap} = props
   useEffect(() => {
     if(getDataMyself){
       setDataMyself(getDataMyself as typeData)
@@ -58,7 +62,7 @@ const MapProvider = (props:typeProps) => {
       })
       setMap(map)
       setInfoWindow(new window.google.maps.InfoWindow())
-      map.addListener("idle", () => {
+      map.addListener("bounds_changed", () => {
         findPeopleBound(map)  
       });      
     }
@@ -69,13 +73,12 @@ const MapProvider = (props:typeProps) => {
     datamap() 
   }, [datamap]);
 
-  const clickUserMove = (location:Profile['location'],email?:string) =>{
+  const clickUserMove = async(location:Profile['location'],email?:string) =>{
       map?.panTo(location)
       map?.setZoom(15)
     if(email) {
       const marker = markerMapRef.current.get(email)
       const infoWindow = infoWindowMapRef.current.get(email)
-      console.log(infoWindow)
       if (marker && marker?.position && infoWindow && map) {
         infoWindow.open({
           anchor: marker,
@@ -85,12 +88,7 @@ const MapProvider = (props:typeProps) => {
         map.setZoom(15);
       }
     }else{
-      const getMarker =  markerMapRef.current.get('registerMap')
-      console.log(getMarker)
-      if (getMarker) {
-        getMarker.map = null
-        markerMapRef.current.delete('registerMap')
-      }
+      await deletRegisterMap()
       const registerMap = new window.google.maps.marker.AdvancedMarkerElement({
         map,
         position: location,
@@ -98,37 +96,50 @@ const MapProvider = (props:typeProps) => {
       markerMapRef.current.set('registerMap', registerMap);
     }
   }
+  const deletRegisterMap = async () => {
+    const getMarker =  markerMapRef.current.get('registerMap')
+      if (getMarker) {
+        getMarker.map = null
+        markerMapRef.current.delete('registerMap')
+      }
+      return
+  }
+
   useEffect(() => {
-    if (props.userMove?.location && !props.userMove?.email){
-      clickUserMove(props.userMove.location)
-    }else if(props.userMove?.location && props.userMove?.email){
-      const location = props.userMove.location
-      const email = props.userMove.email
-      if (props.userMove){
+    deletRegisterMap()
+    setrequestDeleteRegisterMap(false)
+  },[requestDeleteRegisterMap])
+
+  useEffect(() => {
+    if (userMove?.location && !userMove?.email){
+      clickUserMove(userMove.location)
+    }else if(userMove?.location && userMove?.email){
+      const location = userMove.location
+      const email = userMove.email
+      if (userMove){
         clickUserMove(location,email)
       }
     }
-  }, [props.userMove,map])
+  }, [userMove,map])
   
   useEffect(() => {
     getUserRef.current = userData ?? [];
     markerMapRef.current.forEach((marker) => {
       marker.map = null; 
     });
+    infoWindowMapRef.current.forEach((info) => {
+      info.close()
+    })
+    markerRef.current.clear()
     markerMapRef.current.clear();
     userRef.current.clear()
-    markerRef.current.clear()
     infoWindowMapRef.current.clear()
     setUser([])
   }, [userData]);
   
   const findPeopleBound = (mapData : google.maps.Map) => {
     if(!getUserRef) return
-    console.log(getUserRef)
     const bounds = mapData.getBounds()
-    // const NE = bounds?.getNorthEast().toJSON()
-    // const SW = bounds?.getSouthWest().toJSON()
-    // const center = mapData?.getCenter()
     const data:typeData[] = []
     const dataInBound:typeData[] = []
     let dataCount:number = 0
@@ -180,12 +191,12 @@ const MapProvider = (props:typeProps) => {
         let infoWindow
         if(value.profile.gender == 'female'){
           infoWindow = new window.google.maps.InfoWindow({
-            content: PopupUser(value,dataMyself?.language as Lang,dataMyself as typeData,props.setRequestEdit,props.setRequestDelete),
+            content: PopupUser(value,dataMyself?.language as Lang,dataMyself as typeData,setRequestEdit,setRequestDelete,setLoading,RequestEditInMap),
             ariaLabel: "Female",
           });
         }else{
           infoWindow = new window.google.maps.InfoWindow({
-            content: PopupUser(value,dataMyself?.language as Lang,dataMyself as typeData,props.setRequestEdit,props.setRequestDelete),
+            content: PopupUser(value,dataMyself?.language as Lang,dataMyself as typeData,setRequestEdit,setRequestDelete,setLoading,RequestEditInMap),
             ariaLabel: "Male",
           });
         }
@@ -213,7 +224,7 @@ const MapProvider = (props:typeProps) => {
       });   
       const infoWindowMyselfCurrent = new window.google.maps.InfoWindow({
         content: PopupMySelfCurrent((dataMyself as typeData) ?? ''),
-        ariaLabel: "Uluru",
+        ariaLabel: "Current",
       });
       mySelf.addListener("click", () => {
         infoWindowMyselfCurrent?.open({
@@ -269,7 +280,7 @@ const MapProvider = (props:typeProps) => {
         <div className='max-h-60 overflow-y-auto absolute top-14 right-5 z-10 text-black text-gray-500 font-bold border-1 border-gray-300 p-1 rounded-lg bg-white'>
             {userInBound.map(value => 
             <div key={value.email}>
-              <button onClick={() => {if (value.profile) { clickUserMove(value.profile.location,value.email)}}} onMouseEnter={() => console.log('qweqw')}className={`w-full rounded-sm p-1 mb-1
+              <button onClick={() => {if (value.profile) { clickUserMove(value.profile.location,value.email)}}} className={`w-full rounded-sm p-1 mb-1
                 ${value.profile?.gender == 'female' ? 'filterbannerfemale text-white ' : value.profile?.gender == 'male' ? 'filterbannermale text-white ' : 'filterbannerother text-black'}`}>
                 {value.profile?.name}
               </button>

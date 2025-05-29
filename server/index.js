@@ -22,7 +22,6 @@ app.use(cors());
 app.get('/', async (req, res) => {
   try {
     const token = req.headers.authorization
-    console.log(token)
     res.json('Server Work!!');
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -67,9 +66,7 @@ app.put('/update/:id', async (req, res) => {
     const userToUpdate = await User.findOne({ _id: payload._id });
     if (!userRequestUpdate) return res.status(401).json({ error: 'Unauthorized user' });
     if (userRequestUpdate.id == userToUpdate.id || userRequestUpdate.role == 'admin'){
-      console.log('update sucess')
       await User.updateOne({_id: payload._id}, {$set: payload});
-      console.log(userToUpdate)
       res.status(200).json({ status : 200});    
     }else{
       return res.status(401).json({ status : 401});
@@ -87,7 +84,6 @@ app.put('/heart/:id', async (req, res) => {
     if (!userRequest) return res.status(401).json({ error: 'Unauthorized user' });
     const checkHaveLike = likeUser.profile.like.includes(userRequest.id)
     if (!checkHaveLike){
-       console.log('work')
       await User.updateOne({_id: id}, {$push: {"profile.like":userRequest.id}});
       res.status(200).json({ status : 200});    
     }else{
@@ -110,7 +106,6 @@ app.delete('/delete/:id', async (req, res) => {
     }else if(id == payload._id){
       res.status(403).json({status:403})
     }else{
-      console.log(payload._id)
       res.status(401).json({status:401})
     }
   }catch{
@@ -129,7 +124,6 @@ app.post('/create/:id', async (req, res) => {
       await User.create(payload)
       res.status(200).json({status:200})
     }else{
-      console.log('error')
       res.status(401).json({status:401})
     }
   }catch{

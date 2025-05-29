@@ -141,15 +141,15 @@ export const settings : Settings = {
   facebook: {en: "Facebook" , th: "เฟสบุ๊ค"},
   instragram: {en: "Instagram" , th: "อินสตาแกรม"},
   telephone: {en: "Telephone" , th: "เบอร์โทร"},
-  age_more_eighteen: {en: "You must be at least 18 years old.", th: "คุณต้องมีอายุอย่างน้อย 18 ปี" },
+  age_more_eighteen: {en: "You must be at least 18 years old and less than 100 years.", th: "อายุของคุณต้องอยู่ระหว่าง 18 ถึง 99 ปี" },
   kilometers: {en: "Km.", th: "กิโลเมตร" },
   permission_create: { en: "You Don't have Permission Create !",th: 'คุณไม่มีสิทธิ์สร้างข้อมูล'},
   create_email_have: {en: "This email already exists in the system.", th: "มีอีเมล์นี้อยู่ในระบบแล้ว" },
   location_current: {en: "Current Location", th: "ที่อยู่ปัจจุบัน" },  
   location_in_system: {en: "Location In System", th: "ที่อยู่ในระบบ" },
   laglngempty: {
-en: "Please complete Location with search or use current location and select",
-    th: "กรุณาหาที่อยู่ด้วยการกดค้นหาหรือใช้ตำแหน่งปัจจุบัน"
+    en: "Please complete Location with search or use current location and select",
+    th: "กรุณาเลือกที่อยู่ด้วยการกดค้นหาหรือใช้ตำแหน่งปัจจุบัน"
   },
   success_create: { en: 'Create Success!',th: 'สร้างข้อมูลใหม่เสร็จสิ้น'},
   cleanfilter: {en: 'Successfully clean filter',th:'ล้างตัวกรองทั้งหมดเรียบร้อย'},
@@ -159,6 +159,11 @@ en: "Please complete Location with search or use current location and select",
   upheight: {en: 'Or higher',th:'ขึ้นไป'},
   signingoogle: {en: 'Sign In with Google',th:'เข้าสู่ระบบด้วย Google'},
   signout: {en: 'Sign Out',th:'ออกจากระบบ'},
+  openwithgooglemap: {en: 'Direction',th:'เส้นทาง'},
+  contect_empty: {en: 'Please input at least one contact method',th:'กรุณากรอกข้อมูลการติดต่ออย่างน้อย 1 ช่องทาง'},
+  telephonemust10: {en: 'Please enter a telephone number with at least 10 digits',th:'กรุณากรอกเบอร์โทรศัพท์ให้ครบ 10 หลัก'},
+  waitserver: {en: 'Announcement: The system is initializing. Please wait for 2-3 minutes.',th:'ประกาศ : เนื่องจากระบบกำลังเปิดใช้งานกรุณารอเวลา 2-3 นาที'},
+  
 };
 
 

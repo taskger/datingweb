@@ -128,6 +128,10 @@ export type GeneralKey =
   | 'upheight'
   | 'signingoogle'
   | 'signout'
+  | 'openwithgooglemap'
+  | 'contect_empty'
+  | 'telephonemust10'
+  | 'waitserver'
   ;
 
 

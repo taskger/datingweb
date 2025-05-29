@@ -18,6 +18,7 @@ interface typeProp{
    defaultLanguage:Settings
    setGetLatLng:(localtion?: Profile['location'],email?:string) => void
    lang:Lang
+   setLoading:(value:boolean) => void
 }
 function CreateProfile(props:typeProp) {
    const [inputLatLng, setInputLatlng] = useState<Profile['location']>()
@@ -65,9 +66,7 @@ function CreateProfile(props:typeProp) {
    const [toggleReload,setToggleReload] = useState<boolean>(false)
    const [getUniversity, setGetUniversity] = useState<string[]>([])
    const [searchLocation,setSearchLocation] = useState<GoogleGeocodeResult[]>()
-   const [loading,setLoading] = useState<boolean>()
-   const data = props.data
-   const lang = props.lang
+   const {data,lang,setLoading} = props
    useEffect(() => {
       fetch('/world_universities.json')
          .then((res) => res.json())
@@ -79,13 +78,14 @@ function CreateProfile(props:typeProp) {
          });
       if (typeof initAccordions === 'function') {
          initAccordions();
-         console.log('Flowbite initialized in CreateProfile');
       }
       }, []);
       // ข้อมูลตัวเองเข้ามาอัพครั้งเดดี่ยว
    useEffect(() => {
    if(data) {
       setInputName(data.user.name ?? '')
+      setInputLatlng({lat:NaN,lng:NaN})
+      setInputLocation('')
       setSelectedDate(new Date())
       setDataLifestyle({
          pet: false,
@@ -207,7 +207,6 @@ function CreateProfile(props:typeProp) {
          hobbySetMap[name as CategoryNameHobby](new Set(data))
        } else if (name in stateMap) {
          stateMap[name]();
-         console.log("SET STATE:", name, value);
        } else {
          console.warn("Unknown name", name);
        }
@@ -240,6 +239,8 @@ function CreateProfile(props:typeProp) {
       setInputFacebook('')
       setInputInstagram('')
       setInputTelephone('')
+      setInputLatlng({lat:NaN,lng:NaN})
+      setInputLocation('')
       setDataLifestyle({
          pet: false,
          exercise: false,
@@ -277,7 +278,6 @@ function CreateProfile(props:typeProp) {
         const addressLocation = `https://geocode.googleapis.com/v4beta/geocode/address/${address}?key=${process.env.NEXT_PUBLIC_GOOGLE_GEOCODE_KEY}`;
         const response: Response = await alovaOutApi.Get(addressLocation);
         const [result] = Object.values(response).map((value) => value);
-        console.log(result);
         setToggleReload(false)
         setSearchLocation(result);
       } else {
@@ -321,20 +321,84 @@ function CreateProfile(props:typeProp) {
        );
        return (distance/1000).toFixed(3)
     }
+    const addValidation = (name:string) => {
+      const element = document.getElementById(`filter_form_${name}`)
+      element?.classList.add('border-red-500')
+    }
+    const removeValidation = (name:string) => {
+      const element = document.getElementById(`filter_form_${name}`)
+      element?.classList.remove('border-red-500')
+    }
    const clickSubmitCreate = async () => {
       setLoading(true)
       try {
-         if ( !inputLocation || !inputName  || !selectedDate || !inputGender || !inputStatus){
+         if (isNaN(Number(inputLatLng?.lat)) || isNaN(Number(inputLatLng?.lng))) {
+            addValidation('location')
             setLoading(false) 
-            return toast.error(`${props.defaultLanguage?.empty_form_create[lang]}`);
+            return toast.error(`${props.defaultLanguage?.laglngempty[lang as Lang ?? 'en']}`);
+         }else{
+            removeValidation('location')
          }
-         if (!inputLatLng) {
+         if (!inputLocation  || !inputName || !inputGender || !inputStatus || !selectedDate || inputHeight < 140){
+            if (!inputLocation){
+               addValidation('location')
+            }else{
+               removeValidation('location')
+            }
+            if (!inputName){
+               addValidation('name')
+            }else{
+               removeValidation('name')
+            }
+            if (!inputGender){
+               addValidation('gender')
+            }else{
+               removeValidation('gender')
+            }
+            if (!inputStatus){
+               addValidation('status')
+            }else{
+               removeValidation('status')
+            }
+            if (!selectedDate){
+               addValidation('birthday')
+            }else{
+               removeValidation('birthday')
+            }
+            if(inputHeight < 140){
+               addValidation('height')
+            }else{
+               removeValidation('height')
+            }
             setLoading(false) 
-            return toast.error(`${props.defaultLanguage?.laglngempty[ lang]}`);
+            return toast.error(`${props.defaultLanguage?.empty_form_create[lang as Lang ?? 'en']}`);
          }
-         if (Number(calculateAge(selectedDate.toLocaleDateString('fr-CA'))) < 18){
+         removeValidation('location')
+         removeValidation('name')
+         removeValidation('gender')
+         removeValidation('status')
+         removeValidation('height')
+         if (Number(calculateAge(selectedDate.toLocaleDateString('fr-CA'))) < 18 || Number(calculateAge(selectedDate.toLocaleDateString('fr-CA'))) > 100){
             setLoading(false) 
-            return toast.error(`${props.defaultLanguage?.age_more_eighteen[ lang]}`);
+            addValidation('birthday')
+            return toast.error(`${props.defaultLanguage?.age_more_eighteen[lang as Lang ?? 'en']}`);
+         }else{
+            removeValidation('birthday')
+         }
+         if (!inputTelephone && !inputFacebook && !inputInstagram){
+            addValidation('telephone')
+            addValidation('instragram')
+            addValidation('facebook')
+            setLoading(false) 
+            return toast.error(`${props.defaultLanguage?.contect_empty[lang as Lang ?? 'en']}`);
+         }else{
+            removeValidation('telephone')
+            removeValidation('instragram')
+            removeValidation('facebook')
+            if(inputTelephone && inputTelephone.length != 10){
+               setLoading(false) 
+               return toast.error(`${props.defaultLanguage?.telephonemust10[lang as Lang ?? 'en']}`);  
+            }
          }
          
          const dateForAge = (selectedDate?.toLocaleDateString('fr-CA'))
@@ -390,7 +454,6 @@ function CreateProfile(props:typeProp) {
              "role": 'user',
              "language": "th"
          });
-         console.log(response.status)
          if (response.status === 200) {
             toast.success(`${props.defaultLanguage?.success_update[ lang]}`);
             }else if (response.status === 401) {
@@ -420,16 +483,7 @@ function CreateProfile(props:typeProp) {
       }
     }
   return (
-    <>
-      {loading ?
-       <div role="status" className='absolute flex justify-center h-full w-full z-50 backdrop-blur-xs'>
-          <svg  className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 w-10 h-10 text-gray-200 animate-spin fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-              <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-          </svg>
-          <span className="sr-only">Loading...</span>
-      </div> : '' }
-         
+    <>         
          <div className="z-40 w-full h-full  p-2 overflow-y-auto bg-white">
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='relative w-full mr-2'>
@@ -467,7 +521,7 @@ function CreateProfile(props:typeProp) {
                   </div> 
                </span>
                <span className='mr-2'>
-                  <button onClick={() => clickSearchLocation()} type="button" className='p-3 z-15 border border-zinc-600 bg-zinc-500 rounded-lg hover:bg-zinc-700 text-white'>
+                  <button onClick={() => clickSearchLocation()} type="button" className='cursor-pointer  p-3 z-15 border border-zinc-600 bg-zinc-500 rounded-lg hover:bg-zinc-700 text-white'>
                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
@@ -475,7 +529,7 @@ function CreateProfile(props:typeProp) {
                   </button>
                </span>
                <span>
-                  <button onClick={() => clickSearchLocation(inputLocation)} type="button" className='p-3 z-15 border border-zinc-600 bg-zinc-500 rounded-lg hover:bg-zinc-700 text-white'>
+                  <button onClick={() => clickSearchLocation(inputLocation)} type="button" className='cursor-pointer  p-3 z-15 border border-zinc-600 bg-zinc-500 rounded-lg hover:bg-zinc-700 text-white'>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
                      <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                   </svg>
@@ -490,13 +544,13 @@ function CreateProfile(props:typeProp) {
                <span className='w-full mr-2'>
                   <Filter_form onFocus={setBooleanInputGender} readonly class='cursor-pointer' onBlur={setBooleanInputGender} value={checkGender(inputGender,lang)} name={props.defaultLanguage?.gender[lang]} id="gender"/>            
                   {booleanInputGender ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={gender} updateDataSet={updateDataSet} name="gender" lang={lang}/>
+                     <Filter_displayselect setBoolean={setBooleanInputGender} data={gender} updateDataSet={updateDataSet} name="gender" lang={lang}/>
                   </div> : ''}
                </span>
                <span className='w-50'>
                   <Filter_form onFocus={setBooleanInputHeight} readonly class='cursor-pointer' onBlur={setBooleanInputHeight} value={inputHeight} name={props.defaultLanguage?.height[lang]} id="height"/>            
                   {booleanInputHeight ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={[...Array(60)].map((x,i)=>`${i+140}cm`)} updateDataSet={updateDataSet} name="height" lang={''}/>
+                     <Filter_displayselect setBoolean={setBooleanInputHeight} data={[...Array(60)].map((x,i)=>`${i+140}cm`)} updateDataSet={updateDataSet} name="height" lang={''}/>
                   </div> : ''}
                </span>
             </div>
@@ -504,7 +558,7 @@ function CreateProfile(props:typeProp) {
                <span className='w-full mr-2'>               
                   <Filter_form readonly class='cursor-pointer' onFocus={setBooleanInputStatus} onBlur={setBooleanInputStatus} value={checkStatus(inputStatus,lang)} onChange={setInputStatus} name={props.defaultLanguage?.status[ lang]} id="status"/>
                   {booleanInputStatus ? <div className='absolute w-40 mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={status} updateDataSet={updateDataSet} name="status"  lang={lang}/>
+                     <Filter_displayselect setBoolean={setBooleanInputStatus} data={status} updateDataSet={updateDataSet} name="status"  lang={lang}/>
                   </div> : ''}
                </span>
                <span className='w-60 mr-2 relative'>
@@ -521,7 +575,7 @@ function CreateProfile(props:typeProp) {
                <span className='w-60 mr-2'>
                   <Filter_form onFocus={setBooleanInputEthnicity} readonly class='cursor-pointer' onBlur={setBooleanInputEthnicity} value={checkEthnicitie(inputEthnicity,lang)} name={props.defaultLanguage?.ethnicity[ lang]} id="ethnicity"/>            
                   {booleanInputEthnicity ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={lang}/>
+                     <Filter_displayselect setBoolean={setBooleanInputEthnicity} data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={lang}/>
                   </div> : ''}
                </span>
 
@@ -530,19 +584,19 @@ function CreateProfile(props:typeProp) {
                <span className='w-40 mr-2'>  
                   <Filter_form onFocus={setBooleanInputReligion} readonly class='cursor-pointer' onBlur={setBooleanInputReligion} value={checkReligion(inputReligion,lang)} name={props.defaultLanguage?.religion[ lang]} id="religion"/>            
                   {booleanInputReligion ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={lang}/>
+                     <Filter_displayselect setBoolean={setBooleanInputReligion} data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={lang}/>
                   </div> : ''}             
                </span>
                <span className='w-60 mr-2'>
                   <Filter_form onFocus={setBooleanInputChineseZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputChineseZodiac} value={checkChineseZodiac(inputChineseZodiac,lang)} name={props.defaultLanguage?.chinese_zodiac[ lang]} id="chinese_zodiac"/>            
                   {booleanInputChineseZodiac ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={lang}/>
+                     <Filter_displayselect setBoolean={setBooleanInputChineseZodiac}  data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={lang}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
                   <Filter_form onFocus={setBooleanInputWesternZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputWesternZodiac} value={checkWesternZodiac(inputWesternZodiac,lang)} name={props.defaultLanguage?.western_zodiac[ lang]} id="western_zodiac"/>            
                   {booleanInputWesternZodiac ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={lang}/>
+                     <Filter_displayselect setBoolean={setBooleanInputWesternZodiac} data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={lang}/>
                   </div> : ''}
                </span>
             </div>
@@ -550,13 +604,13 @@ function CreateProfile(props:typeProp) {
                <span className='w-18 mr-2'>
                   <Filter_form onFocus={setBooleanInputGroup} readonly class='cursor-pointer' onBlur={setBooleanInputGroup} value={inputGroup} name={props.defaultLanguage?.group_blood[ lang]} id="group_blood"/>            
                   {booleanInputGroup ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={group_blood} updateDataSet={updateDataSet} name="group_blood" lang={''}/>
+                     <Filter_displayselect setBoolean={setBooleanInputGroup} data={group_blood} updateDataSet={updateDataSet} name="group_blood" lang={''}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
                   <Filter_form onFocus={setBooleanInputDegree} readonly class='cursor-pointer' onBlur={setBooleanInputDegree} value={checkDegree(inputDegree,lang)} name={props.defaultLanguage?.degree[ lang]} id="degree"/>            
                   {booleanInputDegree ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={degree} updateDataSet={updateDataSet} name="degree" lang={lang}/>
+                     <Filter_displayselect setBoolean={setBooleanInputDegree} data={degree} updateDataSet={updateDataSet} name="degree" lang={lang}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
@@ -564,7 +618,7 @@ function CreateProfile(props:typeProp) {
                   <Filter_form onFocus={setBooleanInputUniversity} onBlur={setBooleanInputUniversity} onChange={setInputUniversity} value={inputUniversity} name={props.defaultLanguage?.university[ lang]} id="university"/>            
                   : ''}
                   {booleanInputUniversity ? <div className='absolute mt-2 pr-4 z-20'>
-                     <Filter_displayselect  data={getUniversity.filter(value => {if (inputUniversity) return value.toLocaleLowerCase().match(inputUniversity.toLocaleLowerCase())})} updateDataSet={updateDataSet} name="university" lang={''}/>
+                     <Filter_displayselect setBoolean={setBooleanInputUniversity} data={getUniversity.filter(value => {if (inputUniversity) return value.toLocaleLowerCase().match(inputUniversity.toLocaleLowerCase())})} updateDataSet={updateDataSet} name="university" lang={''}/>
                   </div> : ''}
                </span>
             </div>

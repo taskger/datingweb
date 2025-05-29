@@ -3,7 +3,8 @@ import "./CustomTextPopup.css"
 import {TranslateToThai} from "./TranslateToThai";
 import {typeData, CategoryNameHobby, Lang} from "@/providers/lib/typeData"
 import { settings } from "@/components/data/FakeData";
-export const PopupUser = (data:typeData,lang:Lang,dataMyself:typeData,setRequestEdit: (data:typeData) => void,setRequestDelete: (data:typeData) => void) => {
+
+export const PopupUser = (data:typeData,lang:Lang,dataMyself:typeData,setRequestEdit: (data:typeData) => void,setRequestDelete: (data:typeData) => void,setLoading: (value:boolean) => void,RequestEditInMap: (value:string) => void) => {
   const popup = document.createElement('div');
   const display = TranslateToThai(data,lang)
   const mapData = [
@@ -27,7 +28,6 @@ export const PopupUser = (data:typeData,lang:Lang,dataMyself:typeData,setRequest
     { name: 'smoke', image: 'smoke-icon.png', text: { en: 'Smoking', th: 'สูบบุหรี่' } },
     { name: 'weed', image: 'weed-icon.png', text: { en: 'Cannabis', th: 'สูบกัญชา' } },
   ];
-  
   if (display) {
     popup.innerHTML = `
       <div class="bg">
@@ -79,7 +79,6 @@ export const PopupUser = (data:typeData,lang:Lang,dataMyself:typeData,setRequest
           <div>
           ${Object.entries(data.profile?.lifestyle ?? {}).filter(([,value])=> value).map(([key]) => {
             const data = mapDataLifestyle.find(valuefind => valuefind.name == key)
-            console.log(data)
             return(
               `<span class="lifestyle ${data?.name}">
                 <img class="imagelifestyle" src="${data?.image}" width="20" height="20">${data?.text?.[lang]}
@@ -90,7 +89,7 @@ export const PopupUser = (data:typeData,lang:Lang,dataMyself:typeData,setRequest
         </div>`: ''}
  
         ${Object.values(display.hobbys ?? {}).filter(value => { 
-          if(value.length > 0) return value
+          if(value.length > 0 ) return value
         }).length != 0 ? 
         `<div>
           <div>
@@ -133,7 +132,21 @@ export const PopupUser = (data:typeData,lang:Lang,dataMyself:typeData,setRequest
                   <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
                 </svg>
               </span> 
-          </div>`: ''}
+            </button>
+          </div>`
+          :
+          `
+            <a class='divadmin openingooglemap' href="https://www.google.co.th/maps/place/${data.profile?.location.lat},${data.profile?.location.lng}">
+              <span class="icon-text">
+                <img src="directions-icon.png" width="25" height="25" alt="directions"  class="director-icon" />
+                <div>
+                ${settings.openwithgooglemap[lang]}
+                </div>
+              </span>
+            </a>
+          `
+        }
+
         <div>
           ${data.profile?.contact?.facebook ? 
           `
@@ -178,6 +191,7 @@ export const PopupUser = (data:typeData,lang:Lang,dataMyself:typeData,setRequest
       })
       const buttonHeart = popup.querySelector('#button-heart') as HTMLButtonElement | null;      
       buttonHeart?.addEventListener("click", async () => {
+        setLoading(true)
         try {
           const response :Response = await alovaInstance.Put(`/heart/${data._id}`,{
             id:dataMyself._id
@@ -186,14 +200,18 @@ export const PopupUser = (data:typeData,lang:Lang,dataMyself:typeData,setRequest
           if(!numberHeart) return
           const currentLikes = Number(numberHeart.innerText);
           if (response.status === 200) {
+            RequestEditInMap(data.email)
             numberHeart.innerText = String(currentLikes + 1);      
           } else if (response.status === 409) {
             numberHeart.innerText = String(currentLikes - 1);
+            RequestEditInMap(data.email)
           } else {
           }
       
         } catch (error) {
           console.error('🔥 Error:', error);
+        }finally{
+          setLoading(false)
         }
       });
       

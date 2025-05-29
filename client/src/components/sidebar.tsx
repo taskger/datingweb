@@ -293,8 +293,8 @@ function Sidebar(props:typeProps) {
 
       const { userFilter, userData } = props;
       useEffect(() => {
-
-         let filtered = userData
+         let filtered: typeData[]  = []
+         filtered = userData as typeData[]
          const collectionFilter: typeCollectionFilter[]  = [
             {user_data:'gender',data_select:dataGender},
             {user_data:'status',data_select:dataStatus},
@@ -319,7 +319,6 @@ function Sidebar(props:typeProps) {
          
          filtered = filtered?.filter((user) => user.profile?.age != null && (user.profile?.age >= minAge && user.profile?.age <= maxAge))        
          filtered = filtered?.filter((user) => user.profile?.salary != null && (user.profile?.salary >= minSalary && user.profile?.salary <= maxSalary))
-         console.log(filtered)
          if(dataHeight) filtered = filtered?.filter((user) => {
                return user.profile?.height &&  user.profile?.height >= dataHeight
             })
