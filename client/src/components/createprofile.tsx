@@ -492,7 +492,7 @@ function CreateProfile(props:typeProp) {
                      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
                      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"/>
                   </svg>: ''}     
-                  <Filter_form onFocus={setBooleanInputLocation} onBlur={setBooleanInputLocation} value={inputLocation} onChange={setInputLocation} name={props.defaultLanguage?.location[ lang]} id="location"/>
+                  <Filter_form boolean={booleanInputLocation} onFocus={setBooleanInputLocation} onBlur={setBooleanInputLocation} value={inputLocation} onChange={setInputLocation} name={props.defaultLanguage?.location[ lang]} id="location"/>
                   <div onMouseDown={(e) => e.preventDefault()} className='w-67 absolute mt-2 max-h-30 z-20 bg-white 
                      overflow-y-auto
                      [&::-webkit-scrollbar]:w-2
@@ -542,13 +542,13 @@ function CreateProfile(props:typeProp) {
                      {booleanInputName ? '' : ''}
                </span>
                <span className='w-full mr-2'>
-                  <Filter_form onFocus={setBooleanInputGender} readonly class='cursor-pointer' onBlur={setBooleanInputGender} value={checkGender(inputGender,lang)} name={props.defaultLanguage?.gender[lang]} id="gender"/>            
+                  <Filter_form boolean={booleanInputGender} onFocus={setBooleanInputGender} readonly class='cursor-pointer' onBlur={setBooleanInputGender} value={checkGender(inputGender,lang)} name={props.defaultLanguage?.gender[lang]} id="gender"/>            
                   {booleanInputGender ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect setBoolean={setBooleanInputGender} data={gender} updateDataSet={updateDataSet} name="gender" lang={lang}/>
                   </div> : ''}
                </span>
                <span className='w-50'>
-                  <Filter_form onFocus={setBooleanInputHeight} readonly class='cursor-pointer' onBlur={setBooleanInputHeight} value={inputHeight} name={props.defaultLanguage?.height[lang]} id="height"/>            
+                  <Filter_form boolean={booleanInputHeight} onFocus={setBooleanInputHeight} readonly class='cursor-pointer' onBlur={setBooleanInputHeight} value={inputHeight} name={props.defaultLanguage?.height[lang]} id="height"/>            
                   {booleanInputHeight ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect setBoolean={setBooleanInputHeight} data={[...Array(60)].map((x,i)=>`${i+140}cm`)} updateDataSet={updateDataSet} name="height" lang={''}/>
                   </div> : ''}
@@ -556,7 +556,7 @@ function CreateProfile(props:typeProp) {
             </div>
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-full mr-2'>               
-                  <Filter_form readonly class='cursor-pointer' onFocus={setBooleanInputStatus} onBlur={setBooleanInputStatus} value={checkStatus(inputStatus,lang)} onChange={setInputStatus} name={props.defaultLanguage?.status[ lang]} id="status"/>
+                  <Filter_form boolean={booleanInputStatus} readonly class='cursor-pointer' onFocus={setBooleanInputStatus} onBlur={setBooleanInputStatus} value={checkStatus(inputStatus,lang)} onChange={setInputStatus} name={props.defaultLanguage?.status[ lang]} id="status"/>
                   {booleanInputStatus ? <div className='absolute w-40 mt-2 pr-4 z-20'>
                      <Filter_displayselect setBoolean={setBooleanInputStatus} data={status} updateDataSet={updateDataSet} name="status"  lang={lang}/>
                   </div> : ''}
@@ -573,7 +573,7 @@ function CreateProfile(props:typeProp) {
                   <label htmlFor={`filter_form_birthday`} className={`cursor-pointer absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}>{props.defaultLanguage?.birthday[ lang]}</label>
                </span>
                <span className='w-60 mr-2'>
-                  <Filter_form onFocus={setBooleanInputEthnicity} readonly class='cursor-pointer' onBlur={setBooleanInputEthnicity} value={checkEthnicitie(inputEthnicity,lang)} name={props.defaultLanguage?.ethnicity[ lang]} id="ethnicity"/>            
+                  <Filter_form boolean={booleanInputEthnicity} onFocus={setBooleanInputEthnicity} readonly class='cursor-pointer' onBlur={setBooleanInputEthnicity} value={checkEthnicitie(inputEthnicity,lang)} name={props.defaultLanguage?.ethnicity[ lang]} id="ethnicity"/>            
                   {booleanInputEthnicity ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect setBoolean={setBooleanInputEthnicity} data={worldEthnicities} updateDataSet={updateDataSet} name="ethnicity" lang={lang}/>
                   </div> : ''}
@@ -582,19 +582,19 @@ function CreateProfile(props:typeProp) {
             </div>
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-40 mr-2'>  
-                  <Filter_form onFocus={setBooleanInputReligion} readonly class='cursor-pointer' onBlur={setBooleanInputReligion} value={checkReligion(inputReligion,lang)} name={props.defaultLanguage?.religion[ lang]} id="religion"/>            
+                  <Filter_form boolean={booleanInputReligion} onFocus={setBooleanInputReligion} readonly class='cursor-pointer' onBlur={setBooleanInputReligion} value={checkReligion(inputReligion,lang)} name={props.defaultLanguage?.religion[ lang]} id="religion"/>            
                   {booleanInputReligion ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect setBoolean={setBooleanInputReligion} data={worldReligions} updateDataSet={updateDataSet} name="religion" lang={lang}/>
                   </div> : ''}             
                </span>
                <span className='w-60 mr-2'>
-                  <Filter_form onFocus={setBooleanInputChineseZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputChineseZodiac} value={checkChineseZodiac(inputChineseZodiac,lang)} name={props.defaultLanguage?.chinese_zodiac[ lang]} id="chinese_zodiac"/>            
+                  <Filter_form boolean={booleanInputChineseZodiac} onFocus={setBooleanInputChineseZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputChineseZodiac} value={checkChineseZodiac(inputChineseZodiac,lang)} name={props.defaultLanguage?.chinese_zodiac[ lang]} id="chinese_zodiac"/>            
                   {booleanInputChineseZodiac ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect setBoolean={setBooleanInputChineseZodiac}  data={chinese_zodiac} updateDataSet={updateDataSet} name="chinese_zodiac" lang={lang}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
-                  <Filter_form onFocus={setBooleanInputWesternZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputWesternZodiac} value={checkWesternZodiac(inputWesternZodiac,lang)} name={props.defaultLanguage?.western_zodiac[ lang]} id="western_zodiac"/>            
+                  <Filter_form boolean={booleanInputWesternZodiac} onFocus={setBooleanInputWesternZodiac} readonly class='cursor-pointer' onBlur={setBooleanInputWesternZodiac} value={checkWesternZodiac(inputWesternZodiac,lang)} name={props.defaultLanguage?.western_zodiac[ lang]} id="western_zodiac"/>            
                   {booleanInputWesternZodiac ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect setBoolean={setBooleanInputWesternZodiac} data={western_zodiac} updateDataSet={updateDataSet} name="western_zodiac" lang={lang}/>
                   </div> : ''}
@@ -602,20 +602,20 @@ function CreateProfile(props:typeProp) {
             </div>
             <div className='flex ml-2 mr-2 mt-2 items-center'>
                <span className='w-18 mr-2'>
-                  <Filter_form onFocus={setBooleanInputGroup} readonly class='cursor-pointer' onBlur={setBooleanInputGroup} value={inputGroup} name={props.defaultLanguage?.group_blood[ lang]} id="group_blood"/>            
+                  <Filter_form boolean={booleanInputGroup} onFocus={setBooleanInputGroup} readonly class='cursor-pointer' onBlur={setBooleanInputGroup} value={inputGroup} name={props.defaultLanguage?.group_blood[ lang]} id="group_blood"/>            
                   {booleanInputGroup ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect setBoolean={setBooleanInputGroup} data={group_blood} updateDataSet={updateDataSet} name="group_blood" lang={''}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
-                  <Filter_form onFocus={setBooleanInputDegree} readonly class='cursor-pointer' onBlur={setBooleanInputDegree} value={checkDegree(inputDegree,lang)} name={props.defaultLanguage?.degree[ lang]} id="degree"/>            
+                  <Filter_form boolean={booleanInputDegree} onFocus={setBooleanInputDegree} readonly class='cursor-pointer' onBlur={setBooleanInputDegree} value={checkDegree(inputDegree,lang)} name={props.defaultLanguage?.degree[ lang]} id="degree"/>            
                   {booleanInputDegree ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect setBoolean={setBooleanInputDegree} data={degree} updateDataSet={updateDataSet} name="degree" lang={lang}/>
                   </div> : ''}
                </span>
                <span className='w-50 mr-2'>
                   {booleanToggleUniversitye ? 
-                  <Filter_form onFocus={setBooleanInputUniversity} onBlur={setBooleanInputUniversity} onChange={setInputUniversity} value={inputUniversity} name={props.defaultLanguage?.university[ lang]} id="university"/>            
+                  <Filter_form boolean={booleanInputUniversity} onFocus={setBooleanInputUniversity} onBlur={setBooleanInputUniversity} onChange={setInputUniversity} value={inputUniversity} name={props.defaultLanguage?.university[ lang]} id="university"/>            
                   : ''}
                   {booleanInputUniversity ? <div className='absolute mt-2 pr-4 z-20'>
                      <Filter_displayselect setBoolean={setBooleanInputUniversity} data={getUniversity.filter(value => {if (inputUniversity) return value.toLocaleLowerCase().match(inputUniversity.toLocaleLowerCase())})} updateDataSet={updateDataSet} name="university" lang={''}/>

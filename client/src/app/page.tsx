@@ -61,7 +61,7 @@ const Page = () => {
       setLoadingFirst(true)
       try{
         const email = session.user?.email
-        const data = await alovaInstance.Get<typeData>(`/user/${email}`);
+        const data = await alovaInstance.Get<typeData>(`/user/${email}?t=${Date.now()}`);
         const dataUser = await alovaInstance.Get<typeData[]>(`/user?t=${Date.now()}`);
         if(!data){
           setToggleCreate(true)
@@ -167,7 +167,7 @@ const Page = () => {
         }
     }
   return (
-    <div id="page">
+    <div id="page" className='text-black'>
       {loading ? 
         <div role="status" className="fixed inset-0 flex flex-col items-center justify-center z-50 backdrop-blur-xs">
         <svg
