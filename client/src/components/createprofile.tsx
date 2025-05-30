@@ -463,7 +463,9 @@ function CreateProfile(props:typeProp) {
             }else {
             toast.warning(`${props.defaultLanguage?.error[ lang]} ${response.status}`);
             }
-            router.push('/')
+            setTimeout(() => {
+               router.push('/');
+             }, 500);
          } catch (error: unknown) {
             if (error instanceof Error) {
               toast.error(`${props.defaultLanguage?.error[ lang]} ${error.message}`);

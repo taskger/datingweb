@@ -59,7 +59,7 @@ const Page = () => {
       if (!session) return setToggleLoginGoogle(true)
       setLoading(true)
       setLoadingFirst(true)
-      try{
+      try{        
         const email = session.user?.email
         const image = session.user?.image
         await alovaInstance.Put<typeData>(`/checkimage/${email}?t=${Date.now()}`,{
