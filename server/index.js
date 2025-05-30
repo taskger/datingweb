@@ -58,6 +58,21 @@ app.put('/setting/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+app.put('/checkimage/:email', async (req, res) => {
+  try {
+    const {email} = req.params
+    const payload = req.body
+    const users = await User.findOne({email: email});
+    console.log(payload.image)
+    if(users.image != payload.image ){
+      await User.updateOne({email:email}, {$set:payload})
+      return res.status(200).json({ message: 'Image updated' });
+    }
+    return res.status(200).json({ message: 'No update needed' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 app.put('/update/:id', async (req, res) => {
   try {
     const payload = req.body
