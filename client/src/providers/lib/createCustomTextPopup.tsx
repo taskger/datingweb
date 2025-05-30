@@ -33,7 +33,7 @@ export const PopupUser = (data:typeData,lang:Lang,dataMyself:typeData,setRequest
       <div class="bg">
         <div>
           <div class="scopeProfile">
-            <img class="profile" referrerpolicy="no-referrer" src="${data.image ? `${data.image}?t=${Date.now()}` : 'user.png'}"/>
+            <img class="profile" referrerpolicy="no-referrer" src="${data.image ? `${data.image}` : 'user.png'}"/>
           </div>
           <div class="description">
             <span class="texthead">${settings.name[lang]} 

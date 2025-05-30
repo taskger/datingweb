@@ -67,7 +67,6 @@ function CreateProfile(props:typeProp) {
    const [getUniversity, setGetUniversity] = useState<string[]>([])
    const [searchLocation,setSearchLocation] = useState<GoogleGeocodeResult[]>()
    const {data,lang,setLoading} = props
-   
    useEffect(() => {
       fetch('/world_universities.json')
          .then((res) => res.json())
