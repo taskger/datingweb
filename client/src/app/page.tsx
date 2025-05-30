@@ -61,10 +61,7 @@ const Page = () => {
       setLoadingFirst(true)
       try{
         const email = session.user?.email
-        const image = session.user?.image
-        await alovaInstance.Put<typeData>(`/checkimage/${email}?t=${Date.now()}`,{
-          image:image
-        });
+  
         const data = await alovaInstance.Get<typeData>(`/user/${email}?t=${Date.now()}`);
         const dataUser = await alovaInstance.Get<typeData[]>(`/user?t=${Date.now()}`);
         if(!data){
