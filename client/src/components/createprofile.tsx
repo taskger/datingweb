@@ -11,7 +11,7 @@ import { alovaInstance, alovaOutApi } from './data/alova'
 import { calculateAge, checkChineseZodiac, checkDegree, checkEthnicitie, checkGender, checkReligion, checkStatus, checkWesternZodiac } from '@/providers/lib/TranslateToThai'
 import { toast } from 'react-toastify'
 import { initAccordions } from 'flowbite'
-
+import { useRouter } from 'next/router'
 interface typeProp{
    data:SessionGoogle
    userData:typeData[]
@@ -67,6 +67,8 @@ function CreateProfile(props:typeProp) {
    const [getUniversity, setGetUniversity] = useState<string[]>([])
    const [searchLocation,setSearchLocation] = useState<GoogleGeocodeResult[]>()
    const {data,lang,setLoading} = props
+   const router = useRouter()
+
    useEffect(() => {
       fetch('/world_universities.json')
          .then((res) => res.json())
@@ -461,7 +463,7 @@ function CreateProfile(props:typeProp) {
             }else {
             toast.warning(`${props.defaultLanguage?.error[ lang]} ${response.status}`);
             }
-            window.location.reload()
+            router.push('/')
          } catch (error: unknown) {
             if (error instanceof Error) {
               toast.error(`${props.defaultLanguage?.error[ lang]} ${error.message}`);
