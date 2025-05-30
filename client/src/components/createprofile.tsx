@@ -11,7 +11,6 @@ import { alovaInstance, alovaOutApi } from './data/alova'
 import { calculateAge, checkChineseZodiac, checkDegree, checkEthnicitie, checkGender, checkReligion, checkStatus, checkWesternZodiac } from '@/providers/lib/TranslateToThai'
 import { toast } from 'react-toastify'
 import { initAccordions } from 'flowbite'
-import { useRouter } from 'next/router'
 interface typeProp{
    data:SessionGoogle
    userData:typeData[]
