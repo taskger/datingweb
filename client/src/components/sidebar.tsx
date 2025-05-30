@@ -408,7 +408,7 @@ function Sidebar(props:typeProps) {
                   <button></button>
                   <span>{props.defaultLanguage?.found_filter_people[lang ?? 'en']} {[...dataFilter].length}</span>
                </div>
-               <ul className="relative bg-gray-100 insetshadow font-normal border border-gray-300 rounded-xl overflow-y-auto h-80 max-h-full pb-3 pl-2 overflow-x-hidden">
+               <ul className="relative bg-gray-100 insetshadow font-normal border border-gray-300 rounded-xl overflow-y-auto h-120 max-h-full pb-3 pl-2 overflow-x-hidden">
                   <div data-drawer-hide="sidebar" aria-controls="sidebar" role="button" >
                         <Filter_buttonuser data={[...dataFilter]} defaultLanguage={props.defaultLanguage} language={lang ?? 'en'} setGetLatLng={props.setGetLatLng} setToggleBackdrop={setToggleBackdrop} />
                   </div>   
