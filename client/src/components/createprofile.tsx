@@ -67,8 +67,7 @@ function CreateProfile(props:typeProp) {
    const [getUniversity, setGetUniversity] = useState<string[]>([])
    const [searchLocation,setSearchLocation] = useState<GoogleGeocodeResult[]>()
    const {data,lang,setLoading} = props
-   const router = useRouter()
-
+   
    useEffect(() => {
       fetch('/world_universities.json')
          .then((res) => res.json())
@@ -463,9 +462,7 @@ function CreateProfile(props:typeProp) {
             }else {
             toast.warning(`${props.defaultLanguage?.error[ lang]} ${response.status}`);
             }
-            if (typeof window !== 'undefined') {
-               router.push('/');
-             }
+            window.location.reload()
          } catch (error: unknown) {
             if (error instanceof Error) {
               toast.error(`${props.defaultLanguage?.error[ lang]} ${error.message}`);
